@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GhostGuard Dashboard</title>
+
+<style>
+:root{
+  --bg1:#070b14; --bg2:#05070d;
+  --card:#0f172a;
+  --text:#e8f0ff; --muted:rgba(232,240,255,.65);
+  --blue:#3b82f6; --green:#22c55e; --red:#ef4444; --yellow:#f59e0b;
+  --shadow:0 18px 70px rgba(0,0,0,.55);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Arial, sans-serif; color:var(--text);
+  background:radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.20), transparent 60%), linear-gradient(180deg,var(--bg1),var(--bg2));
+  min-height:100vh;
+}
+header{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:18px 28px; border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(5,7,13,.55); backdrop-filter:blur(10px);
+}
+.brand{font-weight:900; font-size:18px}
+.btn{
+  border:none; cursor:pointer; font-weight:900;
+  padding:10px 14px; border-radius:12px;
+  color:var(--text); background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  transition:.18s;
+}
+.btn:hover{transform:translateY(-1px); border-color:rgba(96,165,250,.35)}
+.btn-blue{background:rgba(59,130,246,.18); border-color:rgba(59,130,246,.35)}
+.btn-green{background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.35)}
+.btn-red{background:rgba(239,68,68,.18); border-color:rgba(239,68,68,.35)}
+
+.wrap{max-width:1200px; margin:0 auto; padding:26px 18px 60px}
+.grid{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  padding:18px; box-shadow:var(--shadow);
+}
+.title{font-weight:900; font-size:20px; margin-bottom:12px}
+.kv{display:grid; grid-template-columns:160px 1fr; gap:8px 10px}
+.k{color:var(--muted); font-size:12px; font-weight:800}
+.v{font-weight:900}
+.pill{padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.1)}
+.good{color:var(--green)} .bad{color:var(--red)} .warn{color:var(--yellow)}
+.actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+.note{color:var(--muted); font-size:12px; margin-top:10px}
+
+.download-box{
+  margin-top:16px;
+  background:linear-gradient(135deg,#0f172a,#111c3a);
+  border:1px solid rgba(59,130,246,.3);
+  padding:20px;
+  border-radius:14px;
+}
+.download-btn{
+  display:inline-block;
+  margin-top:10px;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:700;
+  text-decoration:none;
+  color:white;
+  background:linear-gradient(90deg,#3b82f6,#2563eb);
+  box-shadow:0 8px 20px rgba(37,99,235,.35);
+}
+.download-btn:hover{transform:translateY(-2px)}
+
+.player-list div{
+  padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:14px;
+}
+
+@media (max-width:900px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand">GhostGuard • Dashboard</div>
+  <button class="btn" id="logout">Logga ut</button>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <div class="card">
+      <div class="title">Licens status (Live)</div>
+      <div class="kv">
+        <div class="k">License Key</div><div class="v" id="lk">-</div>
+        <div class="k">Status</div><div class="v" id="st">-</div>
+        <div class="k">Går ut</div><div class="v" id="ex">-</div>
+        <div class="k">Tid kvar</div><div class="v" id="tl">-</div>
+        <div class="k">Spelare online</div><div class="v good" id="onlineCount">0</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-green" id="btnStart">Start</button>
+        <button class="btn btn-red" id="btnStop">Stop</button>
+        <button class="btn btn-blue" id="btnRefresh">Refresh</button>
+      </div>
+
+      <div class="note">Licensen måste vara <span class="good">ACTIVE</span> för att anticheaten ska fungera.</div>
+
+      <div class="download-box">
+        <h3>🛡 GhostGuard Anticheat</h3>
+        <p>Ladda ner senaste versionen här.</p>
+        <a class="download-btn"
+           href="https://drive.google.com/uc?export=download&id=1Ayg8qnk5fuR4UrjgiIFdsW8veqLH4IS6"
+           target="_blank">⬇ Ladda ner GhostGuard</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">Spelare online (Live)</div>
+      <div class="player-list" id="playerList">Inga spelare online.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = "https://ghostguard-backend.onrender.com";
+const licenseKey = localStorage.getItem("gg_license_key");
+
+if(!licenseKey){
+  window.location.href = "index.html";
+}
+
+const el = id => document.getElementById(id);
+let currentExpire = null;
+
+/* ------------------ FORMAT HELPERS ------------------ */
+function fmtDate(iso){
+  if(!iso) return "-";
+  return new Date(iso).toLocaleString();
+}
+
+function timeLeft(iso){
+  if(!iso) return "-";
+
+  let diff = new Date(iso) - Date.now();
+  if(diff <= 0) return "Utgången";
+
+  const d = Math.floor(diff / 86400000);
+  diff %= 86400000;
+  const h = Math.floor(diff / 3600000);
+  diff %= 3600000;
+  const m = Math.floor(diff / 60000);
+
+  return `${d}d ${h}h ${m}m`;
+}
+
+/* ------------------ LOAD DASHBOARD ------------------ */
+async function loadDashboard(){
+  try{
+    el("lk").textContent = licenseKey;
+
+    const res = await fetch(API + "/customer/dashboard", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ license_key: licenseKey })
+    });
+
+    const data = await res.json();
+
+    let status = (data.status || "UNKNOWN").toUpperCase();
+    currentExpire = data.expires_at;
+
+    // Om datum finns och är passerat → EXPIRED
+    if(currentExpire && new Date(currentExpire) < new Date()){
+      status = "EXPIRED";
+    }
+
+    let cls = "warn";
+    if(status === "ACTIVE") cls = "good";
+    if(status === "DISABLED" || status === "EXPIRED") cls = "bad";
+
+    el("st").innerHTML = `<span class="pill ${cls}">${status}</span>`;
+    el("ex").textContent = fmtDate(currentExpire);
+    el("tl").textContent = timeLeft(currentExpire);
+
+  } catch(e){
+    console.error("Dashboard load error", e);
+  }
+}
+
+/* ------------------ LOAD PLAYERS ------------------ */
+async function loadPlayers(){
+  try{
+    const res = await fetch(API + "/customer/live-players", {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ license_key: licenseKey })
+    });
+
+    const data = await res.json();
+    const players = data.players || [];
+
+    el("onlineCount").textContent = players.length;
+
+    const list = el("playerList");
+    list.innerHTML = "";
+
+    if(players.length === 0){
+      list.innerHTML = "Inga spelare online.";
+      return;
+    }
+
+    players.forEach(p => {
+      list.innerHTML += `<div>${p.name} (ID ${p.id}) — ${p.ping}ms</div>`;
+    });
+
+  } catch(e){
+    console.error("Player load error", e);
+  }
+}
+
+/* ------------------ TOGGLE LICENSE ------------------ */
+async function toggle(status){
+  await fetch(API + "/customer/toggle", {
+    method: "POST",
+    headers: { "Content-Type":"application/json" },
+    body: JSON.stringify({ license_key: licenseKey, status })
+  });
+
+  loadDashboard();
+}
+
+/* ------------------ BUTTONS ------------------ */
+el("btnStart").onclick = () => toggle("ACTIVE");
+el("btnStop").onclick  = () => toggle("DISABLED");
+el("btnRefresh").onclick = loadDashboard;
+
+el("logout").onclick = () => {
+  localStorage.removeItem("gg_license_key");
+  window.location.href = "index.html";
+};
+
+/* ------------------ LIVE UPDATES ------------------ */
+setInterval(() => {
+  if(currentExpire){
+    el("tl").textContent = timeLeft(currentExpire);
+  }
+}, 1000);
+
+setInterval(loadPlayers, 5000);
+setInterval(loadDashboard, 30000);
+
+loadDashboard();
+loadPlayers();
+</script>
+</body>
+</html>

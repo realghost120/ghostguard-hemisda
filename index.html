@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GhostGuard</title>
+
+<style>
+:root{
+  --bg1:#070b14; --bg2:#05070d;
+  --card:#0f172a;
+  --text:#e8f0ff; --muted:rgba(232,240,255,.65);
+  --blue:#3b82f6; --green:#22c55e; --yellow:#fbbf24;
+  --shadow:0 25px 80px rgba(0,0,0,.55);
+  --radius:20px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Arial, sans-serif; color:var(--text);
+  background:
+    radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.25), transparent 60%),
+    radial-gradient(900px 500px at 50% 100%, rgba(34,197,94,.10), transparent 60%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+  min-height:100vh;
+}
+
+header{
+  position:sticky; top:0; z-index:10;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:20px 32px; backdrop-filter: blur(12px);
+  background:rgba(5,7,13,.6); border-bottom:1px solid rgba(255,255,255,.06);
+}
+.brand{font-weight:900; font-size:22px}
+
+.btn{
+  border:none; cursor:pointer; font-weight:900;
+  padding:11px 16px; border-radius:12px;
+  color:var(--text); background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  transition:.2s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{
+  background:linear-gradient(90deg,#3b82f6,#2563eb);
+  border:none;
+  box-shadow:0 8px 25px rgba(37,99,235,.35);
+}
+.btn-primary:hover{box-shadow:0 12px 35px rgba(37,99,235,.5)}
+
+.wrap{max-width:1100px; margin:0 auto; padding:60px 20px 80px}
+
+.hero{text-align:center; margin-bottom:40px}
+.hero h1{
+  font-size:56px;
+  margin:10px 0;
+  background:linear-gradient(90deg,#60a5fa,#22c55e);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero p{color:var(--muted); font-size:18px}
+
+.pill{
+  display:inline-block; margin-top:16px;
+  padding:8px 14px; border-radius:999px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  font-weight:800;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  margin-top:40px;
+}
+.price-card{
+  background:linear-gradient(180deg,#0f172a,#0b1428);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  padding:28px;
+  box-shadow:var(--shadow);
+  transition:.25s;
+}
+.price-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(59,130,246,.4);
+  box-shadow:0 0 30px rgba(59,130,246,.25), var(--shadow);
+}
+
+.plan{font-size:20px; font-weight:900; margin-bottom:10px}
+.price{
+  font-size:44px;
+  font-weight:900;
+  color:var(--green);
+  margin:10px 0 4px;
+}
+.muted{color:var(--muted)}
+
+.features{
+  margin:18px 0;
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.section-title{
+  text-align:center;
+  font-size:30px;
+  font-weight:900;
+  margin:80px 0 20px;
+}
+.reviews{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.review{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:16px;
+}
+.stars{color:var(--yellow); margin-bottom:6px}
+
+.footer{
+  text-align:center;
+  margin-top:80px;
+  font-size:12px;
+  color:rgba(232,240,255,.5);
+}
+
+/* MODALS */
+.modal{
+  position:fixed; inset:0; display:none;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.65);
+  padding:18px; z-index:999;
+}
+.modal.open{display:flex}
+.modal-box{
+  width:380px; max-width:92vw;
+  background:linear-gradient(180deg,#0f172a,#0b1428);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  box-shadow:0 30px 90px rgba(0,0,0,.65);
+  padding:18px;
+}
+.modal-top{display:flex; justify-content:space-between; align-items:center}
+.x{cursor:pointer; opacity:.75; font-weight:900}
+.x:hover{opacity:1}
+label{display:block; margin-top:12px; font-size:12px; color:var(--muted); font-weight:800}
+input{
+  width:100%; margin-top:6px;
+  padding:11px 12px; border-radius:12px;
+  background:rgba(0,0,0,.25); color:var(--text);
+  border:1px solid rgba(255,255,255,.10);
+}
+.err{color:#ff6b6b; margin-top:10px; min-height:18px; font-size:13px}
+.row{display:flex; gap:10px; margin-top:14px}
+.row .btn{flex:1}
+
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .reviews{grid-template-columns:1fr}
+  .hero h1{font-size:42px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">GhostGuard</div>
+  <div style="display:flex; gap:12px;">
+    <button class="btn btn-primary" id="buyBtn">🛒 Köp</button>
+    <button class="btn" id="loginBtn">Logga in</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>GhostGuard AntiCheat</h1>
+    <p>Avancerat skydd för din FiveM-server med real-time detection.</p>
+    <div class="pill">💬 <span id="discordCount">128</span>+ medlemmar i Discord</div>
+  </div>
+
+  <div class="grid">
+    <div class="price-card">
+      <div class="plan">Månadsplan</div>
+      <div class="price">49 kr <span class="muted" style="font-size:14px">/ månad</span></div>
+      <div class="features">
+        ✔ Full tillgång till anticheat<br>
+        ✔ Alla uppdateringar<br>
+        ✔ Dashboard & loggar<br>
+        ✔ Discord support
+      </div>
+      <button class="btn btn-primary" data-buy="monthly">Köp</button>
+    </div>
+
+    <div class="price-card">
+      <div class="plan">Livstid</div>
+      <div class="price">99 kr</div>
+      <div class="features">
+        ✔ Engångsbetalning<br>
+        ✔ Livstidsuppdateringar<br>
+        ✔ Dashboard & loggar<br>
+        ✔ Prioriterad support
+      </div>
+      <button class="btn btn-primary" data-buy="lifetime">Köp</button>
+    </div>
+  </div>
+
+  <div class="section-title">Kundrecensioner</div>
+  <div class="reviews">
+    <div class="review"><div class="stars">★★★★★</div><b>“Bästa AC vi haft.”</b><div class="muted">Snabb setup och stabilt.</div></div>
+    <div class="review"><div class="stars">★★★★★</div><b>“Upptäcker allt!”</b><div class="muted">Riktigt bra alerts + logs.</div></div>
+    <div class="review"><div class="stars">★★★★★</div><b>“Stabil & snabb support.”</b><div class="muted">Allt via Discord tickets.</div></div>
+  </div>
+
+  <div class="footer">GhostGuard • Support & köp sker via Discord</div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div style="font-weight:900; font-size:18px">Kund Login</div>
+      <div class="x" id="closeLogin">✕</div>
+    </div>
+
+    <label>Användarnamn</label>
+    <input id="user" placeholder="Username"/>
+
+    <label>Lösenord</label>
+    <input id="pass" type="password" placeholder="Password"/>
+
+    <div class="err" id="err"></div>
+
+    <div class="row">
+      <button class="btn" id="cancelLogin">Avbryt</button>
+      <button class="btn btn-primary" id="doLogin">Logga in</button>
+    </div>
+  </div>
+</div>
+
+<!-- BUY MODAL -->
+<div class="modal" id="buyModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div style="font-weight:900; font-size:18px">Köp GhostGuard</div>
+      <div class="x" id="closeBuy">✕</div>
+    </div>
+    <p class="muted">Köp & support sker i Discord via ticket.</p>
+    <div class="row">
+      <button class="btn" id="cancelBuy">Avbryt</button>
+      <button class="btn btn-primary" id="goDiscord">Öppna Discord</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = "https://ghostguard-backend.onrender.com";
+
+/* Discord counter fake animation */
+let base = 128;
+setInterval(()=>{
+  base += Math.random() > 0.7 ? 1 : 0;
+  document.getElementById("discordCount").textContent = base;
+}, 3500);
+
+/* MODALS */
+const loginModal = document.getElementById("loginModal");
+const buyModal = document.getElementById("buyModal");
+
+const openLogin = ()=> loginModal.classList.add("open");
+const closeLogin = ()=> loginModal.classList.remove("open");
+const openBuy = ()=> buyModal.classList.add("open");
+const closeBuy = ()=> buyModal.classList.remove("open");
+
+document.getElementById("loginBtn").onclick = openLogin;
+document.getElementById("buyBtn").onclick = openBuy;
+document.getElementById("closeLogin").onclick = closeLogin;
+document.getElementById("cancelLogin").onclick = closeLogin;
+document.getElementById("closeBuy").onclick = closeBuy;
+document.getElementById("cancelBuy").onclick = closeBuy;
+
+document.querySelectorAll("[data-buy]").forEach(btn=>{
+  btn.onclick = openBuy;
+});
+
+document.getElementById("goDiscord").onclick = ()=> window.open("https://discord.gg/dxwyCUNEZv", "_blank");
+
+/* LOGIN */
+async function login(){
+  const username = document.getElementById("user").value.trim();
+  const password = document.getElementById("pass").value;
+  const err = document.getElementById("err");
+  err.textContent = "";
+
+  if(!username || !password){
+    err.textContent = "Fyll i användarnamn och lösenord.";
+    return;
+  }
+
+  const res = await fetch(API + "/customer/login", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json().catch(()=> ({}));
+  if(!res.ok || !data.success){
+    err.textContent = data.error || "Fel login uppgifter.";
+    return;
+  }
+
+  localStorage.setItem("gg_license_key", data.license_key);
+  localStorage.setItem("gg_token", data.token);
+  window.location.href = "dashboard.html";
+}
+
+document.getElementById("doLogin").onclick = login;
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape"){ closeLogin(); closeBuy(); }
+  if(e.key==="Enter" && loginModal.classList.contains("open")) login();
+});
+</script>
+
+</body>
+</html>
