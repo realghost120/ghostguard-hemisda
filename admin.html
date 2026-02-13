@@ -1,282 +1,306 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GhostGuard Admin</title>
-  <style>
-    :root{
-      --bg1:#070b14; --bg2:#05070d;
-      --text:#e8f0ff; --muted:rgba(232,240,255,.65);
-      --blue:#3b82f6; --green:#22c55e; --red:#ef4444;
-      --shadow: 0 18px 70px rgba(0,0,0,.55);
-      --radius:18px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:Arial, sans-serif; color:var(--text);
-      background: radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.20), transparent 60%),
-                  linear-gradient(180deg,var(--bg1),var(--bg2));
-      min-height:100vh;
-    }
-    header{
-      display:flex; justify-content:space-between; align-items:center;
-      padding:18px 28px; border-bottom:1px solid rgba(255,255,255,.06);
-      background:rgba(5,7,13,.55); backdrop-filter: blur(10px);
-    }
-    .brand{font-weight:900; font-size:18px}
-    .wrap{max-width:1100px; margin:0 auto; padding:26px 18px 60px}
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:var(--radius);
-      padding:16px; box-shadow:var(--shadow);
-      margin-bottom:14px;
-    }
-    .title{font-weight:900; font-size:18px; margin-bottom:10px}
-    label{display:block; margin-top:10px; font-size:12px; color:var(--muted); font-weight:800}
-    input{
-      width:100%; margin-top:6px;
-      padding:11px 12px; border-radius:12px;
-      background:rgba(0,0,0,.25); color:var(--text);
-      border:1px solid rgba(255,255,255,.10);
-      outline:none;
-    }
-    input:focus{border-color:rgba(59,130,246,.55)}
-    .row{display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:10px}
-    .btn{
-      border:none; cursor:pointer; font-weight:900;
-      padding:10px 14px; border-radius:12px;
-      color:var(--text); background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.08);
-      transition:.18s;
-    }
-    .btn:hover{transform:translateY(-1px); border-color:rgba(96,165,250,.35)}
-    .btn-blue{background:rgba(59,130,246,.18); border-color:rgba(59,130,246,.35)}
-    .btn-green{background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.35)}
-    .btn-red{background:rgba(239,68,68,.18); border-color:rgba(239,68,68,.35)}
-    table{width:100%; border-collapse:collapse; margin-top:10px; overflow:hidden}
-    th,td{padding:10px; border-bottom:1px solid rgba(255,255,255,.08); text-align:left; font-size:13px}
-    th{color:rgba(232,240,255,.8); font-size:12px; letter-spacing:.2px}
-    .pill{display:inline-flex; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.22); font-weight:900; font-size:12px}
-    .good{color:var(--green)} .bad{color:var(--red)}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
-    .msg{margin-top:10px; color:var(--muted); min-height:18px}
-    @media (max-width:900px){ .row{grid-template-columns:1fr} }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GhostGuard Admin</title>
+
+<style>
+:root{
+  --bg:#0b0f1a;
+  --card:#111827;
+  --accent:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --text:#e5e7eb;
+}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 25px;
+  background:#0f172a;
+  border-bottom:1px solid #1f2937;
+}
+
+.logo{
+  font-weight:900;
+  font-size:18px;
+}
+
+.logo span{
+  color:var(--accent);
+}
+
+nav{
+  display:flex;
+  gap:15px;
+}
+
+nav button{
+  background:none;
+  border:none;
+  color:var(--text);
+  font-weight:700;
+  cursor:pointer;
+}
+
+nav button.active{
+  color:var(--accent);
+}
+
+.logout{
+  background:var(--red);
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  color:white;
+  cursor:pointer;
+}
+
+.container{
+  padding:30px;
+  max-width:1100px;
+  margin:auto;
+}
+
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:20px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  background:#0f172a;
+  border:1px solid #1f2937;
+  color:white;
+  border-radius:6px;
+}
+
+button.primary{
+  background:var(--accent);
+  border:none;
+  padding:10px 14px;
+  border-radius:6px;
+  color:white;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+th,td{
+  padding:10px;
+  border-bottom:1px solid #1f2937;
+  text-align:left;
+}
+
+.status-active{ color:var(--green); }
+.status-disabled{ color:var(--red); }
+
+.hidden{ display:none; }
+
+.center{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.login-box{
+  background:var(--card);
+  padding:30px;
+  border-radius:12px;
+  width:300px;
+}
+</style>
 </head>
 <body>
-<header>
-  <div class="brand">GhostGuard • Admin Panel</div>
-  <div style="display:flex; gap:10px;">
-    <button class="btn" id="refresh">Refresh</button>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="center">
+  <div class="login-box">
+    <h2>GhostGuard Admin</h2>
+    <input id="adminSecretInput" type="password" placeholder="ADMIN_SECRET">
+    <button class="primary" onclick="login()">Logga in</button>
+    <div id="loginMsg"></div>
   </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+
+<header>
+  <div class="logo">GhostGuard <span>Admin</span></div>
+  <nav>
+    <button id="navDashboard" onclick="showPage('dashboard')">Dashboard</button>
+    <button id="navCustomers" onclick="showPage('customers')">Customers</button>
+  </nav>
+  <button class="logout" onclick="logout()">Logga ut</button>
 </header>
 
-<div class="wrap">
+<div class="container">
 
+<!-- DASHBOARD -->
+<div id="dashboardPage">
   <div class="card">
-    <div class="title">🔐 Admin Secret</div>
-    <label>ADMIN_SECRET</label>
-    <input id="secret" type="password" placeholder="Klistra in admin secret..." />
-    <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
-      <button class="btn btn-blue" id="saveSecret">Spara</button>
-      <button class="btn" id="clearSecret">Rensa</button>
-    </div>
-    <div class="msg" id="secretMsg"></div>
+    <h3>Skapa licens</h3>
+    <input id="days" type="number" value="30">
+    <button class="primary" onclick="createLicense()">Skapa</button>
+    <div id="newLicense"></div>
   </div>
 
   <div class="card">
-    <div class="title">➕ Skapa ny licens</div>
-    <div class="row">
-      <div>
-        <label>Dagar giltig</label>
-        <input id="days" type="number" value="30"/>
-      </div>
-      <div>
-        <label>&nbsp;</label>
-        <button class="btn btn-green" id="createLicense">Skapa licens</button>
-      </div>
-      <div>
-        <label>Resultat</label>
-        <input id="newLicense" class="mono" readonly placeholder="Ny licens kommer här..." />
-      </div>
-    </div>
-    <div class="msg" id="licMsg"></div>
-  </div>
-
-  <div class="card">
-    <div class="title">👤 Skapa kundkonto</div>
-    <div class="row">
-      <div>
-        <label>Username</label>
-        <input id="cu" placeholder="t.ex. kund1"/>
-      </div>
-      <div>
-        <label>Password</label>
-        <input id="cp" placeholder="t.ex. lösen123"/>
-      </div>
-      <div>
-        <label>License Key</label>
-        <input id="ck" class="mono" placeholder="GG-XXXX...."/>
-      </div>
-    </div>
-    <div style="margin-top:10px;">
-      <button class="btn btn-blue" id="createCustomer">Skapa kund</button>
-    </div>
-    <div class="msg" id="custMsg"></div>
-  </div>
-
-  <div class="card">
-    <div class="title">📋 Alla licenser</div>
+    <h3>Licenser</h3>
     <table>
       <thead>
         <tr>
-          <th>License Key</th>
+          <th>Key</th>
           <th>Status</th>
-          <th>Går ut</th>
-          <th>Action</th>
+          <th>Expires</th>
         </tr>
       </thead>
-      <tbody id="tbody"></tbody>
+      <tbody id="licenseTable"></tbody>
     </table>
-    <div class="msg" id="tableMsg"></div>
+  </div>
+</div>
+
+<!-- CUSTOMERS -->
+<div id="customersPage" class="hidden">
+  <div class="card">
+    <h3>Skapa kund</h3>
+    <input id="cu" placeholder="Username">
+    <input id="cp" placeholder="Password">
+    <input id="ck" placeholder="License Key">
+    <button class="primary" onclick="createCustomer()">Skapa kund</button>
+    <div id="custMsg"></div>
   </div>
 
+  <div class="card">
+    <h3>Alla kunder</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>License</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody id="customerTable"></tbody>
+    </table>
+  </div>
+</div>
+
+</div>
 </div>
 
 <script>
-  // ✅ ÄNDRA HÄR
-  const API = "https://ghostguard-backend.onrender.com";
+const API = "https://ghostguard-backend.onrender.com";
 
-  const el = (id)=>document.getElementById(id);
-  const getSecret = ()=> localStorage.getItem("gg_admin_secret") || "";
-  const setSecret = (v)=> localStorage.setItem("gg_admin_secret", v);
-  const clearSecret = ()=> localStorage.removeItem("gg_admin_secret");
-
-  function authHeaders(){
-    const s = getSecret();
-    return {
-      "Content-Type":"application/json",
-      "Authorization":"Bearer " + s
-    };
-  }
-
-  function fmtDate(iso){
-    if(!iso) return "-";
-    try{ return new Date(iso).toLocaleString(); }catch{ return iso; }
-  }
-
-  function statusPill(s){
-    const cls = (s==="ACTIVE") ? "good" : "bad";
-    return `<span class="pill ${cls}">${s}</span>`;
-  }
-
-  // Init secret field
-  el("secret").value = getSecret();
-
-  el("saveSecret").onclick = ()=>{
-    setSecret(el("secret").value.trim());
-    el("secretMsg").textContent = "Secret sparat i browsern.";
+function authHeaders(){
+  return {
+    "Content-Type":"application/json",
+    "Authorization":"Bearer " + localStorage.getItem("gg_secret")
   };
-  el("clearSecret").onclick = ()=>{
-    clearSecret();
-    el("secret").value = "";
-    el("secretMsg").textContent = "Secret rensat.";
-  };
+}
 
-  async function loadLicenses(){
-    el("tableMsg").textContent = "";
-    const res = await fetch(API + "/admin/licenses", { headers: { "Authorization": "Bearer " + getSecret() } });
-    const data = await res.json().catch(()=> ({}));
-
-    if(!res.ok || !data.success){
-      el("tbody").innerHTML = "";
-      el("tableMsg").textContent = "Kunde inte hämta licenser (fel secret eller backend).";
-      return;
-    }
-
-    el("tbody").innerHTML = data.data.map(l=>{
-      const btn = (l.status === "ACTIVE")
-        ? `<button class="btn btn-red" onclick="toggleLicense('${l.license_key}','DISABLED')">Stäng av</button>`
-        : `<button class="btn btn-green" onclick="toggleLicense('${l.license_key}','ACTIVE')">Aktivera</button>`;
-
-      return `
-        <tr>
-          <td class="mono">${l.license_key}</td>
-          <td>${statusPill(l.status)}</td>
-          <td>${fmtDate(l.expires_at)}</td>
-          <td>${btn}</td>
-        </tr>
-      `;
-    }).join("");
-  }
-
-  window.toggleLicense = async (license_key, status)=>{
-    const res = await fetch(API + "/admin/toggle-license", {
-      method:"POST",
-      headers: authHeaders(),
-      body: JSON.stringify({ license_key, status })
-    });
-    const data = await res.json().catch(()=> ({}));
-    if(!res.ok || !data.success){
-      el("tableMsg").textContent = "Fel vid toggle: " + (data.error?.message || data.error || "unknown");
-      return;
-    }
-    loadLicenses();
-  };
-
-  el("createLicense").onclick = async ()=>{
-    el("licMsg").textContent = "";
-    el("newLicense").value = "";
-    const days_valid = Number(el("days").value || 30);
-
-    const res = await fetch(API + "/admin/create-license",{
-      method:"POST",
-      headers: authHeaders(),
-      body: JSON.stringify({ days_valid })
-    });
-    const data = await res.json().catch(()=> ({}));
-
-    if(!res.ok || !data.success){
-      el("licMsg").textContent = "Fel: " + (data.error?.message || data.error || "unknown");
-      return;
-    }
-
-    el("newLicense").value = data.license_key;
-    el("licMsg").textContent = "Licens skapad.";
-    loadLicenses();
-  };
-
-  el("createCustomer").onclick = async ()=>{
-    el("custMsg").textContent = "";
-    const username = el("cu").value.trim();
-    const password = el("cp").value;
-    const license_key = el("ck").value.trim();
-
-    if(!username || !password || !license_key){
-      el("custMsg").textContent = "Fyll i username, password och license key.";
-      return;
-    }
-
-    const res = await fetch(API + "/admin/create-customer", {
-      method:"POST",
-      headers: authHeaders(),
-      body: JSON.stringify({ username, password, license_key })
-    });
-    const data = await res.json().catch(()=> ({}));
-
-    if(!res.ok || !data.success){
-      el("custMsg").textContent = "Fel: " + (data.error?.message || data.error || "unknown");
-      return;
-    }
-
-    el("custMsg").textContent = "Kund skapad ✅";
-    el("cu").value = ""; el("cp").value = "";
-  };
-
-  el("refresh").onclick = loadLicenses;
+function login(){
+  const secret = document.getElementById("adminSecretInput").value;
+  localStorage.setItem("gg_secret", secret);
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
   loadLicenses();
+  loadCustomers();
+}
+
+function logout(){
+  localStorage.removeItem("gg_secret");
+  location.reload();
+}
+
+function showPage(page){
+  document.getElementById("dashboardPage").classList.add("hidden");
+  document.getElementById("customersPage").classList.add("hidden");
+  document.getElementById(page + "Page").classList.remove("hidden");
+}
+
+async function loadLicenses(){
+  const res = await fetch(API + "/admin/licenses",{headers:authHeaders()});
+  const data = await res.json();
+  if(!data.success) return;
+
+  document.getElementById("licenseTable").innerHTML =
+    data.data.map(l=>`
+      <tr>
+        <td>${l.license_key}</td>
+        <td class="${l.status==='ACTIVE'?'status-active':'status-disabled'}">${l.status}</td>
+        <td>${l.expires_at || "-"}</td>
+      </tr>
+    `).join("");
+}
+
+async function createLicense(){
+  const days = Number(document.getElementById("days").value);
+  const res = await fetch(API+"/admin/create-license",{
+    method:"POST",
+    headers:authHeaders(),
+    body:JSON.stringify({days_valid:days})
+  });
+  const data = await res.json();
+  if(data.success){
+    document.getElementById("newLicense").innerText="Ny licens: "+data.license_key;
+    loadLicenses();
+  }
+}
+
+async function loadCustomers(){
+  const res = await fetch(API+"/admin/customers",{headers:authHeaders()});
+  const data = await res.json();
+  if(!data.success) return;
+
+  document.getElementById("customerTable").innerHTML =
+    data.data.map(c=>`
+      <tr>
+        <td>${c.username}</td>
+        <td>${c.license_key}</td>
+        <td>${c.created_at}</td>
+      </tr>
+    `).join("");
+}
+
+async function createCustomer(){
+  const username=document.getElementById("cu").value;
+  const password=document.getElementById("cp").value;
+  const license_key=document.getElementById("ck").value;
+
+  const res=await fetch(API+"/admin/create-customer",{
+    method:"POST",
+    headers:authHeaders(),
+    body:JSON.stringify({username,password,license_key})
+  });
+
+  const data=await res.json();
+  if(data.success){
+    document.getElementById("custMsg").innerText="Kund skapad!";
+    loadCustomers();
+  }
+}
 </script>
+
 </body>
 </html>
