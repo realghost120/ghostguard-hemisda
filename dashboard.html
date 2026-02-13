@@ -123,9 +123,11 @@ header{
 
 <script>
 const API = "https://ghostguard-backend.onrender.com";
-const licenseKey = localStorage.getItem("gg_license_key");
 
-if(!licenseKey){
+const licenseKey = localStorage.getItem("gg_license_key");
+const token = localStorage.getItem("gg_token");
+
+if(!token || !licenseKey){
   window.location.href = "index.html";
 }
 
@@ -158,17 +160,22 @@ async function loadDashboard(){
     const res = await fetch(API + "/customer/dashboard", {
       method: "POST",
       headers: { "Content-Type":"application/json" },
-      body: JSON.stringify({ license_key: licenseKey })
+      body: JSON.stringify({ token })
     });
 
-    const data = await res.json();
+    const json = await res.json().catch(()=> ({}));
 
+    if(!res.ok || !json.success){
+      // Visa status snyggt om token är fel/utgången
+      el("st").innerHTML = `<span class="pill bad">401 / LOGGA IN IGEN</span>`;
+      el("ex").textContent = "-";
+      el("tl").textContent = "-";
+      return;
+    }
+
+    const data = json.data || {};
     let status = (data.status || "UNKNOWN").toUpperCase();
     currentExpire = data.expires_at;
-
-    if(currentExpire && new Date(currentExpire) < new Date()){
-      status = "EXPIRED";
-    }
 
     let cls = "warn";
     if(status === "ACTIVE") cls = "good";
@@ -188,11 +195,11 @@ async function loadPlayers(){
     const res = await fetch(API + "/customer/live-players", {
       method: "POST",
       headers: { "Content-Type":"application/json" },
-      body: JSON.stringify({ license_key: licenseKey })
+      body: JSON.stringify({ token })
     });
 
-    const data = await res.json();
-    const players = data.players || [];
+    const json = await res.json().catch(()=> ({}));
+    const players = json.players || [];
 
     el("onlineCount").textContent = players.length;
 
@@ -214,11 +221,19 @@ async function loadPlayers(){
 }
 
 async function toggle(status){
-  await fetch(API + "/customer/toggle", {
+  const res = await fetch(API + "/customer/toggle", {
     method: "POST",
     headers: { "Content-Type":"application/json" },
-    body: JSON.stringify({ license_key: licenseKey, status })
+    body: JSON.stringify({ token, status })
   });
+
+  if(res.status === 401){
+    alert("Din session gick ut. Logga in igen.");
+    localStorage.removeItem("gg_token");
+    localStorage.removeItem("gg_license_key");
+    window.location.href = "index.html";
+    return;
+  }
 
   loadDashboard();
 }
@@ -229,6 +244,7 @@ el("btnRefresh").onclick = loadDashboard;
 
 el("logout").onclick = () => {
   localStorage.removeItem("gg_license_key");
+  localStorage.removeItem("gg_token");
   window.location.href = "index.html";
 };
 
@@ -246,3 +262,4 @@ loadPlayers();
 </script>
 </body>
 </html>
+
