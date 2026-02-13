@@ -74,6 +74,64 @@ header{
   font-size:14px;
 }
 @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+
+  .guide-box{
+  margin-top:20px;
+  padding:18px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#0f172a,#111c3a);
+  border:1px solid rgba(59,130,246,.25);
+}
+
+.guide-title{
+  font-weight:900;
+  font-size:18px;
+  margin-bottom:14px;
+}
+
+.guide-step{
+  display:flex;
+  gap:12px;
+  margin-bottom:14px;
+  align-items:flex-start;
+}
+
+.step-number{
+  min-width:28px;
+  height:28px;
+  border-radius:50%;
+  background:linear-gradient(90deg,#3b82f6,#2563eb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:13px;
+}
+
+.code-block{
+  margin-top:6px;
+  padding:10px;
+  border-radius:8px;
+  background:rgba(0,0,0,.4);
+  font-family:monospace;
+  font-size:13px;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.guide-footer{
+  margin-top:10px;
+  font-size:13px;
+  color:rgba(232,240,255,.7);
+}
+.guide-footer a{
+  color:#3b82f6;
+  text-decoration:none;
+  font-weight:700;
+}
+.guide-footer a:hover{
+  text-decoration:underline;
+}
+
 </style>
 </head>
 
@@ -307,5 +365,6 @@ loadPlayers();
 </script>
 </body>
 </html>
+
 
 
