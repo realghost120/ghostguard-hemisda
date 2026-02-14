@@ -258,7 +258,8 @@ input{
 </div>
 
 <script>
-const API = "https://ghostguard-backend.onrender.com";
+/** ✅ Byt till din RIKTIGA Render URL */
+const API = "https://ghostgaurd-becakd.onrender.com";
 
 /* Discord counter fake animation */
 let base = 128;
@@ -289,7 +290,7 @@ document.querySelectorAll("[data-buy]").forEach(btn=>{
 
 document.getElementById("goDiscord").onclick = ()=> window.open("https://discord.gg/dxwyCUNEZv", "_blank");
 
-/* LOGIN */
+/* ✅ LOGIN */
 async function login(){
   const username = document.getElementById("user").value.trim();
   const password = document.getElementById("pass").value;
@@ -301,20 +302,28 @@ async function login(){
     return;
   }
 
-  const res = await fetch(API + "/customer/login", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({ username, password })
-  });
+  let res, data;
+  try{
+    res = await fetch(API + "/api/login", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    data = await res.json().catch(()=> ({}));
+  }catch(e){
+    err.textContent = "Kunde inte nå servern. Testa igen.";
+    return;
+  }
 
-  const data = await res.json().catch(()=> ({}));
   if(!res.ok || !data.success){
     err.textContent = data.error || "Fel login uppgifter.";
     return;
   }
 
+  // ✅ Backend skickar license_key (ingen token)
   localStorage.setItem("gg_license_key", data.license_key);
-  localStorage.setItem("gg_token", data.token);
+
+  // ✅ Gå vidare till dashboard
   window.location.href = "dashboard.html";
 }
 
@@ -327,3 +336,4 @@ document.addEventListener("keydown", e=>{
 
 </body>
 </html>
+
