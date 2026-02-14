@@ -35,13 +35,13 @@ header{
   transition:.18s;
 }
 .btn:hover{transform:translateY(-1px); border-color:rgba(96,165,250,.35)}
-.btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+.btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
 .btn-blue{background:rgba(59,130,246,.18); border-color:rgba(59,130,246,.35)}
 .btn-green{background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.35)}
 .btn-red{background:rgba(239,68,68,.18); border-color:rgba(239,68,68,.35)}
 
 .wrap{max-width:1200px; margin:0 auto; padding:26px 18px 60px}
-.grid{display:grid; grid-template-columns:1fr; gap:16px}
+.grid{display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
 .card{
   background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.08);
@@ -50,7 +50,7 @@ header{
 }
 .title{font-weight:900; font-size:20px; margin-bottom:12px}
 
-.kv{display:grid; grid-template-columns:160px 1fr; gap:8px 10px}
+.kv{display:grid; grid-template-columns:170px 1fr; gap:8px 10px}
 .k{color:var(--muted); font-size:12px; font-weight:800}
 .v{font-weight:900}
 
@@ -61,11 +61,7 @@ header{
   background:rgba(0,0,0,.22);
   font-weight:900; font-size:12px;
 }
-.dot{
-  width:9px; height:9px; border-radius:99px;
-  background:rgba(255,255,255,.35);
-  box-shadow:0 0 12px rgba(255,255,255,.15);
-}
+.dot{width:9px; height:9px; border-radius:99px; background:rgba(255,255,255,.35); box-shadow:0 0 12px rgba(255,255,255,.15)}
 .pill.good{ color:var(--green); border-color:rgba(34,197,94,.35) }
 .pill.good .dot{ background:var(--green); box-shadow:0 0 12px rgba(34,197,94,.45) }
 .pill.bad{ color:var(--red); border-color:rgba(239,68,68,.35) }
@@ -87,39 +83,30 @@ header{
   color:rgba(232,240,255,.85);
   font-size:13px;
   display:none;
+  white-space:pre-wrap;
 }
 .alert.show{display:block}
 .alert.red{border-color:rgba(239,68,68,.28); background:rgba(239,68,68,.10)}
 .alert.blue{border-color:rgba(59,130,246,.28); background:rgba(59,130,246,.10)}
 
-.download-box{
-  margin-top:16px;
-  background:linear-gradient(135deg,#0f172a,#111c3a);
-  border:1px solid rgba(59,130,246,.3);
-  padding:20px;
-  border-radius:14px;
-}
-
-.codebox{
-  margin-top:10px;
-  background:rgba(0,0,0,.28);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:12px;
-  padding:12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-  font-size:12px;
-  white-space:pre-wrap;
-}
-.step{
-  margin-top:12px;
-  padding:12px;
-  border:1px solid rgba(255,255,255,.10);
+.player-list{overflow:auto; max-height:520px;}
+.player-list .row{
+  padding:10px 12px;
   border-radius:12px;
   background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  margin-bottom:8px;
+  display:flex; justify-content:space-between; gap:10px;
 }
-.small{font-size:12px;color:var(--muted)}
-hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:14px 0}
-@media (max-width:900px){ .kv{grid-template-columns:130px 1fr} }
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace}
+.small{font-size:12px; color:var(--muted)}
+.gray{color:rgba(232,240,255,.65)}
+.goodtxt{color:var(--green)}
+.badtxt{color:var(--red)}
+
+hr.sep{border:none; border-top:1px solid rgba(255,255,255,.08); margin:14px 0}
+
+@media (max-width:900px){ .grid{grid-template-columns:1fr} }
 </style>
 </head>
 
@@ -132,65 +119,63 @@ hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:14px 0}
 <div class="wrap">
   <div class="grid">
 
+    <!-- LEFT -->
+    <div>
+
+      <div class="card">
+        <div class="title">Licens status (Live)</div>
+
+        <div class="kv">
+          <div class="k">License Key</div><div class="v mono" id="lk">-</div>
+          <div class="k">Status</div><div class="v" id="st">-</div>
+          <div class="k">Går ut</div><div class="v" id="ex">-</div>
+          <div class="k">Tid kvar</div><div class="v" id="tl">-</div>
+          <div class="k">Spelare online</div><div class="v goodtxt" id="onlineCount">0</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-green" id="btnStart">Start</button>
+          <button class="btn btn-red" id="btnStop">Stop</button>
+          <button class="btn btn-blue" id="btnRefresh">Refresh</button>
+        </div>
+
+        <div class="note">Licensen måste vara <span class="goodtxt">ACTIVE</span> för att anticheaten ska fungera.</div>
+        <div class="alert" id="statusAlert"></div>
+
+        <hr class="sep">
+
+        <div class="title" style="margin:0 0 10px;">🧾 License Info</div>
+        <div class="kv">
+          <div class="k">License Type</div><div class="v" id="lt">-</div>
+          <div class="k">Expires in</div><div class="v" id="ei">-</div>
+          <div class="k">Server Slot Limit</div><div class="v" id="sl">-</div>
+          <div class="k">HWID Locked</div><div class="v" id="hw">-</div>
+          <div class="k">Discord Logs</div><div class="v" id="dl">-</div>
+          <div class="k">Backend Uptime</div><div class="v mono" id="up">-</div>
+        </div>
+        <div class="note">All data här uppdateras live från backend.</div>
+
+        <hr class="sep">
+
+        <div class="title" style="margin:0 0 10px;">🛡 Protection Status</div>
+        <div class="kv">
+          <div class="k">License</div><div class="v" id="m_license">-</div>
+          <div class="k">Speed Detection</div><div class="v" id="m_speed">-</div>
+          <div class="k">Godmode Detection</div><div class="v" id="m_godmode">-</div>
+          <div class="k">Explosion Monitor</div><div class="v" id="m_explosion">-</div>
+          <div class="k">Vehicle Control</div><div class="v" id="m_vehicle">-</div>
+        </div>
+
+        <div class="note">Detta visar vilka skydds-moduler som körs just nu.</div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
     <div class="card">
-      <div class="title">Licens status</div>
-
-      <div class="kv">
-        <div class="k">License Key</div><div class="v" id="lk">-</div>
-        <div class="k">Status</div><div class="v" id="st">-</div>
-        <div class="k">Går ut</div><div class="v" id="ex">-</div>
-        <div class="k">Tid kvar</div><div class="v" id="tl">-</div>
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-green" id="btnStart">Start</button>
-        <button class="btn btn-red" id="btnStop">Stop</button>
-        <button class="btn btn-blue" id="btnRefresh">Refresh</button>
-      </div>
-
-      <div class="note">Licensen måste vara <span class="pill good"><span class="dot"></span>ACTIVE</span> för att anticheaten ska fungera.</div>
-      <div class="alert" id="statusAlert"></div>
-
-      <div class="download-box">
-        <div style="font-weight:900;font-size:16px;">⬇ Ladda ner GhostGuard</div>
-        <div class="small">Senaste versionen (zip):</div>
-        <a class="btn btn-blue" style="display:inline-block;margin-top:10px;text-decoration:none;"
-           href="https://drive.google.com/file/d/1Ayg8qnk5fuR4UrjgiIFdsW8veqLH4IS6/view" target="_blank">
-          Ladda ner
-        </a>
-      </div>
-
-      <hr>
-
-      <div class="title" style="font-size:18px;margin-bottom:6px;">📦 Installations-guide</div>
-      <div class="small">Följ stegen exakt (det tar 2 minuter).</div>
-
-      <div class="step">
-        <div style="font-weight:900">1) Packa upp i resources</div>
-        <div class="small">Lägg mappen i din server här:</div>
-        <div class="codebox">resources/[ghostguard]/ghostguard</div>
-      </div>
-
-      <div class="step">
-        <div style="font-weight:900">2) Lägg in din License Key i config</div>
-        <div class="small">Öppna <b>config.lua</b> och sätt din key:</div>
-        <div class="codebox" id="cfgKey">Config.LicenseKey = "GG-XXXX-XXXX"</div>
-        <button class="btn btn-blue" style="margin-top:10px" id="copyKey">Kopiera raden</button>
-      </div>
-
-      <div class="step">
-        <div style="font-weight:900">3) Lägg till i server.cfg</div>
-        <div class="small">Lägg längst ner i <b>server.cfg</b>:</div>
-        <div class="codebox" id="cfgEnsure">ensure GhostGuard-Anticheat</div>
-        <button class="btn btn-blue" style="margin-top:10px" id="copyEnsure">Kopiera ensure</button>
-      </div>
-
-      <div class="step">
-        <div style="font-weight:900">4) Starta servern</div>
-        <div class="small">Starta om servern och kolla console:</div>
-        <div class="codebox">[GhostGuard] License ACTIVE. Anticheat active.</div>
-      </div>
-
+      <div class="title">Spelare online (Live)</div>
+      <div class="player-list" id="playerList">Laddar...</div>
+      <div class="note">Just nu är detta “mock” tills du kopplar FiveM API / socket.</div>
     </div>
 
   </div>
@@ -210,12 +195,11 @@ const el = id => document.getElementById(id);
 let currentExpire = null;
 let currentStatus = "UNKNOWN";
 
-/* HELPERS */
+/* ---------- HELPERS ---------- */
 function fmtDate(iso){
   if(!iso) return "-";
   try { return new Date(iso).toLocaleString(); } catch { return iso; }
 }
-
 function timeLeft(iso){
   if(!iso) return "-";
   let diff = new Date(iso) - Date.now();
@@ -227,7 +211,6 @@ function timeLeft(iso){
   const m = Math.floor(diff / 60000);
   return `${d}d ${h}h ${m}m`;
 }
-
 function pill(status){
   const s = (status || "UNKNOWN").toUpperCase();
   let cls = "warn";
@@ -236,7 +219,18 @@ function pill(status){
   else if(s === "UNKNOWN") cls = "gray";
   return `<span class="pill ${cls}"><span class="dot"></span>${s}</span>`;
 }
-
+function yesNoPill(val){
+  const ok = !!val;
+  return ok
+    ? `<span class="pill good"><span class="dot"></span>YES</span>`
+    : `<span class="pill bad"><span class="dot"></span>NO</span>`;
+}
+function enabledPill(val){
+  const ok = (val === true || val === "ENABLED");
+  return ok
+    ? `<span class="pill good"><span class="dot"></span>Enabled</span>`
+    : `<span class="pill gray"><span class="dot"></span>Disabled</span>`;
+}
 function showAlert(text, type){
   const a = el("statusAlert");
   if(!text){
@@ -246,6 +240,16 @@ function showAlert(text, type){
   }
   a.className = "alert show " + (type || "");
   a.textContent = text;
+}
+function fmtUptime(sec){
+  if(typeof sec !== "number") return "-";
+  const d = Math.floor(sec / 86400);
+  sec %= 86400;
+  const h = Math.floor(sec / 3600);
+  sec %= 3600;
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${d}d ${h}h ${m}m ${s}s`;
 }
 
 async function postJson(path, body){
@@ -258,84 +262,143 @@ async function postJson(path, body){
   return { res, data };
 }
 
+/* ---------- LOAD LICENSE / STATUS ---------- */
 async function loadDashboard(){
-  el("lk").textContent = licenseKey;
-  el("cfgKey").textContent = `Config.LicenseKey = "${licenseKey}"`;
+  try{
+    el("lk").textContent = licenseKey;
 
-  const { res, data } = await postJson("/customer/dashboard", { token });
+    const { res, data } = await postJson("/customer/status", { token });
 
-  if(!res.ok || !data.success){
-    if(res.status === 401){
-      showAlert("Din session har gått ut. Logga in igen.", "red");
+    if(!res.ok || !data.success){
+      if(res.status === 401){
+        showAlert("Din session har gått ut. Logga in igen.", "red");
+        return;
+      }
+      showAlert("Kunde inte hämta status (backend fel).", "red");
       return;
     }
-    showAlert("Kunde inte hämta licens (backend fel).", "red");
-    return;
+
+    // licens
+    const lic = data.license || {};
+    currentExpire = lic.expires_at || null;
+    currentStatus = (lic.status || "UNKNOWN").toUpperCase();
+    if(currentExpire && new Date(currentExpire) < new Date()){
+      currentStatus = "EXPIRED";
+    }
+
+    el("st").innerHTML = pill(currentStatus);
+    el("ex").textContent = fmtDate(currentExpire);
+    el("tl").textContent = timeLeft(currentExpire);
+
+    // license info block
+    el("lt").textContent = data.license_type || "Premium";
+    el("ei").textContent = (typeof data.expires_in_days === "number")
+      ? `${data.expires_in_days} dagar`
+      : "-";
+    el("sl").textContent = (data.slot_limit ?? 128).toString();
+    el("hw").innerHTML = yesNoPill(!!data.hwid_locked);
+    el("dl").innerHTML = enabledPill(!!data.discord_logs_enabled);
+    el("up").textContent = fmtUptime(data.backend_uptime_seconds);
+
+    // protection modules
+    const m = data.modules || {};
+    el("m_license").innerHTML   = enabledPill(m.license !== false);
+    el("m_speed").innerHTML     = enabledPill(m.speed === true);
+    el("m_godmode").innerHTML   = enabledPill(m.godmode === true);
+    el("m_explosion").innerHTML = enabledPill(m.explosion === true);
+    el("m_vehicle").innerHTML   = enabledPill(m.vehicle === true);
+
+    // alerts + knappar
+    if(currentStatus === "DISABLED"){
+      showAlert("En admin har stängt din licens. Öppna en ticket på Discord för mer info.", "red");
+    } else if(currentStatus === "EXPIRED"){
+      showAlert("Din licens har gått ut. Öppna en ticket på Discord för förlängning.", "red");
+    } else if(currentStatus === "ACTIVE"){
+      showAlert("", "");
+    } else {
+      showAlert("Status okänd just nu. Tryck Refresh eller kolla att backend är uppe.", "blue");
+    }
+
+    const canToggle = (currentStatus !== "EXPIRED");
+    el("btnStart").disabled = !canToggle;
+    el("btnStop").disabled  = !canToggle;
+
+  } catch(e){
+    console.error("Dashboard load error", e);
+    showAlert("Ett fel hände när dashboard skulle laddas.", "red");
   }
-
-  const d = data.data || data;
-  currentExpire = d.expires_at || null;
-  currentStatus = (d.status || "UNKNOWN").toUpperCase();
-
-  if(currentExpire && new Date(currentExpire) < new Date()){
-    currentStatus = "EXPIRED";
-  }
-
-  el("st").innerHTML = pill(currentStatus);
-  el("ex").textContent = fmtDate(currentExpire);
-  el("tl").textContent = timeLeft(currentExpire);
-
-  if(currentStatus === "DISABLED"){
-    showAlert("En admin har stängt din licens. Öppna en ticket på Discord för mer info.", "red");
-  } else if(currentStatus === "EXPIRED"){
-    showAlert("Din licens har gått ut. Öppna en ticket på Discord för förlängning.", "red");
-  } else if(currentStatus === "ACTIVE"){
-    showAlert("", "");
-  } else {
-    showAlert("Status okänd just nu. Tryck Refresh eller kolla att backend är uppe.", "blue");
-  }
-
-  const canToggle = (currentStatus !== "EXPIRED");
-  el("btnStart").disabled = !canToggle;
-  el("btnStop").disabled  = !canToggle;
 }
 
+/* ---------- PLAYERS (mock) ---------- */
+async function loadPlayers(){
+  try{
+    const { res, data } = await postJson("/customer/live-players", { token });
+    let players = [];
+    if(res.ok) players = data.players || [];
+
+    el("onlineCount").textContent = players.length;
+
+    const list = el("playerList");
+    list.innerHTML = "";
+
+    if(players.length === 0){
+      list.innerHTML = `<div class="small gray">Inga spelare online.</div>`;
+      return;
+    }
+
+    players.forEach(p => {
+      const name = (p.name ?? "Unknown").toString();
+      const id = (p.id ?? "-").toString();
+      const ping = (p.ping ?? "-").toString();
+      list.innerHTML += `
+        <div class="row">
+          <div>
+            <div style="font-weight:900">${name}</div>
+            <div class="small">ID: <span class="mono">${id}</span></div>
+          </div>
+          <div class="mono" style="font-weight:900; color:rgba(96,165,250,.95)">${ping}ms</div>
+        </div>
+      `;
+    });
+  } catch(e){
+    console.error("Player load error", e);
+  }
+}
+
+/* ---------- TOGGLE ---------- */
 async function toggle(status){
-  if(currentStatus === "DISABLED"){
-    showAlert("Du kan inte starta: en admin har stängt din licens.", "red");
-    return;
-  }
-  if(currentStatus === "EXPIRED"){
-    showAlert("Du kan inte starta: licensen är utgången.", "red");
-    return;
-  }
-
-  const { res, data } = await postJson("/customer/toggle", { token, status });
-  if(!res.ok || !data.success){
-    if(res.status === 401){
-      showAlert("Din session har gått ut. Logga in igen.", "red");
+  try{
+    if(currentStatus === "DISABLED"){
+      showAlert("Du kan inte starta: en admin har stängt din licens. Öppna ticket på Discord.", "red");
       return;
     }
-    showAlert("Kunde inte ändra status (backend fel).", "red");
-    return;
+    if(currentStatus === "EXPIRED"){
+      showAlert("Du kan inte starta: licensen är utgången. Öppna ticket på Discord.", "red");
+      return;
+    }
+
+    const { res, data } = await postJson("/customer/toggle", { token, status });
+
+    if(!res.ok || !data.success){
+      if(res.status === 401){
+        showAlert("Din session har gått ut. Logga in igen.", "red");
+        return;
+      }
+      showAlert("Kunde inte ändra status (backend fel).", "red");
+      return;
+    }
+
+    loadDashboard();
+  } catch(e){
+    console.error("Toggle error", e);
+    showAlert("Fel vid ändring av status.", "red");
   }
-  loadDashboard();
 }
 
-function copyText(text){
-  navigator.clipboard.writeText(text).then(()=>{
-    showAlert("Kopierat ✅", "blue");
-    setTimeout(()=>showAlert("", ""), 1200);
-  });
-}
-
-/* BUTTONS */
+/* ---------- BUTTONS ---------- */
 el("btnStart").onclick = () => toggle("ACTIVE");
 el("btnStop").onclick  = () => toggle("DISABLED");
-el("btnRefresh").onclick = loadDashboard;
-
-el("copyKey").onclick = () => copyText(`Config.LicenseKey = "${licenseKey}"`);
-el("copyEnsure").onclick = () => copyText("ensure ghostguard");
+el("btnRefresh").onclick = () => { loadDashboard(); loadPlayers(); };
 
 el("logout").onclick = () => {
   localStorage.removeItem("gg_license_key");
@@ -343,16 +406,18 @@ el("logout").onclick = () => {
   window.location.href = "index.html";
 };
 
+/* ---------- LIVE ---------- */
 setInterval(() => {
   if(currentExpire){
     el("tl").textContent = timeLeft(currentExpire);
   }
 }, 1000);
 
-setInterval(loadDashboard, 30000);
+setInterval(loadPlayers, 5000);
+setInterval(loadDashboard, 15000);
 
 loadDashboard();
+loadPlayers();
 </script>
 </body>
 </html>
-
