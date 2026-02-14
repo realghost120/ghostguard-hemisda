@@ -258,84 +258,146 @@ input{
 </div>
 
 <script>
-const API = "https://ghostgaurd-becakd.onrender.com";
-...
-const res = await fetch(API + "/api/login", {
+(() => {
+  const API = "https://ghostgaurd-becakd.onrender.com";
 
-/* Discord counter fake animation */
-let base = 128;
-setInterval(()=>{
-  base += Math.random() > 0.7 ? 1 : 0;
-  document.getElementById("discordCount").textContent = base;
-}, 3500);
+  // Safe helpers
+  const $ = (id) => document.getElementById(id);
+  const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
-/* MODALS */
-const loginModal = document.getElementById("loginModal");
-const buyModal = document.getElementById("buyModal");
+  // Elements (måste finnas i HTML)
+  const loginBtn = $("loginBtn");
+  const buyBtn = $("buyBtn");
 
-const openLogin = ()=> loginModal.classList.add("open");
-const closeLogin = ()=> loginModal.classList.remove("open");
-const openBuy = ()=> buyModal.classList.add("open");
-const closeBuy = ()=> buyModal.classList.remove("open");
+  const loginModal = $("loginModal");
+  const buyModal = $("buyModal");
 
-document.getElementById("loginBtn").onclick = openLogin;
-document.getElementById("buyBtn").onclick = openBuy;
-document.getElementById("closeLogin").onclick = closeLogin;
-document.getElementById("cancelLogin").onclick = closeLogin;
-document.getElementById("closeBuy").onclick = closeBuy;
-document.getElementById("cancelBuy").onclick = closeBuy;
+  const closeLoginBtn = $("closeLogin");
+  const cancelLoginBtn = $("cancelLogin");
 
-document.querySelectorAll("[data-buy]").forEach(btn=>{
-  btn.onclick = openBuy;
-});
+  const closeBuyBtn = $("closeBuy");
+  const cancelBuyBtn = $("cancelBuy");
 
-document.getElementById("goDiscord").onclick = ()=> window.open("https://discord.gg/dxwyCUNEZv", "_blank");
+  const doLoginBtn = $("doLogin");
+  const errEl = $("err");
 
-/* ✅ LOGIN */
-async function login(){
-  const username = document.getElementById("user").value.trim();
-  const password = document.getElementById("pass").value;
-  const err = document.getElementById("err");
-  err.textContent = "";
+  // Debug: visa om något saknas
+  const missing = [];
+  [
+    ["loginBtn", loginBtn],
+    ["loginModal", loginModal],
+    ["closeLogin", closeLoginBtn],
+    ["cancelLogin", cancelLoginBtn],
+    ["doLogin", doLoginBtn],
+    ["err", errEl],
+  ].forEach(([name, el]) => { if (!el) missing.push(name); });
 
-  if(!username || !password){
-    err.textContent = "Fyll i användarnamn och lösenord.";
-    return;
+  if (missing.length) {
+    console.error("Saknar element i HTML:", missing.join(", "));
+    // Om detta händer: din HTML saknar id:n eller har stavfel.
   }
 
-  let res, data;
-  try{
-    res = await fetch(API + "/api/login", {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ username, password })
+  // Modal controls
+  const openLogin = () => {
+    if (!loginModal) return console.error("loginModal saknas");
+    loginModal.classList.add("open");
+    errEl && (errEl.textContent = "");
+  };
+
+  const closeLogin = () => loginModal && loginModal.classList.remove("open");
+
+  const openBuy = () => buyModal && buyModal.classList.add("open");
+  const closeBuy = () => buyModal && buyModal.classList.remove("open");
+
+  // Bind buttons
+  on(loginBtn, "click", (e) => {
+    e.preventDefault();
+    console.log("Login-knapp klickad -> öppnar modal");
+    openLogin();
+  });
+
+  on(closeLoginBtn, "click", closeLogin);
+  on(cancelLoginBtn, "click", closeLogin);
+
+  on(buyBtn, "click", (e) => {
+    e.preventDefault();
+    openBuy();
+  });
+
+  on(closeBuyBtn, "click", closeBuy);
+  on(cancelBuyBtn, "click", closeBuy);
+
+  // Köp-knappar (data-buy)
+  document.querySelectorAll("[data-buy]").forEach(btn => {
+    on(btn, "click", (e) => {
+      e.preventDefault();
+      openBuy();
     });
-    data = await res.json().catch(()=> ({}));
-  }catch(e){
-    err.textContent = "Kunde inte nå servern. Testa igen.";
-    return;
+  });
+
+  // Discord
+  const goDiscord = $("goDiscord");
+  on(goDiscord, "click", () => window.open("https://discord.gg/dxwyCUNEZv", "_blank"));
+
+  // LOGIN
+  async function login() {
+    const username = ($("user")?.value || "").trim();
+    const password = ($("pass")?.value || "");
+
+    if (errEl) errEl.textContent = "";
+
+    if (!username || !password) {
+      if (errEl) errEl.textContent = "Fyll i användarnamn och lösenord.";
+      return;
+    }
+
+    try {
+      const res = await fetch(API + "/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        if (errEl) errEl.textContent = data.error || "Fel login uppgifter.";
+        return;
+      }
+
+      // Spara session
+      localStorage.setItem("gg_license_key", data.license_key || "");
+      localStorage.setItem("gg_token", data.token || "");
+
+      // vidare
+      window.location.href = "dashboard.html";
+    } catch (e) {
+      console.error("Login error:", e);
+      if (errEl) errEl.textContent = "Kunde inte kontakta backend.";
+    }
   }
 
-  if(!res.ok || !data.success){
-    err.textContent = data.error || "Fel login uppgifter.";
-    return;
+  on(doLoginBtn, "click", login);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { closeLogin(); closeBuy(); }
+    if (e.key === "Enter" && loginModal && loginModal.classList.contains("open")) login();
+  });
+
+  // (valfritt) Discord counter animation
+  const discordCount = $("discordCount");
+  if (discordCount) {
+    let base = Number(discordCount.textContent) || 128;
+    setInterval(() => {
+      base += Math.random() > 0.7 ? 1 : 0;
+      discordCount.textContent = base;
+    }, 3500);
   }
-
-  // ✅ Backend skickar license_key (ingen token)
-  localStorage.setItem("gg_license_key", data.license_key);
-
-  // ✅ Gå vidare till dashboard
-  window.location.href = "dashboard.html";
-}
-
-document.getElementById("doLogin").onclick = login;
-document.addEventListener("keydown", e=>{
-  if(e.key==="Escape"){ closeLogin(); closeBuy(); }
-  if(e.key==="Enter" && loginModal.classList.contains("open")) login();
-});
+})();
 </script>
 
 </body>
 </html>
+
 
 
