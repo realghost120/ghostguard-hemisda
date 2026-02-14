@@ -159,10 +159,7 @@ th{color:rgba(232,240,255,.8);font-size:12px}
 </div>
 
 <script>
-/** ========= CONFIG =========
- * Byt bara API_BASE till din Render URL.
- * OBS: du stavade "gaurd" i Render, så vi använder exakt den.
- */
+/** ========= CONFIG ========= */
 const API_BASE = "https://ghostgaurd-becakd.onrender.com";
 
 /** ========= STORAGE ========= */
@@ -200,6 +197,7 @@ function showMsg(id, msg){ document.getElementById(id).innerText = msg || ""; }
 /** ========= API CALLS ========= */
 async function loadLicenses(){
   showMsg("listMsg", "");
+
   const res = await fetch(API_BASE + "/admin/licenses", { headers: authHeaders() });
   const { json, raw } = await safeJson(res);
 
@@ -240,6 +238,7 @@ async function loadLicenses(){
 
 async function toggleLicense(license_key, status){
   showMsg("listMsg", "");
+
   const res = await fetch(API_BASE + "/admin/toggle-license", {
     method: "POST",
     headers: authHeaders(),
@@ -247,10 +246,12 @@ async function toggleLicense(license_key, status){
   });
 
   const { json, raw } = await safeJson(res);
+
   if (!res.ok){
     showMsg("listMsg", `Toggle fel (${res.status}): ${json?.error || raw || "okänt"}`);
     return;
   }
+
   await loadLicenses();
 }
 
@@ -316,10 +317,10 @@ document.getElementById("createCustomer").onclick = async () => {
 };
 
 document.getElementById("refresh").onclick = loadLicenses;
-
-// initial load
 loadLicenses();
 </script>
+>
 
 </body>
 </html>
+
