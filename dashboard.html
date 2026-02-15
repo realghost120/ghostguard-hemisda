@@ -270,17 +270,68 @@ async function dmSelected(){
 
 /* LICENSE */
 async function fetchLicense(){
-  const token=localStorage.getItem("gg_token");
-  const res=await fetch(API+"/customer/dashboard",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token})});
-  const data=await res.json();
-  if(!data.success)return;
+  const token = localStorage.getItem("gg_token");
 
-  document.getElementById("license-key").innerText=data.data.license_key;
-  document.getElementById("license-expire").innerText=data.data.expires_at||"Lifetime";
-  const el=document.getElementById("license-status");
-  el.innerText=data.data.status;
-  el.className=data.data.status==="ACTIVE"?"status-online":"status-offline";
+  if(!token){
+    document.getElementById("license-key").innerText = "Ingen session";
+    return;
+  }
+
+  const res = await fetch(API+"/customer/dashboard",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({token})
+  });
+
+  const data = await res.json();
+
+  if(!data.success){
+    document.getElementById("license-key").innerText = "Session fel";
+    return;
+  }
+
+  const lic = data.data;
+
+  document.getElementById("license-key").innerText = lic.license_key;
+
+  /* STATUS */
+  const statusEl = document.getElementById("license-status");
+  statusEl.innerText = lic.status;
+
+  if(lic.status === "ACTIVE"){
+    statusEl.className = "status-online";
+  } else {
+    statusEl.className = "status-offline";
+  }
+
+  /* EXPIRE */
+  if(!lic.expires_at){
+    document.getElementById("license-expire").innerText = "Lifetime";
+  } else {
+    document.getElementById("license-expire").innerText =
+      formatExpire(lic.expires_at);
+  }
 }
+
+
+  function formatExpire(dateStr){
+  const expire = new Date(dateStr);
+  const now = new Date();
+
+  if(expire < now){
+    return "Expired";
+  }
+
+  const diff = expire - now;
+
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+
+  return expire.toLocaleString() + 
+         `  (${days}d ${hours}h ${minutes}m kvar)`;
+}
+
 
 /* STATUS */
 async function fetchServerStatus(){
@@ -328,3 +379,4 @@ fetchLogs();
 </script>
 </body>
 </html>
+
