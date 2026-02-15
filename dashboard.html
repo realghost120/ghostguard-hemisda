@@ -193,6 +193,105 @@ body{
   z-index:1200;
 }
 .toast.show{display:block}
+
+/* ================= NEW: ADMINS UI ================= */
+.admin-top{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+}
+.admin-form{
+  flex:1;
+  min-width:260px;
+}
+.admin-list{
+  flex:1;
+  min-width:320px;
+}
+.input{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  outline:none;
+  font-weight:800;
+  margin-bottom:10px;
+}
+.input::placeholder{ color:rgba(230,240,255,.45); font-weight:700; }
+
+.btn{
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:900;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn-blue{ background:rgba(59,130,246,.14); border-color:rgba(59,130,246,.24); color:#cfe2ff;}
+.btn-red{ background:rgba(239,68,68,.14); border-color:rgba(239,68,68,.24); color:#ffd0d0;}
+.btn-green{ background:rgba(34,197,94,.14); border-color:rgba(34,197,94,.24); color:#d3ffdf;}
+.btn-small{ padding:8px 10px; border-radius:10px; font-size:12px; }
+
+.table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+}
+.table th, .table td{
+  padding:10px 10px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  text-align:left;
+  font-size:13px;
+}
+.table th{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:900;
+  background:rgba(255,255,255,.03);
+}
+.table tr:last-child td{ border-bottom:none; }
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+}
+.badge-on{ color:#d3ffdf; border-color:rgba(34,197,94,.25); background:rgba(34,197,94,.12);}
+.badge-off{ color:#ffd0d0; border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.12);}
+
+.inviteBox{
+  margin-top:10px;
+  padding:12px;
+  border-radius:12px;
+  border:1px dashed rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04);
+}
+.inviteRow{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+.code{
+  font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size:12px;
+  font-weight:900;
+  opacity:.95;
+  user-select:text;
+  word-break:break-all;
+}
 </style>
 </head>
 
@@ -217,6 +316,9 @@ body{
   <div class="nav-item active" onclick="showView('dashboard',this)">Dashboard</div>
   <div class="nav-item" onclick="showView('players',this)">Players</div>
   <div class="nav-item" onclick="showView('logs',this)">Server Logs</div>
+
+  <!-- NEW: ADMINS NAV -->
+  <div class="nav-item" onclick="showView('admins',this); refreshAdmins(true)">Admins</div>
 </div>
 
 <div class="content">
@@ -260,6 +362,52 @@ body{
     </div>
   </div>
 
+  <!-- ================= NEW: ADMINS VIEW ================= -->
+  <div id="adminsView" class="hidden">
+    <div class="card">
+      <div class="card-title">Admin Access</div>
+
+      <div class="admin-top">
+
+        <!-- Add admin form -->
+        <div class="admin-form">
+          <div style="font-weight:900;margin-bottom:10px;">➕ Add Admin</div>
+
+          <input id="adminName" class="input" placeholder="Namn (t.ex. Alex)"/>
+          <input id="adminSteam" class="input" placeholder="Steam identifier (t.ex. steam:11000010xxxxxxx)"/>
+          <input id="adminDiscord" class="input" placeholder="Discord (valfritt) (t.ex. 1234567890)"/>
+
+          <button class="btn btn-blue" onclick="addAdmin()">Create Admin</button>
+
+          <div id="inviteBox" class="inviteBox hidden">
+            <div style="font-weight:900;margin-bottom:8px;">Invite Token (visa bara 1 gång)</div>
+            <div class="inviteRow">
+              <div class="code" id="inviteTokenText">-</div>
+              <button class="btn btn-small" onclick="copyInvite()">Copy</button>
+            </div>
+            <div class="small" style="margin-top:8px;">
+              Adminen loggar in med denna token (spara den direkt).
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin list -->
+        <div class="admin-list">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="font-weight:900;">👮 Admins with access</div>
+            <button class="btn btn-small" onclick="refreshAdmins(true)">Refresh</button>
+          </div>
+
+          <div id="adminsTableWrap">
+            <div style="opacity:.6">Loading...</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- ================= END ADMINS VIEW ================= -->
+
 </div>
 
 <script>
@@ -280,10 +428,13 @@ function showView(view, el){
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
 
-  ["dashboard","players","logs"].forEach(v=>{
-    document.getElementById(v+"View").classList.add("hidden");
+  // UPDATED: include admins
+  ["dashboard","players","logs","admins"].forEach(v=>{
+    const node = document.getElementById(v+"View");
+    if(node) node.classList.add("hidden");
   });
-  document.getElementById(view+"View").classList.remove("hidden");
+  const target = document.getElementById(view+"View");
+  if(target) target.classList.remove("hidden");
 }
 
 /* HELPERS */
@@ -509,11 +660,230 @@ async function fetchLogs(){
     `).join("");
 }
 
+/* ================= NEW: ADMINS ================= */
+let adminsCache = [];
+let lastInviteToken = "";
+
+function showInvite(token){
+  lastInviteToken = token || "";
+  const box = document.getElementById("inviteBox");
+  const txt = document.getElementById("inviteTokenText");
+  if(!token){
+    box.classList.add("hidden");
+    txt.textContent = "-";
+    return;
+  }
+  txt.textContent = token;
+  box.classList.remove("hidden");
+}
+
+async function copyInvite(){
+  if(!lastInviteToken) return toast("Ingen token");
+  try{
+    await navigator.clipboard.writeText(lastInviteToken);
+    toast("Kopierad ✅");
+  }catch(e){
+    // fallback
+    const t = document.createElement("textarea");
+    t.value = lastInviteToken;
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand("copy");
+    document.body.removeChild(t);
+    toast("Kopierad ✅");
+  }
+}
+
+function renderAdminsTable(){
+  const wrap = document.getElementById("adminsTableWrap");
+  if(!wrap) return;
+
+  if(!adminsCache || adminsCache.length === 0){
+    wrap.innerHTML = "<div style='opacity:.6'>Inga admins ännu</div>";
+    return;
+  }
+
+  wrap.innerHTML = `
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Namn</th>
+          <th>Steam</th>
+          <th>Discord</th>
+          <th>Status</th>
+          <th style="width:220px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${adminsCache.map(a=>{
+          const steam = a.steam ? escapeHtml(a.steam) : "-";
+          const discord = a.discord ? escapeHtml(a.discord) : "-";
+          const active = !!a.active;
+          return `
+            <tr>
+              <td style="font-weight:900;">${escapeHtml(a.name || "Admin")}</td>
+              <td class="small">${steam}</td>
+              <td class="small">${discord}</td>
+              <td>
+                <span class="badge ${active ? "badge-on" : "badge-off"}">
+                  ${active ? "Active" : "Disabled"}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-small ${active ? "" : "btn-green"}" onclick="toggleAdmin('${a.id}', ${!active})">
+                  ${active ? "Disable" : "Enable"}
+                </button>
+                <button class="btn btn-small btn-red" style="margin-left:8px;" onclick="removeAdmin('${a.id}')">
+                  Remove
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+async function refreshAdmins(showToast){
+  const token = localStorage.getItem("gg_token") || "";
+  if(!token){
+    adminsCache = [];
+    renderAdminsTable();
+    if(showToast) toast("Ingen session token (gg_token)");
+    return;
+  }
+
+  try{
+    const res = await fetch(API + "/api/panel/admins/list", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ token })
+    });
+
+    const text = await res.text();
+    let data=null; try{ data=JSON.parse(text);}catch{}
+    if(!res.ok || !data || !data.success){
+      console.error("Admins list fail", res.status, text);
+      if(showToast) toast("Admins load fail ❌");
+      return;
+    }
+
+    adminsCache = data.data || [];
+    renderAdminsTable();
+    if(showToast) toast("Admins uppdaterade ✅");
+  }catch(e){
+    console.error("Admins list error", e);
+    if(showToast) toast("Network fail ❌");
+  }
+}
+
+async function addAdmin(){
+  const token = localStorage.getItem("gg_token") || "";
+  if(!token) return toast("Ingen session token (gg_token)");
+
+  const name = (document.getElementById("adminName").value || "").trim();
+  const steam = (document.getElementById("adminSteam").value || "").trim();
+  const discord = (document.getElementById("adminDiscord").value || "").trim();
+
+  if(!name) return toast("Skriv namn");
+
+  try{
+    const res = await fetch(API + "/api/panel/admins/add", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ token, name, steam, discord })
+    });
+
+    const text = await res.text();
+    let data=null; try{ data=JSON.parse(text);}catch{}
+    if(!res.ok || !data || !data.success){
+      console.error("Admins add fail", res.status, text);
+      return toast("Create fail ❌");
+    }
+
+    // show token once
+    showInvite(data.invite_token || "");
+    // clear inputs
+    document.getElementById("adminName").value = "";
+    document.getElementById("adminSteam").value = "";
+    document.getElementById("adminDiscord").value = "";
+
+    toast("Admin skapad ✅");
+    await refreshAdmins(false);
+  }catch(e){
+    console.error("Admins add error", e);
+    toast("Network fail ❌");
+  }
+}
+
+async function toggleAdmin(id, active){
+  const token = localStorage.getItem("gg_token") || "";
+  if(!token) return toast("Ingen session token");
+
+  try{
+    const res = await fetch(API + "/api/panel/admins/toggle", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ token, id, active })
+    });
+
+    const text = await res.text();
+    let data=null; try{ data=JSON.parse(text);}catch{}
+    if(!res.ok || !data || !data.success){
+      console.error("Admins toggle fail", res.status, text);
+      return toast("Toggle fail ❌");
+    }
+
+    toast(active ? "Enabled ✅" : "Disabled ✅");
+    await refreshAdmins(false);
+  }catch(e){
+    console.error("Admins toggle error", e);
+    toast("Network fail ❌");
+  }
+}
+
+async function removeAdmin(id){
+  const token = localStorage.getItem("gg_token") || "";
+  if(!token) return toast("Ingen session token");
+
+  if(!confirm("Ta bort admin?")) return;
+
+  try{
+    const res = await fetch(API + "/api/panel/admins/remove", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ token, id })
+    });
+
+    const text = await res.text();
+    let data=null; try{ data=JSON.parse(text);}catch{}
+    if(!res.ok || !data || !data.success){
+      console.error("Admins remove fail", res.status, text);
+      return toast("Remove fail ❌");
+    }
+
+    toast("Borttagen ✅");
+    await refreshAdmins(false);
+  }catch(e){
+    console.error("Admins remove error", e);
+    toast("Network fail ❌");
+  }
+}
+
 /* AUTO REFRESH */
 setInterval(fetchPlayers, 2500);
 setInterval(fetchServerStatus, 5000);
 setInterval(fetchLogs, 2500);
 setInterval(fetchLicense, 15000);
+
+// optional: refresh admins sometimes if you keep it open
+setInterval(()=> {
+  const adminsView = document.getElementById("adminsView");
+  if(adminsView && !adminsView.classList.contains("hidden")){
+    refreshAdmins(false);
+  }
+}, 12000);
 
 fetchPlayers();
 fetchLicense();
