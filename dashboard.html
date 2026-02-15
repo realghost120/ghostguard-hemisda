@@ -3,118 +3,163 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>GhostGuard Dashboard</title>
+<title>GhostGuard Panel</title>
 
 <style>
 :root{
-  --bg1:#070b14; --bg2:#05070d;
-  --text:#e8f0ff; --muted:rgba(232,240,255,.65);
-  --blue:#3b82f6; --green:#22c55e; --red:#ef4444;
-  --shadow:0 18px 70px rgba(0,0,0,.55);
-  --radius:18px;
+  --bg:#060b18;
+  --sidebar:#0c1426;
+  --card:#111c33;
+  --border:rgba(255,255,255,.08);
+  --blue:#3b82f6;
+  --green:#22c55e;
+  --red:#ef4444;
+  --text:#e6f0ff;
+  --muted:rgba(230,240,255,.6);
 }
+
 *{box-sizing:border-box}
 body{
-  margin:0; font-family:Arial, sans-serif; color:var(--text);
-  background:linear-gradient(180deg,var(--bg1),var(--bg2));
-  min-height:100vh;
-}
-header{
-  display:flex; justify-content:space-between; align-items:center;
-  padding:18px 28px; border-bottom:1px solid rgba(255,255,255,.06);
-}
-.brand{font-weight:900; font-size:18px}
-
-.nav{
-  display:flex;
-  gap:10px;
-}
-
-.nav button{
-  background:none;
-  border:1px solid rgba(255,255,255,.1);
+  margin:0;
+  font-family:Inter,Arial;
+  background:var(--bg);
   color:var(--text);
-  padding:8px 14px;
-  border-radius:12px;
+  display:flex;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:230px;
+  background:var(--sidebar);
+  min-height:100vh;
+  padding:20px 15px;
+  border-right:1px solid var(--border);
+}
+
+.logo{
+  font-weight:900;
+  font-size:18px;
+  margin-bottom:30px;
+}
+
+.nav-item{
+  padding:12px 14px;
+  border-radius:10px;
+  margin-bottom:8px;
   cursor:pointer;
+  color:var(--muted);
 }
 
-.nav button.active{
-  background:rgba(59,130,246,.2);
-  border-color:rgba(59,130,246,.4);
+.nav-item:hover{
+  background:rgba(59,130,246,.15);
+  color:var(--text);
 }
 
-.wrap{max-width:1200px; margin:0 auto; padding:26px 18px 60px}
+.nav-item.active{
+  background:rgba(59,130,246,.25);
+  color:var(--text);
+}
+
+/* CONTENT */
+.content{
+  flex:1;
+  padding:30px;
+}
 
 .card{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:var(--radius);
+  background:var(--card);
   padding:20px;
-  box-shadow:var(--shadow);
+  border-radius:14px;
+  border:1px solid var(--border);
   margin-bottom:20px;
 }
 
-.title{font-weight:900; font-size:20px; margin-bottom:14px}
-
-.logsBox{
-  max-height:400px;
-  overflow-y:auto;
-  background:rgba(0,0,0,.3);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  padding:10px;
-}
-
-.logRow{
-  padding:8px 10px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  font-size:13px;
-}
-
-.logTime{
-  color:var(--muted);
-  font-size:11px;
+.card-title{
+  font-weight:900;
+  font-size:18px;
+  margin-bottom:15px;
 }
 
 .status-online{color:var(--green);font-weight:bold}
 .status-offline{color:var(--red);font-weight:bold}
 
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+}
+
 .hidden{display:none}
+
+.logBox{
+  max-height:400px;
+  overflow:auto;
+  font-size:13px;
+}
+.logRow{
+  padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.small{color:var(--muted);font-size:12px}
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="brand">GhostGuard</div>
-  <div class="nav">
-    <button id="navDashboard" class="active">Dashboard</button>
-    <button id="navLogs">Server Logs</button>
-  </div>
-</header>
+<div class="sidebar">
+  <div class="logo">👻 GhostGuard</div>
 
-<div class="wrap">
+  <div class="nav-item active" onclick="showView('dashboard',this)">Dashboard</div>
+  <div class="nav-item" onclick="showView('players',this)">Players</div>
+  <div class="nav-item" onclick="showView('bans',this)">Ban List</div>
+  <div class="nav-item" onclick="showView('logs',this)">Server Logs</div>
+</div>
 
-  <!-- DASHBOARD VIEW -->
-  <div id="viewDashboard">
+<div class="content">
 
-    <div class="card">
-      <div class="title">Server Status</div>
+  <!-- DASHBOARD -->
+  <div id="dashboardView">
+    <div class="grid">
 
-      <div>Status: <span id="ac-status">Loading...</span></div>
-      <div>Players: <span id="players-count">0</span></div>
-      <div>Version: <span id="ac-version">-</span></div>
-      <div>Uptime: <span id="ac-uptime">0s</span></div>
+      <div class="card">
+        <div class="card-title">License Info</div>
+        <div>Key: <b id="license-key">-</b></div>
+        <div>Status: <span id="license-status">-</span></div>
+        <div>Expires: <span id="license-expire">-</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Server Status</div>
+        <div>Status: <span id="server-status">Loading...</span></div>
+        <div>Players: <b id="players-count">0</b></div>
+        <div>Version: <b id="server-version">-</b></div>
+        <div>Uptime: <b id="server-uptime">0s</b></div>
+      </div>
+
     </div>
-
   </div>
 
-  <!-- LOGS VIEW -->
-  <div id="viewLogs" class="hidden">
+  <!-- PLAYERS -->
+  <div id="playersView" class="hidden">
     <div class="card">
-      <div class="title">Live Server Logs</div>
-      <div id="serverLogs" class="logsBox"></div>
+      <div class="card-title">Online Players</div>
+      <div id="players-list">Loading...</div>
+    </div>
+  </div>
+
+  <!-- BANS -->
+  <div id="bansView" class="hidden">
+    <div class="card">
+      <div class="card-title">Ban List</div>
+      <div id="ban-list">Coming soon...</div>
+    </div>
+  </div>
+
+  <!-- LOGS -->
+  <div id="logsView" class="hidden">
+    <div class="card">
+      <div class="card-title">Live Server Logs</div>
+      <div id="logs-box" class="logBox"></div>
     </div>
   </div>
 
@@ -124,62 +169,83 @@ header{
 const API = "https://ghostgaurd-becakd.onrender.com";
 const licenseKey = localStorage.getItem("gg_license_key");
 
-const el = id => document.getElementById(id);
+function showView(view, el){
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  el.classList.add("active");
 
-/* NAVIGATION */
-el("navDashboard").onclick = () => {
-  el("viewDashboard").classList.remove("hidden");
-  el("viewLogs").classList.add("hidden");
-  el("navDashboard").classList.add("active");
-  el("navLogs").classList.remove("active");
-};
+  document.getElementById("dashboardView").classList.add("hidden");
+  document.getElementById("playersView").classList.add("hidden");
+  document.getElementById("bansView").classList.add("hidden");
+  document.getElementById("logsView").classList.add("hidden");
 
-el("navLogs").onclick = () => {
-  el("viewLogs").classList.remove("hidden");
-  el("viewDashboard").classList.add("hidden");
-  el("navLogs").classList.add("active");
-  el("navDashboard").classList.remove("active");
-};
+  document.getElementById(view+"View").classList.remove("hidden");
+}
+
+/* LICENSE */
+async function fetchLicense(){
+  const token = localStorage.getItem("gg_token");
+
+  const res = await fetch(API+"/customer/dashboard",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({token})
+  });
+
+  const data = await res.json();
+  if(!data.success) return;
+
+  document.getElementById("license-key").innerText = data.data.license_key;
+  document.getElementById("license-expire").innerText = data.data.expires_at || "Lifetime";
+
+  const status = data.data.status;
+  const el = document.getElementById("license-status");
+  el.innerText = status;
+  el.className = status==="ACTIVE" ? "status-online" : "status-offline";
+}
 
 /* SERVER STATUS */
 async function fetchServerStatus(){
-  const res = await fetch(`${API}/api/server/status/${licenseKey}`);
+  const res = await fetch(API+"/api/server/status/"+licenseKey);
   const data = await res.json();
 
   const online = data.online;
+  const el = document.getElementById("server-status");
+  el.innerText = online ? "Online" : "Offline";
+  el.className = online ? "status-online" : "status-offline";
 
-  el("ac-status").innerText = online ? "Online" : "Offline";
-  el("ac-status").className = online ? "status-online" : "status-offline";
-  el("players-count").innerText = data.players || 0;
-  el("ac-version").innerText = data.version || "-";
-  el("ac-uptime").innerText = formatUptime(data.uptime || 0);
+  document.getElementById("players-count").innerText = data.players || 0;
+  document.getElementById("server-version").innerText = data.version || "-";
+  document.getElementById("server-uptime").innerText = formatUptime(data.uptime||0);
 }
 
-function formatUptime(seconds){
-  const h = Math.floor(seconds/3600);
-  const m = Math.floor((seconds%3600)/60);
-  const s = seconds%60;
-  return `${h}h ${m}m ${s}s`;
+function formatUptime(s){
+  const h=Math.floor(s/3600);
+  const m=Math.floor((s%3600)/60);
+  const sec=s%60;
+  return `${h}h ${m}m ${sec}s`;
 }
-
-setInterval(fetchServerStatus,5000);
-fetchServerStatus();
 
 /* LOGS */
 async function fetchLogs(){
-  const res = await fetch(`${API}/api/server/logs/${licenseKey}`);
-  const json = await res.json();
-  const list = json.data || [];
+  const res = await fetch(API+"/api/server/logs/"+licenseKey);
+  const data = await res.json();
+  const logs = data.data || [];
 
-  el("serverLogs").innerHTML = list.slice(0,60).map(l=>`
-    <div class="logRow">
-      <div class="logTime">${new Date(l.time).toLocaleTimeString()}</div>
-      <div>${l.message}</div>
-    </div>
-  `).join("");
+  document.getElementById("logs-box").innerHTML =
+    logs.slice(0,50).map(l=>`
+      <div class="logRow">
+        <div class="small">${new Date(l.time).toLocaleTimeString()}</div>
+        ${l.message}
+      </div>
+    `).join("");
 }
 
-setInterval(fetchLogs,2500);
+/* AUTO REFRESH */
+setInterval(fetchServerStatus,5000);
+setInterval(fetchLogs,3000);
+
+fetchLicense();
+fetchServerStatus();
 fetchLogs();
 </script>
 
