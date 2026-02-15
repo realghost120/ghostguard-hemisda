@@ -247,26 +247,39 @@ function closePanel(){
 }
 
 /* ACTIONS */
-async function kickSelected(){
-  const reason=prompt("Kick anledning?");
-  if(!reason)return;
-  await fetch(API+"/api/admin/kick",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player:selectedPlayer,reason})});
+async function sendAction(type, payload){
+  const token = localStorage.getItem("gg_token");
+  const res = await fetch(API + "/api/dashboard/action", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ token, type, payload })
+  });
+  return res.json();
+}
+
+async function openKick(){
+  const reason = prompt("Anledning för kick?");
+  if(!reason) return;
+  await sendAction("kick", { player: selectedPlayer, reason });
   closePanel();
 }
-async function banSelected(){
-  const reason=prompt("Ban anledning?");
-  if(!reason)return;
-  const duration=prompt("Tid (30m,2h,7d,P)?");
-  if(!duration)return;
-  await fetch(API+"/api/admin/ban",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player:selectedPlayer,reason,duration})});
+
+async function openBan(){
+  const reason = prompt("Anledning för ban?");
+  if(!reason) return;
+  const time = prompt("Tid (30m, 2h, 7d, P)?");
+  if(!time) return;
+  await sendAction("ban", { player: selectedPlayer, reason, duration: time });
   closePanel();
 }
-async function dmSelected(){
-  const message=prompt("Skriv DM:");
-  if(!message)return;
-  await fetch(API+"/api/admin/dm",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player:selectedPlayer,message})});
+
+async function openDM(){
+  const message = prompt("Skriv DM till spelaren:");
+  if(!message) return;
+  await sendAction("dm", { player: selectedPlayer, message });
   closePanel();
 }
+
 
 /* LICENSE */
 async function fetchLicense(){
@@ -379,4 +392,5 @@ fetchLogs();
 </script>
 </body>
 </html>
+
 
