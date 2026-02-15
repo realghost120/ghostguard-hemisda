@@ -139,13 +139,15 @@ body{
     </div>
   </div>
 
+ 
   <!-- PLAYERS -->
-  <div id="playersView" class="hidden">
-    <div class="card">
-      <div class="card-title">Online Players</div>
-      <div id="players-list">Loading...</div>
-    </div>
+<div id="playersView" class="hidden">
+  <div class="card">
+    <div class="card-title">Online Players</div>
+    <div id="players-list"></div>
   </div>
+</div>
+
 
   <!-- BANS -->
   <div id="bansView" class="hidden">
@@ -181,6 +183,54 @@ function showView(view, el){
   document.getElementById(view+"View").classList.remove("hidden");
 }
 
+
+
+async function fetchPlayers(){
+  const res = await fetch(API+"/api/server/players/"+licenseKey);
+  const data = await res.json();
+
+  const list = data.players || [];
+
+  document.getElementById("players-list").innerHTML =
+    list.map(id => `
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+        <div>Player ID: ${id}</div>
+        <div>
+          <button onclick="kickPlayer('${id}')">Kick</button>
+          <button onclick="banPlayer('${id}')">Ban</button>
+          <button onclick="freezePlayer('${id}')">Freeze</button>
+        </div>
+      </div>
+    `).join("");
+}
+
+async function kickPlayer(id){
+  await fetch(API+"/api/admin/kick",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({player:id})
+  });
+}
+
+async function banPlayer(id){
+  await fetch(API+"/api/admin/ban",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({player:id})
+  });
+}
+
+async function freezePlayer(id){
+  await fetch(API+"/api/admin/freeze",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({player:id})
+  });
+}
+
+setInterval(fetchPlayers,3000);
+
+  
 /* LICENSE */
 async function fetchLicense(){
   const token = localStorage.getItem("gg_token");
@@ -251,3 +301,4 @@ fetchLogs();
 
 </body>
 </html>
+
