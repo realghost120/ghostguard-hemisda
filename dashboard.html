@@ -14,6 +14,7 @@
   --blue:#3b82f6;
   --green:#22c55e;
   --red:#ef4444;
+  --yellow:#f59e0b;
   --text:#e6f0ff;
   --muted:rgba(230,240,255,.6);
 }
@@ -21,8 +22,8 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Inter,Arial;
-  background:var(--bg);
+  font-family:Inter,Arial,system-ui,sans-serif;
+  background:radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.15), transparent 60%), var(--bg);
   color:var(--text);
   display:flex;
 }
@@ -30,7 +31,7 @@ body{
 /* SIDEBAR */
 .sidebar{
   width:230px;
-  background:var(--sidebar);
+  background:linear-gradient(180deg, rgba(12,20,38,.95), rgba(12,20,38,.85));
   min-height:100vh;
   padding:20px 15px;
   border-right:1px solid var(--border);
@@ -39,8 +40,12 @@ body{
 .logo{
   font-weight:900;
   font-size:18px;
-  margin-bottom:30px;
+  margin-bottom:22px;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
+.logo span{opacity:.85;font-weight:800;font-size:12px}
 
 .nav-item{
   padding:12px 14px;
@@ -48,13 +53,12 @@ body{
   margin-bottom:8px;
   cursor:pointer;
   color:var(--muted);
+  user-select:none;
 }
-
 .nav-item:hover{
   background:rgba(59,130,246,.15);
   color:var(--text);
 }
-
 .nav-item.active{
   background:rgba(59,130,246,.25);
   color:var(--text);
@@ -63,45 +67,64 @@ body{
 /* CONTENT */
 .content{
   flex:1;
-  padding:30px;
+  padding:26px;
 }
-
-.card{
-  background:var(--card);
-  padding:20px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  margin-bottom:20px;
-}
-
-.card-title{
-  font-weight:900;
-  font-size:18px;
-  margin-bottom:15px;
-}
-
-.status-online{color:var(--green);font-weight:bold}
-.status-offline{color:var(--red);font-weight:bold}
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:18px;
 }
+
+.card{
+  background:linear-gradient(180deg, rgba(17,28,51,.95), rgba(17,28,51,.78));
+  padding:18px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  box-shadow:0 18px 70px rgba(0,0,0,.35);
+}
+.card-title{
+  font-weight:900;
+  font-size:16px;
+  margin-bottom:12px;
+}
+
+.row{display:flex;justify-content:space-between;gap:10px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,.05)}
+.row:last-child{border-bottom:none}
+.k{color:var(--muted);font-size:12px;font-weight:800}
+.v{font-weight:800}
+
+.status-online{color:var(--green);font-weight:900}
+.status-offline{color:var(--red);font-weight:900}
+.status-warn{color:var(--yellow);font-weight:900}
 
 .hidden{display:none}
 
+/* PLAYERS */
 .player-row{
   display:flex;
   justify-content:space-between;
   padding:12px 14px;
-  border-bottom:1px solid rgba(255,255,255,.05);
+  border-bottom:1px solid rgba(255,255,255,.06);
   cursor:pointer;
-  transition:.2s;
+  transition:.18s;
 }
-.player-row:hover{
-  background:rgba(59,130,246,.12);
+.player-row:hover{ background:rgba(59,130,246,.10); }
+.player-name{font-weight:900}
+.player-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.arrow{opacity:.6;font-weight:900}
+
+/* LOGS */
+.logBox{
+  max-height:520px;
+  overflow:auto;
+  font-size:13px;
 }
+.logRow{
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.small{color:var(--muted);font-size:12px}
 
 /* SIDE PANEL */
 .side-panel{
@@ -110,50 +133,87 @@ body{
   top:0;
   width:400px;
   height:100%;
-  background:#0f172a;
+  background:linear-gradient(180deg, rgba(15,23,42,.98), rgba(15,23,42,.92));
   border-left:1px solid var(--border);
-  padding:25px;
-  transition:.3s ease;
+  padding:22px;
+  transition:.26s ease;
   z-index:1000;
+  box-shadow:-30px 0 70px rgba(0,0,0,.35);
 }
-.side-panel.active{
-  right:0;
-}
+.side-panel.active{ right:0; }
+
 .panel-title{
   font-size:18px;
   font-weight:900;
-  margin-bottom:20px;
+  margin-bottom:6px;
 }
+.panel-info{color:var(--muted);font-size:12px;margin-bottom:16px}
+
 .action-btn{
   width:100%;
   padding:12px;
   margin-bottom:10px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
-  font-weight:700;
+  font-weight:900;
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  border:1px solid rgba(255,255,255,.10);
 }
-.btn-kick{ background:rgba(245,158,11,.2); color:#f59e0b;}
-.btn-ban{ background:rgba(239,68,68,.2); color:#ef4444;}
-.btn-dm{ background:rgba(59,130,246,.2); color:#3b82f6;}
+.action-btn:hover{filter:brightness(1.06)}
+.btn-kick{ background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.22); color:#ffd48a;}
+.btn-ban{ background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.22); color:#ffb3b3;}
+.btn-dm{ background:rgba(59,130,246,.12); border-color:rgba(59,130,246,.22); color:#bcd6ff;}
+
+.close-btn{
+  margin-top:14px;
+  width:100%;
+  padding:10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:900;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.12);
+  padding:10px 14px;
+  border-radius:12px;
+  color:var(--text);
+  font-size:13px;
+  display:none;
+  z-index:1200;
+}
+.toast.show{display:block}
 </style>
 </head>
 
 <body>
 
+<!-- RIGHT PLAYER PANEL -->
 <div id="playerPanel" class="side-panel">
   <div class="panel-title" id="panelPlayerName">Player</div>
-  <div id="panelInfo" style="margin-bottom:20px;color:var(--muted)"></div>
+  <div class="panel-info" id="panelInfo">-</div>
 
-  <button class="action-btn btn-kick" onclick="kickSelected()">Kick</button>
-  <button class="action-btn btn-ban" onclick="banSelected()">Ban</button>
-  <button class="action-btn btn-dm" onclick="dmSelected()">Send DM</button>
+  <button class="action-btn btn-kick" onclick="openKick()">Kick</button>
+  <button class="action-btn btn-ban" onclick="openBan()">Ban</button>
+  <button class="action-btn btn-dm" onclick="openDM()">Send DM</button>
 
-  <button style="margin-top:20px" onclick="closePanel()">Close</button>
+  <button class="close-btn" onclick="closePanel()">Close</button>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <div class="sidebar">
-  <div class="logo">👻 GhostGuard</div>
+  <div class="logo">👻 GhostGuard <span>Panel</span></div>
   <div class="nav-item active" onclick="showView('dashboard',this)">Dashboard</div>
   <div class="nav-item" onclick="showView('players',this)">Players</div>
   <div class="nav-item" onclick="showView('logs',this)">Server Logs</div>
@@ -161,62 +221,109 @@ body{
 
 <div class="content">
 
-<div id="dashboardView">
-  <div class="grid">
-    <div class="card">
-      <div class="card-title">License Info</div>
-      <div>Key: <b id="license-key">-</b></div>
-      <div>Status: <span id="license-status">-</span></div>
-      <div>Expires: <span id="license-expire">-</span></div>
+  <!-- DASHBOARD -->
+  <div id="dashboardView">
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-title">License Info</div>
+        <div class="row"><div class="k">Key</div><div class="v" id="license-key">-</div></div>
+        <div class="row"><div class="k">Status</div><div class="v" id="license-status">-</div></div>
+        <div class="row"><div class="k">Expires</div><div class="v" id="license-expire">-</div></div>
+        <div class="row"><div class="k">Time left</div><div class="v" id="license-left">-</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Server Status</div>
+        <div class="row"><div class="k">Status</div><div class="v" id="server-status">Loading...</div></div>
+        <div class="row"><div class="k">Players</div><div class="v" id="players-count">0</div></div>
+        <div class="row"><div class="k">Version</div><div class="v" id="server-version">-</div></div>
+        <div class="row"><div class="k">Uptime</div><div class="v" id="server-uptime">0s</div></div>
+      </div>
+
     </div>
+  </div>
 
+  <!-- PLAYERS -->
+  <div id="playersView" class="hidden">
     <div class="card">
-      <div class="card-title">Server Status</div>
-      <div>Status: <span id="server-status">Loading...</span></div>
-      <div>Players: <b id="players-count">0</b></div>
-      <div>Version: <b id="server-version">-</b></div>
-      <div>Uptime: <b id="server-uptime">0s</b></div>
+      <div class="card-title">Online Players</div>
+      <div id="players-list"></div>
     </div>
   </div>
-</div>
 
-<div id="playersView" class="hidden">
-  <div class="card">
-    <div class="card-title">Online Players</div>
-    <div id="players-list"></div>
+  <!-- LOGS -->
+  <div id="logsView" class="hidden">
+    <div class="card">
+      <div class="card-title">Live Server Logs</div>
+      <div id="logs-box" class="logBox"></div>
+    </div>
   </div>
-</div>
-
-<div id="logsView" class="hidden">
-  <div class="card">
-    <div class="card-title">Live Server Logs</div>
-    <div id="logs-box"></div>
-  </div>
-</div>
 
 </div>
 
 <script>
 const API = "https://ghostgaurd-becakd.onrender.com";
-const licenseKey = localStorage.getItem("gg_license_key");
+const licenseKey = localStorage.getItem("gg_license_key") || "";
 let selectedPlayer = null;
+
+/* toast */
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 1600);
+}
 
 /* VIEW SWITCH */
 function showView(view, el){
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
 
-  document.getElementById("dashboardView").classList.add("hidden");
-  document.getElementById("playersView").classList.add("hidden");
-  document.getElementById("logsView").classList.add("hidden");
-
+  ["dashboard","players","logs"].forEach(v=>{
+    document.getElementById(v+"View").classList.add("hidden");
+  });
   document.getElementById(view+"View").classList.remove("hidden");
+}
+
+/* HELPERS */
+function formatUptime(s){
+  const h=Math.floor(s/3600);
+  const m=Math.floor((s%3600)/60);
+  const sec=s%60;
+  return `${h}h ${m}m ${sec}s`;
+}
+
+function calcTimeLeft(expiresAt){
+  if(!expiresAt) return "Lifetime";
+  const exp = new Date(expiresAt);
+  const now = new Date();
+  if(exp <= now) return "Expired";
+  const diff = exp - now;
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+  return `${days}d ${hours}h ${minutes}m`;
 }
 
 /* PLAYERS */
 async function fetchPlayers(){
-  const res = await fetch(API+"/api/server/players/"+licenseKey);
-  const data = await res.json();
+  if(!licenseKey){
+    document.getElementById("players-list").innerHTML =
+      "<div style='opacity:.6'>Ingen license key i localStorage (gg_license_key)</div>";
+    return;
+  }
+
+  let data;
+  try{
+    const res = await fetch(API + "/api/server/players/" + encodeURIComponent(licenseKey));
+    data = await res.json();
+  }catch(e){
+    document.getElementById("players-list").innerHTML =
+      "<div style='opacity:.6'>Kunde inte hämta players (network fel)</div>";
+    return;
+  }
+
   const list = data.players || [];
   const container = document.getElementById("players-list");
 
@@ -225,165 +332,188 @@ async function fetchPlayers(){
     return;
   }
 
-  container.innerHTML = list.map(p=>`
-    <div class="player-row" onclick="openPlayerPanel(${p.id},'${p.name}',${p.ping})">
-      <div>
-        <div style="font-weight:700">${p.name}</div>
-        <div style="font-size:12px;opacity:.6">ID: ${p.id} • Ping: ${p.ping}</div>
+  container.innerHTML = list.map(p=>{
+    const safeName = encodeURIComponent(p.name ?? "Unknown");
+    const id = Number(p.id || 0);
+    const ping = Number(p.ping || 0);
+    return `
+      <div class="player-row" onclick="openPlayerPanel(${id}, decodeURIComponent('${safeName}'), ${ping})">
+        <div>
+          <div class="player-name">${p.name ?? "Unknown"}</div>
+          <div class="player-sub">ID: ${id} • Ping: ${ping}</div>
+        </div>
+        <div class="arrow">→</div>
       </div>
-      <div>→</div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 function openPlayerPanel(id,name,ping){
-  selectedPlayer=id;
-  document.getElementById("panelPlayerName").innerText=name;
-  document.getElementById("panelInfo").innerText=`ID: ${id} • Ping: ${ping}`;
+  selectedPlayer = id;
+  document.getElementById("panelPlayerName").innerText = name;
+  document.getElementById("panelInfo").innerText = `ID: ${id} • Ping: ${ping}`;
   document.getElementById("playerPanel").classList.add("active");
 }
+
 function closePanel(){
   document.getElementById("playerPanel").classList.remove("active");
 }
 
-/* ACTIONS */
+/* ACTIONS -> backend */
 async function sendAction(type, payload){
-  const token = localStorage.getItem("gg_token");
+  const token = localStorage.getItem("gg_token") || "";
   const res = await fetch(API + "/api/dashboard/action", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ token, type, payload })
+    body: JSON.stringify({ token, license_key: licenseKey, type, payload })
   });
-  return res.json();
+
+  // visa tydligt om det är 404 html osv
+  const text = await res.text();
+  let json = null;
+  try{ json = JSON.parse(text); }catch{}
+
+  if(!res.ok){
+    console.error("Action failed", res.status, text);
+    throw new Error(`Backend error ${res.status}`);
+  }
+  return json || { success:true };
 }
 
 async function openKick(){
+  if(!selectedPlayer) return toast("Välj en player först");
   const reason = prompt("Anledning för kick?");
   if(!reason) return;
-  await sendAction("kick", { player: selectedPlayer, reason });
+  try{
+    await sendAction("kick", { player: selectedPlayer, reason });
+    toast("Kick skickad ✅");
+  }catch(e){
+    toast("Kick fail ❌ (kolla Console)");
+  }
   closePanel();
 }
 
 async function openBan(){
+  if(!selectedPlayer) return toast("Välj en player först");
   const reason = prompt("Anledning för ban?");
   if(!reason) return;
   const time = prompt("Tid (30m, 2h, 7d, P)?");
   if(!time) return;
-  await sendAction("ban", { player: selectedPlayer, reason, duration: time });
+  try{
+    await sendAction("ban", { player: selectedPlayer, reason, duration: time });
+    toast("Ban skickad ✅");
+  }catch(e){
+    toast("Ban fail ❌ (kolla Console)");
+  }
   closePanel();
 }
 
 async function openDM(){
+  if(!selectedPlayer) return toast("Välj en player först");
   const message = prompt("Skriv DM till spelaren:");
   if(!message) return;
-  await sendAction("dm", { player: selectedPlayer, message });
+  try{
+    await sendAction("dm", { player: selectedPlayer, message });
+    toast("DM skickad ✅");
+  }catch(e){
+    toast("DM fail ❌ (kolla Console)");
+  }
   closePanel();
 }
 
-
 /* LICENSE */
 async function fetchLicense(){
-  const token = localStorage.getItem("gg_token");
+  const token = localStorage.getItem("gg_token") || "";
 
   if(!token){
-    document.getElementById("license-key").innerText = "Ingen session";
+    document.getElementById("license-key").innerText = "-";
+    document.getElementById("license-status").innerText = "NO SESSION";
+    document.getElementById("license-status").className = "status-warn";
+    document.getElementById("license-expire").innerText = "-";
+    document.getElementById("license-left").innerText = "-";
     return;
   }
 
-  const res = await fetch(API+"/customer/dashboard",{
+  const res = await fetch(API + "/customer/dashboard", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({token})
+    body: JSON.stringify({ token })
   });
 
-  const data = await res.json();
+  const text = await res.text();
+  let data = null;
+  try{ data = JSON.parse(text); }catch{}
 
-  if(!data.success){
-    document.getElementById("license-key").innerText = "Session fel";
+  if(!data || !data.success){
+    console.error("License fetch fail", res.status, text);
+    document.getElementById("license-status").innerText = "ERROR";
+    document.getElementById("license-status").className = "status-offline";
     return;
   }
 
   const lic = data.data;
 
-  document.getElementById("license-key").innerText = lic.license_key;
+  document.getElementById("license-key").innerText = lic.license_key || "-";
 
-  /* STATUS */
   const statusEl = document.getElementById("license-status");
-  statusEl.innerText = lic.status;
+  statusEl.innerText = lic.status || "UNKNOWN";
+  statusEl.className =
+    (lic.status === "ACTIVE") ? "status-online" :
+    (lic.status === "DISABLED" || lic.status === "EXPIRED") ? "status-offline" :
+    "status-warn";
 
-  if(lic.status === "ACTIVE"){
-    statusEl.className = "status-online";
-  } else {
-    statusEl.className = "status-offline";
-  }
+  document.getElementById("license-expire").innerText =
+    lic.expires_at ? new Date(lic.expires_at).toLocaleString() : "Lifetime";
 
-  /* EXPIRE */
-  if(!lic.expires_at){
-    document.getElementById("license-expire").innerText = "Lifetime";
-  } else {
-    document.getElementById("license-expire").innerText =
-      formatExpire(lic.expires_at);
-  }
+  document.getElementById("license-left").innerText =
+    calcTimeLeft(lic.expires_at || null);
 }
 
-
-  function formatExpire(dateStr){
-  const expire = new Date(dateStr);
-  const now = new Date();
-
-  if(expire < now){
-    return "Expired";
-  }
-
-  const diff = expire - now;
-
-  const days = Math.floor(diff / (1000*60*60*24));
-  const hours = Math.floor((diff / (1000*60*60)) % 24);
-  const minutes = Math.floor((diff / (1000*60)) % 60);
-
-  return expire.toLocaleString() + 
-         `  (${days}d ${hours}h ${minutes}m kvar)`;
-}
-
-
-/* STATUS */
+/* SERVER STATUS */
 async function fetchServerStatus(){
-  const res=await fetch(API+"/api/server/status/"+licenseKey);
-  const data=await res.json();
-  const online=data.online;
-  const el=document.getElementById("server-status");
-  el.innerText=online?"Online":"Offline";
-  el.className=online?"status-online":"status-offline";
+  if(!licenseKey){
+    document.getElementById("server-status").innerText = "No license key";
+    document.getElementById("server-status").className = "status-warn";
+    return;
+  }
 
-  document.getElementById("players-count").innerText=data.players||0;
-  document.getElementById("server-version").innerText=data.version||"-";
-  document.getElementById("server-uptime").innerText=formatUptime(data.uptime||0);
-}
-function formatUptime(s){
-  const h=Math.floor(s/3600);
-  const m=Math.floor((s%3600)/60);
-  const sec=s%60;
-  return `${h}h ${m}m ${sec}s`;
+  const res = await fetch(API + "/api/server/status/" + encodeURIComponent(licenseKey));
+  const data = await res.json();
+
+  const online = !!data.online;
+  const el = document.getElementById("server-status");
+  el.innerText = online ? "Online" : "Offline";
+  el.className = online ? "status-online" : "status-offline";
+
+  document.getElementById("players-count").innerText = data.players ?? 0;
+  document.getElementById("server-version").innerText = data.version ?? "-";
+  document.getElementById("server-uptime").innerText = formatUptime(data.uptime ?? 0);
 }
 
 /* LOGS */
+function escapeHtml(s){
+  return String(s ?? "").replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
 async function fetchLogs(){
-  const res=await fetch(API+"/api/server/logs/"+licenseKey);
-  const data=await res.json();
-  const logs=data.data||[];
-  document.getElementById("logs-box").innerHTML=
-    logs.slice(0,50).map(l=>`
-      <div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-        <div style="font-size:12px;opacity:.6">${new Date(l.time).toLocaleTimeString()}</div>
-        ${l.message}
+  if(!licenseKey) return;
+  const res = await fetch(API + "/api/server/logs/" + encodeURIComponent(licenseKey));
+  const data = await res.json();
+  const logs = data.data || [];
+
+  document.getElementById("logs-box").innerHTML =
+    logs.slice(0,80).map(l=>`
+      <div class="logRow">
+        <div class="small">${new Date(l.time).toLocaleTimeString()}</div>
+        <div>${escapeHtml(l.message)}</div>
       </div>
     `).join("");
 }
 
-/* AUTO */
-setInterval(fetchPlayers,3000);
-setInterval(fetchServerStatus,5000);
-setInterval(fetchLogs,3000);
+/* AUTO REFRESH */
+setInterval(fetchPlayers, 2500);
+setInterval(fetchServerStatus, 5000);
+setInterval(fetchLogs, 2500);
+setInterval(fetchLicense, 15000);
 
 fetchPlayers();
 fetchLicense();
@@ -392,5 +522,3 @@ fetchLogs();
 </script>
 </body>
 </html>
-
-
