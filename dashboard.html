@@ -252,6 +252,62 @@ function showView(view, el){
 }
 
 
+async function openKick(){
+  const reason = prompt("Anledning för kick?");
+  if(!reason) return;
+
+  await fetch(API+"/api/admin/kick",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      player:selectedPlayer,
+      reason
+    })
+  });
+
+  closePanel();
+}
+
+
+  async function openBan(){
+  const reason = prompt("Anledning för ban?");
+  if(!reason) return;
+
+  const time = prompt("Tid (ex: 30m, 2h, 7d, P)?");
+  if(!time) return;
+
+  await fetch(API+"/api/admin/ban",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      player:selectedPlayer,
+      reason,
+      duration:time
+    })
+  });
+
+  closePanel();
+}
+
+
+
+  async function openDM(){
+  const message = prompt("Skriv DM till spelaren:");
+  if(!message) return;
+
+  await fetch(API+"/api/admin/dm",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      player:selectedPlayer,
+      message
+    })
+  });
+
+  closePanel();
+}
+
+  
 
 let selectedPlayer = null;
 
@@ -414,6 +470,7 @@ fetchLogs();
 
 </body>
 </html>
+
 
 
 
