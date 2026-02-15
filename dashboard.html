@@ -91,19 +91,6 @@ body{
 
 .hidden{display:none}
 
-.logBox{
-  max-height:400px;
-  overflow:auto;
-  font-size:13px;
-}
-.logRow{
-  padding:6px 0;
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-.small{color:var(--muted);font-size:12px}
-
-
-/* PLAYER ROW */
 .player-row{
   display:flex;
   justify-content:space-between;
@@ -112,12 +99,11 @@ body{
   cursor:pointer;
   transition:.2s;
 }
-
 .player-row:hover{
   background:rgba(59,130,246,.12);
 }
 
-/* SLIDE PANEL */
+/* SIDE PANEL */
 .side-panel{
   position:fixed;
   right:-420px;
@@ -130,17 +116,14 @@ body{
   transition:.3s ease;
   z-index:1000;
 }
-
 .side-panel.active{
   right:0;
 }
-
 .panel-title{
   font-size:18px;
   font-weight:900;
   margin-bottom:20px;
 }
-
 .action-btn{
   width:100%;
   padding:12px;
@@ -150,65 +133,53 @@ body{
   cursor:pointer;
   font-weight:700;
 }
-
 .btn-kick{ background:rgba(245,158,11,.2); color:#f59e0b;}
 .btn-ban{ background:rgba(239,68,68,.2); color:#ef4444;}
 .btn-dm{ background:rgba(59,130,246,.2); color:#3b82f6;}
-
-
 </style>
 </head>
 
 <body>
 
-<!-- PLAYER ACTION PANEL -->
 <div id="playerPanel" class="side-panel">
   <div class="panel-title" id="panelPlayerName">Player</div>
   <div id="panelInfo" style="margin-bottom:20px;color:var(--muted)"></div>
 
-  <button class="action-btn btn-kick" onclick="openKick()">Kick</button>
-  <button class="action-btn btn-ban" onclick="openBan()">Ban</button>
-  <button class="action-btn btn-dm" onclick="openDM()">Send DM</button>
+  <button class="action-btn btn-kick" onclick="kickSelected()">Kick</button>
+  <button class="action-btn btn-ban" onclick="banSelected()">Ban</button>
+  <button class="action-btn btn-dm" onclick="dmSelected()">Send DM</button>
 
   <button style="margin-top:20px" onclick="closePanel()">Close</button>
 </div>
 
-  
 <div class="sidebar">
   <div class="logo">👻 GhostGuard</div>
-
   <div class="nav-item active" onclick="showView('dashboard',this)">Dashboard</div>
   <div class="nav-item" onclick="showView('players',this)">Players</div>
-  <div class="nav-item" onclick="showView('bans',this)">Ban List</div>
   <div class="nav-item" onclick="showView('logs',this)">Server Logs</div>
 </div>
 
 <div class="content">
 
-  <!-- DASHBOARD -->
-  <div id="dashboardView">
-    <div class="grid">
+<div id="dashboardView">
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">License Info</div>
+      <div>Key: <b id="license-key">-</b></div>
+      <div>Status: <span id="license-status">-</span></div>
+      <div>Expires: <span id="license-expire">-</span></div>
+    </div>
 
-      <div class="card">
-        <div class="card-title">License Info</div>
-        <div>Key: <b id="license-key">-</b></div>
-        <div>Status: <span id="license-status">-</span></div>
-        <div>Expires: <span id="license-expire">-</span></div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Server Status</div>
-        <div>Status: <span id="server-status">Loading...</span></div>
-        <div>Players: <b id="players-count">0</b></div>
-        <div>Version: <b id="server-version">-</b></div>
-        <div>Uptime: <b id="server-uptime">0s</b></div>
-      </div>
-
+    <div class="card">
+      <div class="card-title">Server Status</div>
+      <div>Status: <span id="server-status">Loading...</span></div>
+      <div>Players: <b id="players-count">0</b></div>
+      <div>Version: <b id="server-version">-</b></div>
+      <div>Uptime: <b id="server-uptime">0s</b></div>
     </div>
   </div>
+</div>
 
- 
-  <!-- PLAYERS -->
 <div id="playersView" class="hidden">
   <div class="card">
     <div class="card-title">Online Players</div>
@@ -216,227 +187,114 @@ body{
   </div>
 </div>
 
-
-  <!-- BANS -->
-  <div id="bansView" class="hidden">
-    <div class="card">
-      <div class="card-title">Ban List</div>
-      <div id="ban-list">Coming soon...</div>
-    </div>
+<div id="logsView" class="hidden">
+  <div class="card">
+    <div class="card-title">Live Server Logs</div>
+    <div id="logs-box"></div>
   </div>
-
-  <!-- LOGS -->
-  <div id="logsView" class="hidden">
-    <div class="card">
-      <div class="card-title">Live Server Logs</div>
-      <div id="logs-box" class="logBox"></div>
-    </div>
-  </div>
+</div>
 
 </div>
 
 <script>
 const API = "https://ghostgaurd-becakd.onrender.com";
 const licenseKey = localStorage.getItem("gg_license_key");
+let selectedPlayer = null;
 
+/* VIEW SWITCH */
 function showView(view, el){
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
 
   document.getElementById("dashboardView").classList.add("hidden");
   document.getElementById("playersView").classList.add("hidden");
-  document.getElementById("bansView").classList.add("hidden");
   document.getElementById("logsView").classList.add("hidden");
 
   document.getElementById(view+"View").classList.remove("hidden");
 }
 
-
-async function openKick(){
-  const reason = prompt("Anledning för kick?");
-  if(!reason) return;
-
-  await fetch(API+"/api/admin/kick",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      player:selectedPlayer,
-      reason
-    })
-  });
-
-  closePanel();
-}
-
-
-  async function openBan(){
-  const reason = prompt("Anledning för ban?");
-  if(!reason) return;
-
-  const time = prompt("Tid (ex: 30m, 2h, 7d, P)?");
-  if(!time) return;
-
-  await fetch(API+"/api/admin/ban",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      player:selectedPlayer,
-      reason,
-      duration:time
-    })
-  });
-
-  closePanel();
-}
-
-
-
-  async function openDM(){
-  const message = prompt("Skriv DM till spelaren:");
-  if(!message) return;
-
-  await fetch(API+"/api/admin/dm",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      player:selectedPlayer,
-      message
-    })
-  });
-
-  closePanel();
-}
-
-  
-
-let selectedPlayer = null;
-
+/* PLAYERS */
 async function fetchPlayers(){
   const res = await fetch(API+"/api/server/players/"+licenseKey);
   const data = await res.json();
   const list = data.players || [];
+  const container = document.getElementById("players-list");
 
   if(list.length === 0){
-    document.getElementById("players-list").innerHTML =
-      "<div style='opacity:.6'>Inga spelare online</div>";
+    container.innerHTML = "<div style='opacity:.6'>Inga spelare online</div>";
     return;
   }
 
-  document.getElementById("players-list").innerHTML =
-    list.map(p => `
-      <div class="player-row" onclick="openPlayerPanel(${p.id},'${p.name}',${p.ping})">
-        <div>
-          <div style="font-weight:700">${p.name}</div>
-          <div style="font-size:12px;opacity:.6">
-            ID: ${p.id} • Ping: ${p.ping}
-          </div>
-        </div>
-        <div>→</div>
+  container.innerHTML = list.map(p=>`
+    <div class="player-row" onclick="openPlayerPanel(${p.id},'${p.name}',${p.ping})">
+      <div>
+        <div style="font-weight:700">${p.name}</div>
+        <div style="font-size:12px;opacity:.6">ID: ${p.id} • Ping: ${p.ping}</div>
       </div>
-    `).join("");
+      <div>→</div>
+    </div>
+  `).join("");
 }
-
-  document.getElementById("players-list").innerHTML =
-    list.map(p => `
-      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-        <div>
-          <div style="font-weight:700">${p.name}</div>
-          <div style="font-size:12px;opacity:.6">
-            ID: ${p.id} • Ping: ${p.ping}
-          </div>
-        </div>
-        <div style="display:flex;gap:6px">
-          <button onclick="kickPlayer(${p.id})">Kick</button>
-          <button onclick="banPlayer(${p.id})">Ban</button>
-          <button onclick="freezePlayer(${p.id})">Freeze</button>
-        </div>
-      </div>
-    `).join("");
-}
-
-setInterval(fetchPlayers, 3000);
-fetchPlayers();
 
 function openPlayerPanel(id,name,ping){
-  selectedPlayer = id;
-
-  document.getElementById("panelPlayerName").innerText = name;
-  document.getElementById("panelInfo").innerText =
-    "ID: "+id+" • Ping: "+ping;
-
+  selectedPlayer=id;
+  document.getElementById("panelPlayerName").innerText=name;
+  document.getElementById("panelInfo").innerText=`ID: ${id} • Ping: ${ping}`;
   document.getElementById("playerPanel").classList.add("active");
 }
-
 function closePanel(){
   document.getElementById("playerPanel").classList.remove("active");
 }
 
-  
-
-async function kickPlayer(id){
-  await fetch(API+"/api/admin/kick",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({player:id})
-  });
+/* ACTIONS */
+async function kickSelected(){
+  const reason=prompt("Kick anledning?");
+  if(!reason)return;
+  await fetch(API+"/api/admin/kick",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player:selectedPlayer,reason})});
+  closePanel();
+}
+async function banSelected(){
+  const reason=prompt("Ban anledning?");
+  if(!reason)return;
+  const duration=prompt("Tid (30m,2h,7d,P)?");
+  if(!duration)return;
+  await fetch(API+"/api/admin/ban",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player:selectedPlayer,reason,duration})});
+  closePanel();
+}
+async function dmSelected(){
+  const message=prompt("Skriv DM:");
+  if(!message)return;
+  await fetch(API+"/api/admin/dm",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({player:selectedPlayer,message})});
+  closePanel();
 }
 
-async function banPlayer(id){
-  await fetch(API+"/api/admin/ban",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({player:id})
-  });
-}
-
-async function freezePlayer(id){
-  await fetch(API+"/api/admin/freeze",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({player:id})
-  });
-}
-
-setInterval(fetchPlayers,3000);
-
-  
 /* LICENSE */
 async function fetchLicense(){
-  const token = localStorage.getItem("gg_token");
+  const token=localStorage.getItem("gg_token");
+  const res=await fetch(API+"/customer/dashboard",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token})});
+  const data=await res.json();
+  if(!data.success)return;
 
-  const res = await fetch(API+"/customer/dashboard",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({token})
-  });
-
-  const data = await res.json();
-  if(!data.success) return;
-
-  document.getElementById("license-key").innerText = data.data.license_key;
-  document.getElementById("license-expire").innerText = data.data.expires_at || "Lifetime";
-
-  const status = data.data.status;
-  const el = document.getElementById("license-status");
-  el.innerText = status;
-  el.className = status==="ACTIVE" ? "status-online" : "status-offline";
+  document.getElementById("license-key").innerText=data.data.license_key;
+  document.getElementById("license-expire").innerText=data.data.expires_at||"Lifetime";
+  const el=document.getElementById("license-status");
+  el.innerText=data.data.status;
+  el.className=data.data.status==="ACTIVE"?"status-online":"status-offline";
 }
 
-/* SERVER STATUS */
+/* STATUS */
 async function fetchServerStatus(){
-  const res = await fetch(API+"/api/server/status/"+licenseKey);
-  const data = await res.json();
+  const res=await fetch(API+"/api/server/status/"+licenseKey);
+  const data=await res.json();
+  const online=data.online;
+  const el=document.getElementById("server-status");
+  el.innerText=online?"Online":"Offline";
+  el.className=online?"status-online":"status-offline";
 
-  const online = data.online;
-  const el = document.getElementById("server-status");
-  el.innerText = online ? "Online" : "Offline";
-  el.className = online ? "status-online" : "status-offline";
-
-  document.getElementById("players-count").innerText = data.players || 0;
-  document.getElementById("server-version").innerText = data.version || "-";
-  document.getElementById("server-uptime").innerText = formatUptime(data.uptime||0);
+  document.getElementById("players-count").innerText=data.players||0;
+  document.getElementById("server-version").innerText=data.version||"-";
+  document.getElementById("server-uptime").innerText=formatUptime(data.uptime||0);
 }
-
 function formatUptime(s){
   const h=Math.floor(s/3600);
   const m=Math.floor((s%3600)/60);
@@ -446,31 +304,27 @@ function formatUptime(s){
 
 /* LOGS */
 async function fetchLogs(){
-  const res = await fetch(API+"/api/server/logs/"+licenseKey);
-  const data = await res.json();
-  const logs = data.data || [];
-
-  document.getElementById("logs-box").innerHTML =
+  const res=await fetch(API+"/api/server/logs/"+licenseKey);
+  const data=await res.json();
+  const logs=data.data||[];
+  document.getElementById("logs-box").innerHTML=
     logs.slice(0,50).map(l=>`
-      <div class="logRow">
-        <div class="small">${new Date(l.time).toLocaleTimeString()}</div>
+      <div style="padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+        <div style="font-size:12px;opacity:.6">${new Date(l.time).toLocaleTimeString()}</div>
         ${l.message}
       </div>
     `).join("");
 }
 
-/* AUTO REFRESH */
+/* AUTO */
+setInterval(fetchPlayers,3000);
 setInterval(fetchServerStatus,5000);
 setInterval(fetchLogs,3000);
 
+fetchPlayers();
 fetchLicense();
 fetchServerStatus();
 fetchLogs();
 </script>
-
 </body>
 </html>
-
-
-
-
