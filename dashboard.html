@@ -248,6 +248,33 @@ function showAlert(text, type){
   a.textContent = text;
 }
 
+async function fetchServerStatus() {
+  const res = await fetch(
+    `https://ghostgaurd-becakd.onrender.com/api/server/status/${licenseKey}`
+  );
+  const data = await res.json();
+
+  const online = data.online;
+
+  document.getElementById("ac-status").innerText = online ? "Online" : "Offline";
+  document.getElementById("ac-status").className = online ? "status-online" : "status-offline";
+
+  document.getElementById("players-count").innerText = data.players || 0;
+  document.getElementById("ac-version").innerText = data.version || "-";
+  document.getElementById("ac-uptime").innerText = formatUptime(data.uptime || 0);
+}
+
+function formatUptime(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return `${h}h ${m}m ${s}s`;
+}
+
+setInterval(fetchServerStatus, 5000);
+fetchServerStatus();
+
+  
 
 async function fetchStatus() {
   const res = await fetch(`${BACKEND_URL}/api/server/status/${licenseKey}`);
@@ -374,4 +401,5 @@ loadDashboard();
 </script>
 </body>
 </html>
+
 
