@@ -155,6 +155,9 @@ hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:14px 0}
         <div class="k">Tid kvar</div><div class="v" id="tl">-</div>
       </div>
 
+      
+      <div id="serverLogs" class="logsBox"></div>
+
 
     <div class="overview-card">
   <div>Status: <span id="ac-status">Loading...</span></div>
@@ -270,6 +273,28 @@ function showAlert(text, type){
   a.textContent = text;
 }
 
+
+async function fetchServerLogs() {
+  const res = await fetch(`${BACKEND_URL}/api/server/logs/${licenseKey}`);
+  const json = await res.json();
+  const list = (json && json.data) ? json.data : [];
+
+  const el = document.getElementById("serverLogs");
+  el.innerHTML = list.slice(0, 60).map(l => `
+    <div class="logRow">
+      <div class="logTime">${new Date(l.time).toLocaleTimeString()}</div>
+      <div class="logMsg">${escapeHtml(l.message)}</div>
+    </div>
+  `).join("");
+}
+
+setInterval(fetchServerLogs, 2500);
+fetchServerLogs();
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+
+  
 async function fetchServerStatus() {
   const res = await fetch(
     `https://ghostgaurd-becakd.onrender.com/api/server/status/${licenseKey}`
@@ -423,6 +448,7 @@ loadDashboard();
 </script>
 </body>
 </html>
+
 
 
 
