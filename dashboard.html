@@ -248,6 +248,25 @@ function showAlert(text, type){
   a.textContent = text;
 }
 
+
+async function fetchStatus() {
+  const res = await fetch(`${BACKEND_URL}/api/server/status/${licenseKey}`);
+  const data = await res.json();
+
+  if (data.online) {
+    document.getElementById("status").innerText = "Online";
+  } else {
+    document.getElementById("status").innerText = "Offline";
+  }
+
+  document.getElementById("players").innerText = data.players || 0;
+  document.getElementById("uptime").innerText = formatUptime(data.uptime || 0);
+  document.getElementById("version").innerText = data.version || "-";
+}
+
+setInterval(fetchStatus, 5000);
+
+  
 async function postJson(path, body){
   const res = await fetch(API + path, {
     method: "POST",
@@ -355,3 +374,4 @@ loadDashboard();
 </script>
 </body>
 </html>
+
