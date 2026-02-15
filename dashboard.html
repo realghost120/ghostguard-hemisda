@@ -191,18 +191,33 @@ async function fetchPlayers(){
 
   const list = data.players || [];
 
+  if(list.length === 0){
+    document.getElementById("players-list").innerHTML =
+      "<div style='opacity:.6'>Inga spelare online</div>";
+    return;
+  }
+
   document.getElementById("players-list").innerHTML =
-    list.map(id => `
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)">
-        <div>Player ID: ${id}</div>
+    list.map(p => `
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)">
         <div>
-          <button onclick="kickPlayer('${id}')">Kick</button>
-          <button onclick="banPlayer('${id}')">Ban</button>
-          <button onclick="freezePlayer('${id}')">Freeze</button>
+          <div style="font-weight:700">${p.name}</div>
+          <div style="font-size:12px;opacity:.6">
+            ID: ${p.id} • Ping: ${p.ping}
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button onclick="kickPlayer(${p.id})">Kick</button>
+          <button onclick="banPlayer(${p.id})">Ban</button>
+          <button onclick="freezePlayer(${p.id})">Freeze</button>
         </div>
       </div>
     `).join("");
 }
+
+setInterval(fetchPlayers, 3000);
+fetchPlayers();
+
 
 async function kickPlayer(id){
   await fetch(API+"/api/admin/kick",{
@@ -301,4 +316,5 @@ fetchLogs();
 
 </body>
 </html>
+
 
