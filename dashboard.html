@@ -101,11 +101,79 @@ body{
   border-bottom:1px solid rgba(255,255,255,.05);
 }
 .small{color:var(--muted);font-size:12px}
+
+
+/* PLAYER ROW */
+.player-row{
+  display:flex;
+  justify-content:space-between;
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  cursor:pointer;
+  transition:.2s;
+}
+
+.player-row:hover{
+  background:rgba(59,130,246,.12);
+}
+
+/* SLIDE PANEL */
+.side-panel{
+  position:fixed;
+  right:-420px;
+  top:0;
+  width:400px;
+  height:100%;
+  background:#0f172a;
+  border-left:1px solid var(--border);
+  padding:25px;
+  transition:.3s ease;
+  z-index:1000;
+}
+
+.side-panel.active{
+  right:0;
+}
+
+.panel-title{
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:20px;
+}
+
+.action-btn{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.btn-kick{ background:rgba(245,158,11,.2); color:#f59e0b;}
+.btn-ban{ background:rgba(239,68,68,.2); color:#ef4444;}
+.btn-dm{ background:rgba(59,130,246,.2); color:#3b82f6;}
+
+
 </style>
 </head>
 
 <body>
 
+<!-- PLAYER ACTION PANEL -->
+<div id="playerPanel" class="side-panel">
+  <div class="panel-title" id="panelPlayerName">Player</div>
+  <div id="panelInfo" style="margin-bottom:20px;color:var(--muted)"></div>
+
+  <button class="action-btn btn-kick" onclick="openKick()">Kick</button>
+  <button class="action-btn btn-ban" onclick="openBan()">Ban</button>
+  <button class="action-btn btn-dm" onclick="openDM()">Send DM</button>
+
+  <button style="margin-top:20px" onclick="closePanel()">Close</button>
+</div>
+
+  
 <div class="sidebar">
   <div class="logo">👻 GhostGuard</div>
 
@@ -185,10 +253,11 @@ function showView(view, el){
 
 
 
+let selectedPlayer = null;
+
 async function fetchPlayers(){
   const res = await fetch(API+"/api/server/players/"+licenseKey);
   const data = await res.json();
-
   const list = data.players || [];
 
   if(list.length === 0){
@@ -196,6 +265,20 @@ async function fetchPlayers(){
       "<div style='opacity:.6'>Inga spelare online</div>";
     return;
   }
+
+  document.getElementById("players-list").innerHTML =
+    list.map(p => `
+      <div class="player-row" onclick="openPlayerPanel(${p.id},'${p.name}',${p.ping})">
+        <div>
+          <div style="font-weight:700">${p.name}</div>
+          <div style="font-size:12px;opacity:.6">
+            ID: ${p.id} • Ping: ${p.ping}
+          </div>
+        </div>
+        <div>→</div>
+      </div>
+    `).join("");
+}
 
   document.getElementById("players-list").innerHTML =
     list.map(p => `
@@ -218,6 +301,21 @@ async function fetchPlayers(){
 setInterval(fetchPlayers, 3000);
 fetchPlayers();
 
+function openPlayerPanel(id,name,ping){
+  selectedPlayer = id;
+
+  document.getElementById("panelPlayerName").innerText = name;
+  document.getElementById("panelInfo").innerText =
+    "ID: "+id+" • Ping: "+ping;
+
+  document.getElementById("playerPanel").classList.add("active");
+}
+
+function closePanel(){
+  document.getElementById("playerPanel").classList.remove("active");
+}
+
+  
 
 async function kickPlayer(id){
   await fetch(API+"/api/admin/kick",{
@@ -316,5 +414,6 @@ fetchLogs();
 
 </body>
 </html>
+
 
 
