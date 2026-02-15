@@ -9,446 +9,179 @@
 :root{
   --bg1:#070b14; --bg2:#05070d;
   --text:#e8f0ff; --muted:rgba(232,240,255,.65);
-  --blue:#3b82f6; --green:#22c55e; --red:#ef4444; --yellow:#f59e0b;
+  --blue:#3b82f6; --green:#22c55e; --red:#ef4444;
   --shadow:0 18px 70px rgba(0,0,0,.55);
   --radius:18px;
 }
 *{box-sizing:border-box}
 body{
   margin:0; font-family:Arial, sans-serif; color:var(--text);
-  background:radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.20), transparent 60%),
-             linear-gradient(180deg,var(--bg1),var(--bg2));
+  background:linear-gradient(180deg,var(--bg1),var(--bg2));
   min-height:100vh;
 }
 header{
   display:flex; justify-content:space-between; align-items:center;
   padding:18px 28px; border-bottom:1px solid rgba(255,255,255,.06);
-  background:rgba(5,7,13,.55); backdrop-filter:blur(10px);
 }
 .brand{font-weight:900; font-size:18px}
 
-.btn{
-  border:none; cursor:pointer; font-weight:900;
-  padding:10px 14px; border-radius:12px;
-  color:var(--text); background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.08);
-  transition:.18s;
+.nav{
+  display:flex;
+  gap:10px;
 }
-.btn:hover{transform:translateY(-1px); border-color:rgba(96,165,250,.35)}
-.btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
-.btn-blue{background:rgba(59,130,246,.18); border-color:rgba(59,130,246,.35)}
-.btn-green{background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.35)}
-.btn-red{background:rgba(239,68,68,.18); border-color:rgba(239,68,68,.35)}
+
+.nav button{
+  background:none;
+  border:1px solid rgba(255,255,255,.1);
+  color:var(--text);
+  padding:8px 14px;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+.nav button.active{
+  background:rgba(59,130,246,.2);
+  border-color:rgba(59,130,246,.4);
+}
 
 .wrap{max-width:1200px; margin:0 auto; padding:26px 18px 60px}
-.grid{display:grid; grid-template-columns:1fr; gap:16px}
+
 .card{
-  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.08);
   border-radius:var(--radius);
-  padding:18px; box-shadow:var(--shadow);
-}
-.title{font-weight:900; font-size:20px; margin-bottom:12px}
-
-.kv{display:grid; grid-template-columns:160px 1fr; gap:8px 10px}
-.k{color:var(--muted); font-size:12px; font-weight:800}
-.v{font-weight:900}
-
-.pill{
-  display:inline-flex; align-items:center; gap:8px;
-  padding:6px 12px; border-radius:999px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(0,0,0,.22);
-  font-weight:900; font-size:12px;
-}
-.dot{
-  width:9px; height:9px; border-radius:99px;
-  background:rgba(255,255,255,.35);
-  box-shadow:0 0 12px rgba(255,255,255,.15);
-}
-.pill.good{ color:var(--green); border-color:rgba(34,197,94,.35) }
-.pill.good .dot{ background:var(--green); box-shadow:0 0 12px rgba(34,197,94,.45) }
-.pill.bad{ color:var(--red); border-color:rgba(239,68,68,.35) }
-.pill.bad .dot{ background:var(--red); box-shadow:0 0 12px rgba(239,68,68,.45) }
-.pill.warn{ color:var(--yellow); border-color:rgba(245,158,11,.35) }
-.pill.warn .dot{ background:var(--yellow); box-shadow:0 0 12px rgba(245,158,11,.45) }
-.pill.gray{ color:rgba(232,240,255,.75); border-color:rgba(232,240,255,.18) }
-.pill.gray .dot{ background:rgba(232,240,255,.45); box-shadow:0 0 12px rgba(232,240,255,.20) }
-
-.actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
-.note{color:var(--muted); font-size:12px; margin-top:10px}
-
-.alert{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:12px;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(0,0,0,.18);
-  color:rgba(232,240,255,.85);
-  font-size:13px;
-  display:none;
-}
-.alert.show{display:block}
-.alert.red{border-color:rgba(239,68,68,.28); background:rgba(239,68,68,.10)}
-.alert.blue{border-color:rgba(59,130,246,.28); background:rgba(59,130,246,.10)}
-
-.download-box{
-  margin-top:16px;
-  background:linear-gradient(135deg,#0f172a,#111c3a);
-  border:1px solid rgba(59,130,246,.3);
   padding:20px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+
+.title{font-weight:900; font-size:20px; margin-bottom:14px}
+
+.logsBox{
+  max-height:400px;
+  overflow-y:auto;
+  background:rgba(0,0,0,.3);
+  border:1px solid rgba(255,255,255,.08);
   border-radius:14px;
+  padding:10px;
 }
 
-.codebox{
-  margin-top:10px;
-  background:rgba(0,0,0,.28);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:12px;
-  padding:12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-  font-size:12px;
-  white-space:pre-wrap;
-}
-.step{
-  margin-top:12px;
-  padding:12px;
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:12px;
-  background:rgba(255,255,255,.03);
+.logRow{
+  padding:8px 10px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:13px;
 }
 
-.status-online {
-  color: #22c55e;
-  font-weight: bold;
+.logTime{
+  color:var(--muted);
+  font-size:11px;
 }
 
-.status-offline {
-  color: #ef4444;
-  font-weight: bold;
-}
+.status-online{color:var(--green);font-weight:bold}
+.status-offline{color:var(--red);font-weight:bold}
 
-
-  
-.small{font-size:12px;color:var(--muted)}
-hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:14px 0}
-@media (max-width:900px){ .kv{grid-template-columns:130px 1fr} }
+.hidden{display:none}
 </style>
 </head>
 
 <body>
+
 <header>
-  <div class="brand">GhostGuard • Dashboard</div>
-  <button class="btn" id="logout">Logga ut</button>
+  <div class="brand">GhostGuard</div>
+  <div class="nav">
+    <button id="navDashboard" class="active">Dashboard</button>
+    <button id="navLogs">Server Logs</button>
+  </div>
 </header>
 
 <div class="wrap">
-  <div class="grid">
+
+  <!-- DASHBOARD VIEW -->
+  <div id="viewDashboard">
 
     <div class="card">
-      <div class="title">Licens status</div>
+      <div class="title">Server Status</div>
 
-      <div class="kv">
-        <div class="k">License Key</div><div class="v" id="lk">-</div>
-        <div class="k">Status</div><div class="v" id="st">-</div>
-        <div class="k">Går ut</div><div class="v" id="ex">-</div>
-        <div class="k">Tid kvar</div><div class="v" id="tl">-</div>
-      </div>
-
-      
-      <div id="serverLogs" class="logsBox"></div>
-
-
-    <div class="overview-card">
-  <div>Status: <span id="ac-status">Loading...</span></div>
-  <div>Players: <span id="players-count">0</span></div>
-  <div>Version: <span id="ac-version">-</span></div>
-  <div>Uptime: <span id="ac-uptime">0s</span></div>
-</div>
-
-      
-      <div class="actions">
-        <button class="btn btn-green" id="btnStart">Start</button>
-        <button class="btn btn-red" id="btnStop">Stop</button>
-        <button class="btn btn-blue" id="btnRefresh">Refresh</button>
-      </div>
-
-      <div class="note">Licensen måste vara <span class="pill good"><span class="dot"></span>ACTIVE</span> för att anticheaten ska fungera.</div>
-      <div class="alert" id="statusAlert"></div>
-
-      <div class="download-box">
-        <div style="font-weight:900;font-size:16px;">⬇ Ladda ner GhostGuard</div>
-        <div class="small">Senaste versionen (zip):</div>
-        <a class="btn btn-blue" style="display:inline-block;margin-top:10px;text-decoration:none;"
-           href="https://drive.google.com/file/d/1Ayg8qnk5fuR4UrjgiIFdsW8veqLH4IS6/view" target="_blank">
-          Ladda ner
-        </a>
-      </div>
-
-      <hr>
-
-      <div class="title" style="font-size:18px;margin-bottom:6px;">📦 Installations-guide</div>
-      <div class="small">Följ stegen exakt (det tar 2 minuter).</div>
-
-      <div class="step">
-        <div style="font-weight:900">1) Packa upp i resources</div>
-        <div class="small">Lägg mappen i din server här:</div>
-        <div class="codebox">resources/[ghostguard]/ghostguard</div>
-      </div>
-
-      <div class="step">
-        <div style="font-weight:900">2) Lägg in din License Key i config</div>
-        <div class="small">Öppna <b>config.lua</b> och sätt din key:</div>
-        <div class="codebox" id="cfgKey">Config.LicenseKey = "GG-XXXX-XXXX"</div>
-        <button class="btn btn-blue" style="margin-top:10px" id="copyKey">Kopiera raden</button>
-      </div>
-
-      <div class="step">
-        <div style="font-weight:900">3) Lägg till i server.cfg</div>
-        <div class="small">Lägg längst ner i <b>server.cfg</b>:</div>
-        <div class="codebox" id="cfgEnsure">ensure ghostguard</div>
-        <button class="btn btn-blue" style="margin-top:10px" id="copyEnsure">Kopiera ensure</button>
-      </div>
-
-      <div class="step">
-        <div style="font-weight:900">4) Starta servern</div>
-        <div class="small">Starta om servern och kolla console:</div>
-        <div class="codebox">[GhostGuard] License ACTIVE. Anticheat active.</div>
-      </div>
-
+      <div>Status: <span id="ac-status">Loading...</span></div>
+      <div>Players: <span id="players-count">0</span></div>
+      <div>Version: <span id="ac-version">-</span></div>
+      <div>Uptime: <span id="ac-uptime">0s</span></div>
     </div>
 
   </div>
+
+  <!-- LOGS VIEW -->
+  <div id="viewLogs" class="hidden">
+    <div class="card">
+      <div class="title">Live Server Logs</div>
+      <div id="serverLogs" class="logsBox"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
 const API = "https://ghostgaurd-becakd.onrender.com";
-
-const licenseKey = localStorage.getItem("gg_license_key") || "";
-const token = localStorage.getItem("gg_token") || "";
-
-if(!licenseKey || !token){
-  window.location.href = "index.html";
-}
+const licenseKey = localStorage.getItem("gg_license_key");
 
 const el = id => document.getElementById(id);
-let currentExpire = null;
-let currentStatus = "UNKNOWN";
 
-/* HELPERS */
-function fmtDate(iso){
-  if(!iso) return "-";
-  try { return new Date(iso).toLocaleString(); } catch { return iso; }
-}
+/* NAVIGATION */
+el("navDashboard").onclick = () => {
+  el("viewDashboard").classList.remove("hidden");
+  el("viewLogs").classList.add("hidden");
+  el("navDashboard").classList.add("active");
+  el("navLogs").classList.remove("active");
+};
 
-function timeLeft(iso){
-  if(!iso) return "-";
-  let diff = new Date(iso) - Date.now();
-  if(diff <= 0) return "Utgången";
-  const d = Math.floor(diff / 86400000);
-  diff %= 86400000;
-  const h = Math.floor(diff / 3600000);
-  diff %= 3600000;
-  const m = Math.floor(diff / 60000);
-  return `${d}d ${h}h ${m}m`;
-}
+el("navLogs").onclick = () => {
+  el("viewLogs").classList.remove("hidden");
+  el("viewDashboard").classList.add("hidden");
+  el("navLogs").classList.add("active");
+  el("navDashboard").classList.remove("active");
+};
 
-function pill(status){
-  const s = (status || "UNKNOWN").toUpperCase();
-  let cls = "warn";
-  if(s === "ACTIVE") cls = "good";
-  else if(s === "DISABLED" || s === "EXPIRED") cls = "bad";
-  else if(s === "UNKNOWN") cls = "gray";
-  return `<span class="pill ${cls}"><span class="dot"></span>${s}</span>`;
-}
-
-function showAlert(text, type){
-  const a = el("statusAlert");
-  if(!text){
-    a.className = "alert";
-    a.textContent = "";
-    return;
-  }
-  a.className = "alert show " + (type || "");
-  a.textContent = text;
-}
-
-
-async function fetchServerLogs() {
-  const res = await fetch(`${BACKEND_URL}/api/server/logs/${licenseKey}`);
-  const json = await res.json();
-  const list = (json && json.data) ? json.data : [];
-
-  const el = document.getElementById("serverLogs");
-  el.innerHTML = list.slice(0, 60).map(l => `
-    <div class="logRow">
-      <div class="logTime">${new Date(l.time).toLocaleTimeString()}</div>
-      <div class="logMsg">${escapeHtml(l.message)}</div>
-    </div>
-  `).join("");
-}
-
-setInterval(fetchServerLogs, 2500);
-fetchServerLogs();
-
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-
-
-  
-async function fetchServerStatus() {
-  const res = await fetch(
-    `https://ghostgaurd-becakd.onrender.com/api/server/status/${licenseKey}`
-  );
+/* SERVER STATUS */
+async function fetchServerStatus(){
+  const res = await fetch(`${API}/api/server/status/${licenseKey}`);
   const data = await res.json();
 
   const online = data.online;
 
-  document.getElementById("ac-status").innerText = online ? "Online" : "Offline";
-  document.getElementById("ac-status").className = online ? "status-online" : "status-offline";
-
-  document.getElementById("players-count").innerText = data.players || 0;
-  document.getElementById("ac-version").innerText = data.version || "-";
-  document.getElementById("ac-uptime").innerText = formatUptime(data.uptime || 0);
+  el("ac-status").innerText = online ? "Online" : "Offline";
+  el("ac-status").className = online ? "status-online" : "status-offline";
+  el("players-count").innerText = data.players || 0;
+  el("ac-version").innerText = data.version || "-";
+  el("ac-uptime").innerText = formatUptime(data.uptime || 0);
 }
 
-function formatUptime(seconds) {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
+function formatUptime(seconds){
+  const h = Math.floor(seconds/3600);
+  const m = Math.floor((seconds%3600)/60);
+  const s = seconds%60;
   return `${h}h ${m}m ${s}s`;
 }
 
-setInterval(fetchServerStatus, 5000);
+setInterval(fetchServerStatus,5000);
 fetchServerStatus();
 
-  
+/* LOGS */
+async function fetchLogs(){
+  const res = await fetch(`${API}/api/server/logs/${licenseKey}`);
+  const json = await res.json();
+  const list = json.data || [];
 
-async function fetchStatus() {
-  const res = await fetch(`${BACKEND_URL}/api/server/status/${licenseKey}`);
-  const data = await res.json();
-
-  if (data.online) {
-    document.getElementById("status").innerText = "Online";
-  } else {
-    document.getElementById("status").innerText = "Offline";
-  }
-
-  document.getElementById("players").innerText = data.players || 0;
-  document.getElementById("uptime").innerText = formatUptime(data.uptime || 0);
-  document.getElementById("version").innerText = data.version || "-";
+  el("serverLogs").innerHTML = list.slice(0,60).map(l=>`
+    <div class="logRow">
+      <div class="logTime">${new Date(l.time).toLocaleTimeString()}</div>
+      <div>${l.message}</div>
+    </div>
+  `).join("");
 }
 
-setInterval(fetchStatus, 5000);
-
-  
-async function postJson(path, body){
-  const res = await fetch(API + path, {
-    method: "POST",
-    headers: { "Content-Type":"application/json" },
-    body: JSON.stringify(body || {})
-  });
-  const data = await res.json().catch(()=> ({}));
-  return { res, data };
-}
-
-async function loadDashboard(){
-  el("lk").textContent = licenseKey;
-  el("cfgKey").textContent = `Config.LicenseKey = "${licenseKey}"`;
-
-  const { res, data } = await postJson("/customer/dashboard", { token });
-
-  if(!res.ok || !data.success){
-    if(res.status === 401){
-      showAlert("Din session har gått ut. Logga in igen.", "red");
-      return;
-    }
-    showAlert("Kunde inte hämta licens (backend fel).", "red");
-    return;
-  }
-
-  const d = data.data || data;
-  currentExpire = d.expires_at || null;
-  currentStatus = (d.status || "UNKNOWN").toUpperCase();
-
-  if(currentExpire && new Date(currentExpire) < new Date()){
-    currentStatus = "EXPIRED";
-  }
-
-  el("st").innerHTML = pill(currentStatus);
-  el("ex").textContent = fmtDate(currentExpire);
-  el("tl").textContent = timeLeft(currentExpire);
-
-  if(currentStatus === "DISABLED"){
-    showAlert("En admin har stängt din licens. Öppna en ticket på Discord för mer info.", "red");
-  } else if(currentStatus === "EXPIRED"){
-    showAlert("Din licens har gått ut. Öppna en ticket på Discord för förlängning.", "red");
-  } else if(currentStatus === "ACTIVE"){
-    showAlert("", "");
-  } else {
-    showAlert("Status okänd just nu. Tryck Refresh eller kolla att backend är uppe.", "blue");
-  }
-
-  const canToggle = (currentStatus !== "EXPIRED");
-  el("btnStart").disabled = !canToggle;
-  el("btnStop").disabled  = !canToggle;
-}
-
-async function toggle(status){
-  if(currentStatus === "DISABLED"){
-    showAlert("Du kan inte starta: en admin har stängt din licens.", "red");
-    return;
-  }
-  if(currentStatus === "EXPIRED"){
-    showAlert("Du kan inte starta: licensen är utgången.", "red");
-    return;
-  }
-
-  const { res, data } = await postJson("/customer/toggle", { token, status });
-  if(!res.ok || !data.success){
-    if(res.status === 401){
-      showAlert("Din session har gått ut. Logga in igen.", "red");
-      return;
-    }
-    showAlert("Kunde inte ändra status (backend fel).", "red");
-    return;
-  }
-  loadDashboard();
-}
-
-function copyText(text){
-  navigator.clipboard.writeText(text).then(()=>{
-    showAlert("Kopierat ✅", "blue");
-    setTimeout(()=>showAlert("", ""), 1200);
-  });
-}
-
-/* BUTTONS */
-el("btnStart").onclick = () => toggle("ACTIVE");
-el("btnStop").onclick  = () => toggle("DISABLED");
-el("btnRefresh").onclick = loadDashboard;
-
-el("copyKey").onclick = () => copyText(`Config.LicenseKey = "${licenseKey}"`);
-el("copyEnsure").onclick = () => copyText("ensure ghostguard");
-
-el("logout").onclick = () => {
-  localStorage.removeItem("gg_license_key");
-  localStorage.removeItem("gg_token");
-  window.location.href = "index.html";
-};
-
-setInterval(() => {
-  if(currentExpire){
-    el("tl").textContent = timeLeft(currentExpire);
-  }
-}, 1000);
-
-setInterval(loadDashboard, 30000);
-
-loadDashboard();
+setInterval(fetchLogs,2500);
+fetchLogs();
 </script>
+
 </body>
 </html>
-
-
-
-
