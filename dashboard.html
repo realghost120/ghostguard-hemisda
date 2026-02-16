@@ -150,6 +150,31 @@ button{
   transition:.2s;
 }
 
+
+
+.toggle {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  background:#111827;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.toggle.active {
+  background:rgba(59,130,246,.25);
+  box-shadow:0 0 12px var(--blueGlow);
+}
+
+.toggle span {
+  font-weight:700;
+}
+
+
+  
 .btn-yellow{background:var(--yellow);color:#000}
 .btn-red{background:var(--red);color:white}
 .btn-blue{background:var(--blue);color:white}
@@ -166,7 +191,9 @@ button:hover{filter:brightness(1.1)}
   <div class="nav active" onclick="showView('dashboard',this)">Dashboard</div>
   <div class="nav" onclick="showView('players',this)">Players</div>
   <div class="nav" onclick="showView('logs',this)">Server Logs</div>
+  <div class="nav" onclick="showView('detections',this)">Detections</div>
 </div>
+
 
 <div class="content">
 
@@ -200,6 +227,14 @@ button:hover{filter:brightness(1.1)}
   </div>
 </div>
 
+<div id="detectionsView" style="display:none;">
+  <div class="card">
+    <h3>Detection Settings</h3>
+    <div id="detectionList"></div>
+  </div>
+</div>
+
+  
 </div>
 
 <div id="panel">
@@ -221,11 +256,19 @@ let selectedPlayer=null;
 function showView(view,el){
   document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
+
   dashboardView.style.display="none";
   playersView.style.display="none";
   logsView.style.display="none";
+  detectionsView.style.display="none";
+
   document.getElementById(view+"View").style.display="block";
+
+  if(view === "detections"){
+    fetchDetections();
+  }
 }
+
 
 async function fetchLicense(){
   if(!token) return;
@@ -309,6 +352,52 @@ async function fetchLogs(){
   `).join("");
 }
 
+
+const detectionMap = {
+  noclip: "Noclip",
+  speed: "Speed > 500",
+  explosions: "Explosion Spam",
+  vehicleSpam: "Vehicle Spam",
+  blacklistedVehicle: "Blacklisted Vehicles",
+  godmode: "Godmode"
+};
+
+async function fetchDetections(){
+  const res = await fetch(API+"/api/server/detections/"+encodeURIComponent(licenseKey));
+  const data = await res.json();
+  if(!data.success) return;
+
+  const settings = data.settings;
+
+  detectionList.innerHTML = Object.keys(detectionMap).map(key=>{
+    const active = settings[key];
+    return `
+      <div class="toggle ${active ? "active":""}" onclick="toggleDetection('${key}', ${active})">
+        <span>${detectionMap[key]}</span>
+        <span>${active ? "ON":"OFF"}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+async function toggleDetection(key,current){
+  const res = await fetch(API+"/api/dashboard/detections",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      token,
+      license_key:licenseKey,
+      key,
+      value:!current
+    })
+  });
+  const data = await res.json();
+  if(data.success){
+    fetchDetections();
+  }
+}
+
+  
 setInterval(fetchServer,5000);
 setInterval(fetchPlayers,3000);
 setInterval(fetchLogs,3000);
@@ -321,3 +410,4 @@ fetchLogs();
 
 </body>
 </html>
+
