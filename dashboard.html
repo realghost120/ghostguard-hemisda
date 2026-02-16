@@ -6,108 +6,118 @@
 <title>GhostGuard Panel</title>
 
 <style>
-:root{
-  --bg:#060b18;
-  --sidebar:#0c1426;
-  --card:#111c33;
-  --border:rgba(255,255,255,.08);
-  --blue:#3b82f6;
-  --green:#22c55e;
-  --red:#ef4444;
-  --yellow:#f59e0b;
-  --text:#e6f0ff;
-  --muted:rgba(230,240,255,.6);
-}
-*{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Inter,Arial,system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--text);
+  font-family:Arial;
+  background:#0b1220;
+  color:white;
   display:flex;
 }
+
 .sidebar{
-  width:230px;
-  background:var(--sidebar);
-  min-height:100vh;
-  padding:20px 15px;
-  border-right:1px solid var(--border);
+  width:220px;
+  background:#111827;
+  padding:20px;
 }
-.logo{font-weight:900;font-size:18px;margin-bottom:22px}
-.nav-item{
-  padding:12px;
+
+.sidebar h2{
+  margin-top:0;
+}
+
+.sidebar div{
+  margin:12px 0;
+  cursor:pointer;
+}
+
+.content{
+  flex:1;
+  padding:30px;
+}
+
+.card{
+  background:#1f2937;
+  padding:20px;
   border-radius:10px;
+  margin-bottom:20px;
+}
+
+.player{
+  padding:10px;
+  background:#1f2937;
   margin-bottom:8px;
   cursor:pointer;
-  color:var(--muted);
+  border-radius:6px;
 }
-.nav-item.active{
-  background:rgba(59,130,246,.25);
-  color:var(--text);
+
+.player:hover{
+  background:#374151;
 }
-.content{flex:1;padding:26px}
-.card{
-  background:var(--card);
-  padding:18px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  margin-bottom:18px;
+
+#panel{
+  position:fixed;
+  right:-350px;
+  top:0;
+  width:300px;
+  height:100%;
+  background:#111827;
+  padding:20px;
+  transition:0.3s;
 }
-.row{
-  display:flex;
-  justify-content:space-between;
-  padding:6px 0;
+
+#panel.active{
+  right:0;
 }
-.status-online{color:var(--green);font-weight:900}
-.status-offline{color:var(--red);font-weight:900}
-.status-warn{color:var(--yellow);font-weight:900}
-.hidden{display:none}
+
+button{
+  width:100%;
+  margin-top:10px;
+  padding:10px;
+  cursor:pointer;
+}
 </style>
 </head>
 
 <body>
 
 <div class="sidebar">
-  <div class="logo">👻 GhostGuard</div>
-  <div class="nav-item active" onclick="showView('dashboard',this)">Dashboard</div>
-  <div class="nav-item" onclick="showView('players',this)">Players</div>
-  <div class="nav-item" onclick="showView('logs',this)">Server Logs</div>
+  <h2>GhostGuard</h2>
+  <div onclick="show('dashboard')">Dashboard</div>
+  <div onclick="show('players')">Players</div>
 </div>
 
 <div class="content">
 
-<div id="dashboardView">
-  <div class="card">
-    <h3>License</h3>
-    <div class="row"><span>Status</span><span id="license-status">Loading...</span></div>
-    <div class="row"><span>Expires</span><span id="license-expire">-</span></div>
-    <div class="row"><span>Time Left</span><span id="license-left">-</span></div>
+  <div id="dashboard">
+    <div class="card">
+      <h3>License</h3>
+      <div>Status: <span id="licenseStatus">Loading...</span></div>
+      <div>Expires: <span id="licenseExpire">-</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Server</h3>
+      <div>Status: <span id="serverStatus">Loading...</span></div>
+      <div>Players: <span id="playerCount">0</span></div>
+    </div>
   </div>
 
-  <div class="card">
-    <h3>Server</h3>
-    <div class="row"><span>Status</span><span id="server-status">Loading...</span></div>
-    <div class="row"><span>Players</span><span id="players-count">0</span></div>
-  </div>
-</div>
-
-<div id="playersView" class="hidden">
-  <div class="card">
+  <div id="players" style="display:none;">
     <h3>Online Players</h3>
-    <div id="players-list"></div>
+    <div id="playerList"></div>
   </div>
-</div>
-
-<div id="logsView" class="hidden">
-  <div class="card">
-    <h3>Server Logs</h3>
-    <div id="logs-box"></div>
-  </div>
-</div>
 
 </div>
 
-<script>
+<div id="panel">
+  <h3 id="panelName">Player</h3>
+  <div id="panelId"></div>
+
+  <button onclick="kick()">Kick</button>
+  <button onclick="ban()">Ban</button>
+  <button onclick="dm()">DM</button>
+  <button onclick="closePanel()">Close</button>
+</div>
+
 <script>
 const API = "https://ghostgaurd-becakd.onrender.com";
 const licenseKey = localStorage.getItem("gg_license_key") || "";
@@ -115,147 +125,111 @@ const token = localStorage.getItem("gg_token") || "";
 
 let selectedPlayer = null;
 
-/* ================= VIEW SWITCH ================= */
-function showView(view, el){
-  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
-  el.classList.add("active");
+/* VIEW */
+function show(view){
+  document.getElementById("dashboard").style.display="none";
+  document.getElementById("players").style.display="none";
+  document.getElementById(view).style.display="block";
+}
 
-  ["dashboard","players","logs"].forEach(v=>{
-    document.getElementById(v+"View").classList.add("hidden");
+/* LICENSE */
+async function fetchLicense(){
+  if(!token) return;
+
+  const res = await fetch(API + "/customer/dashboard",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({token})
   });
 
-  document.getElementById(view+"View").classList.remove("hidden");
+  const data = await res.json();
+  if(!data.success) return;
+
+  document.getElementById("licenseStatus").innerText = data.data.status;
+  document.getElementById("licenseExpire").innerText =
+    data.data.expires_at ? new Date(data.data.expires_at).toLocaleString() : "Lifetime";
 }
 
-/* ================= PLAYERS ================= */
+/* SERVER STATUS */
+async function fetchServer(){
+  const res = await fetch(API + "/api/server/status/" + encodeURIComponent(licenseKey));
+  const data = await res.json();
+
+  document.getElementById("serverStatus").innerText = data.online ? "Online" : "Offline";
+  document.getElementById("playerCount").innerText = data.players || 0;
+}
+
+/* PLAYERS */
 async function fetchPlayers(){
-  if(!licenseKey) return;
+  const res = await fetch(API + "/api/server/players/" + encodeURIComponent(licenseKey));
+  const data = await res.json();
 
-  try{
-    const res = await fetch(API + "/api/server/players/" + encodeURIComponent(licenseKey));
-    const data = await res.json();
+  const list = data.players || [];
+  const container = document.getElementById("playerList");
 
-    const list = data.players || [];
-    const container = document.getElementById("players-list");
-
-    if(list.length === 0){
-      container.innerHTML = "<div style='opacity:.6'>Inga spelare online</div>";
-      return;
-    }
-
-    container.innerHTML = list.map(p => `
-      <div class="player-row" onclick="openPlayerPanel(${p.id}, '${p.name.replace(/'/g,"")}')">
-        <div>
-          <div class="player-name">${p.name}</div>
-          <div class="player-sub">ID: ${p.id} • Ping: ${p.ping}</div>
-        </div>
-        <div class="arrow">→</div>
-      </div>
-    `).join("");
-
-  }catch(e){
-    console.error(e);
-  }
+  container.innerHTML = list.map(p => `
+    <div class="player" onclick="openPanel(${p.id}, '${p.name}')">
+      ${p.name} (ID: ${p.id})
+    </div>
+  `).join("");
 }
 
-/* ================= SIDE PANEL ================= */
-function openPlayerPanel(id, name){
+function openPanel(id,name){
   selectedPlayer = id;
-
-  document.getElementById("panelPlayerName").innerText = name;
-  document.getElementById("panelInfo").innerText = "Server ID: " + id;
-
-  document.getElementById("playerPanel").classList.add("active");
+  document.getElementById("panelName").innerText = name;
+  document.getElementById("panelId").innerText = "Server ID: " + id;
+  document.getElementById("panel").classList.add("active");
 }
 
 function closePanel(){
-  document.getElementById("playerPanel").classList.remove("active");
+  document.getElementById("panel").classList.remove("active");
 }
 
-/* ================= ACTION SYSTEM ================= */
-async function sendAction(type, payload){
-  try{
-    const res = await fetch(API + "/api/dashboard/action", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        token,
-        license_key: licenseKey,
-        type,
-        payload
-      })
-    });
-
-    const data = await res.json();
-    if(!res.ok) throw new Error(data.message || "Backend error");
-
-    return true;
-  }catch(e){
-    console.error(e);
-    alert("Backend error");
-    return false;
-  }
-}
-
-/* ================= KICK ================= */
-async function openKick(){
-  if(!selectedPlayer) return;
-
-  const reason = prompt("Anledning för kick:");
-  if(!reason) return;
-
-  const ok = await sendAction("kick", {
-    player: selectedPlayer,
-    reason
+/* ACTIONS */
+async function send(type,payload){
+  await fetch(API + "/api/dashboard/action",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      token,
+      license_key: licenseKey,
+      type,
+      payload
+    })
   });
-
-  if(ok) alert("Kick skickad ✅");
-  closePanel();
 }
 
-/* ================= BAN ================= */
-async function openBan(){
-  if(!selectedPlayer) return;
-
-  const reason = prompt("Anledning för ban:");
+async function kick(){
+  const reason = prompt("Reason:");
   if(!reason) return;
+  await send("kick",{player:selectedPlayer,reason});
+  alert("Kick sent");
+}
 
-  const duration = prompt("Tid (30m, 2h, 7d, P):");
+async function ban(){
+  const reason = prompt("Reason:");
+  if(!reason) return;
+  const duration = prompt("Duration (30m, 2h, 7d, P):");
   if(!duration) return;
-
-  const ok = await sendAction("ban", {
-    player: selectedPlayer,
-    reason,
-    duration
-  });
-
-  if(ok) alert("Ban skickad ✅");
-  closePanel();
+  await send("ban",{player:selectedPlayer,reason,duration});
+  alert("Ban sent");
 }
 
-/* ================= DM ================= */
-async function openDM(){
-  if(!selectedPlayer) return;
-
-  const message = prompt("Skriv DM:");
+async function dm(){
+  const message = prompt("Message:");
   if(!message) return;
-
-  const ok = await sendAction("dm", {
-    player: selectedPlayer,
-    message
-  });
-
-  if(ok) alert("DM skickad ✅");
-  closePanel();
+  await send("dm",{player:selectedPlayer,message});
+  alert("DM sent");
 }
 
-/* ================= AUTO REFRESH ================= */
-setInterval(fetchPlayers, 3000);
-fetchPlayers();
-</script>
+/* AUTO */
+setInterval(fetchServer,5000);
+setInterval(fetchPlayers,3000);
 
+fetchLicense();
+fetchServer();
+fetchPlayers();
 </script>
 
 </body>
 </html>
-
