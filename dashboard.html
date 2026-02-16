@@ -233,8 +233,17 @@ async function fetchLogs(){
 async function fetchLicense(){
   const token = localStorage.getItem("gg_token") || "";
 
+  const keyEl = document.getElementById("license-key");
+  const statusEl = document.getElementById("license-status");
+  const expireEl = document.getElementById("license-expire");
+  const leftEl = document.getElementById("license-left");
+
   if(!token){
-    document.getElementById("license-status").innerText = "NO SESSION";
+    keyEl.innerText = "-";
+    statusEl.innerText = "NO SESSION";
+    statusEl.className = "status-warn";
+    expireEl.innerText = "-";
+    leftEl.innerText = "-";
     return;
   }
 
@@ -245,26 +254,51 @@ async function fetchLicense(){
       body: JSON.stringify({ token })
     });
 
-    const text = await res.text();
-    let data = null;
-    try{ data = JSON.parse(text); }catch{}
+    if(!res.ok){
+      throw new Error("HTTP " + res.status);
+    }
 
-    if(!data || !data.success){
-      document.getElementById("license-status").innerText = "ERROR";
-      return;
+    const data = await res.json();
+
+    if(!data || !data.success || !data.data){
+      throw new Error("Invalid response");
     }
 
     const lic = data.data;
 
-    document.getElementById("license-status").innerText = lic.status || "-";
-    document.getElementById("license-expire").innerText =
-      lic.expires_at ? new Date(lic.expires_at).toLocaleString() : "Lifetime";
+    keyEl.innerText = lic.license_key || "-";
 
-  }catch(e){
-    console.error("License error:", e);
-    document.getElementById("license-status").innerText = "NETWORK ERROR";
+    statusEl.innerText = lic.status || "UNKNOWN";
+
+    if(lic.status === "ACTIVE"){
+      statusEl.className = "status-online";
+    }else if(lic.status === "DISABLED" || lic.status === "EXPIRED"){
+      statusEl.className = "status-offline";
+    }else{
+      statusEl.className = "status-warn";
+    }
+
+    expireEl.innerText =
+      lic.expires_at
+        ? new Date(lic.expires_at).toLocaleString()
+        : "Lifetime";
+
+    leftEl.innerText =
+      lic.expires_at
+        ? calcTimeLeft(lic.expires_at)
+        : "Lifetime";
+
+  }catch(err){
+    console.error("License error:", err);
+
+    keyEl.innerText = "-";
+    statusEl.innerText = "OFFLINE";
+    statusEl.className = "status-offline";
+    expireEl.innerText = "-";
+    leftEl.innerText = "-";
   }
 }
+
 
 
   
@@ -279,4 +313,5 @@ fetchLogs();
 
 </body>
 </html>
+
 
