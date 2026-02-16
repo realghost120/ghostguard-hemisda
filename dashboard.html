@@ -7,11 +7,14 @@
 
 <style>
 :root{
-  --bg:#070f1f;
-  --card:#111c33;
+  --bg:#060c18;
+  --bg2:#0c1426;
+  --card:#101a2e;
   --blue:#3b82f6;
-  --blue2:#2563eb;
-  --border:rgba(255,255,255,.08);
+  --blueGlow:rgba(59,130,246,.4);
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --border:rgba(255,255,255,.06);
   --text:#e6f0ff;
   --muted:rgba(230,240,255,.6);
 }
@@ -19,32 +22,33 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Inter,Arial,system-ui,sans-serif;
-  background:linear-gradient(160deg,#070f1f,#0b1730);
+  font-family:Inter,system-ui;
+  background:radial-gradient(circle at 20% 0%, #0f1f3d, #060c18);
   color:var(--text);
   display:flex;
 }
 
 /* SIDEBAR */
 .sidebar{
-  width:230px;
-  background:#0b1426;
-  padding:25px;
+  width:240px;
+  background:linear-gradient(180deg,#0b1426,#0a1222);
+  padding:30px 20px;
   border-right:1px solid var(--border);
 }
 
 .logo{
+  font-size:22px;
   font-weight:900;
-  font-size:20px;
-  margin-bottom:30px;
+  margin-bottom:35px;
 }
 
 .nav{
-  margin:15px 0;
+  padding:12px 14px;
+  border-radius:10px;
   cursor:pointer;
-  padding:10px;
-  border-radius:8px;
+  margin-bottom:10px;
   color:var(--muted);
+  transition:.2s;
 }
 
 .nav:hover{
@@ -52,7 +56,7 @@ body{
   color:white;
 }
 
-.active{
+.nav.active{
   background:rgba(59,130,246,.25);
   color:white;
 }
@@ -60,49 +64,55 @@ body{
 /* CONTENT */
 .content{
   flex:1;
-  padding:30px;
+  padding:40px;
 }
 
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:20px;
+  gap:25px;
 }
 
 .card{
-  background:linear-gradient(180deg,#111c33,#0f1a2e);
-  padding:20px;
-  border-radius:14px;
+  background:linear-gradient(180deg,var(--card),#0d1628);
+  border-radius:16px;
+  padding:25px;
   border:1px solid var(--border);
-  box-shadow:0 10px 40px rgba(0,0,0,.4);
+  box-shadow:0 0 40px rgba(0,0,0,.4);
 }
 
 .card h3{
-  margin-top:0;
-  margin-bottom:15px;
+  margin:0 0 20px 0;
+  font-size:18px;
+  font-weight:900;
 }
 
 .row{
   display:flex;
   justify-content:space-between;
-  padding:6px 0;
+  padding:8px 0;
   border-bottom:1px solid rgba(255,255,255,.05);
 }
 
-.row:last-child{border-bottom:none}
+.row:last-child{border:none}
+
+.status-online{color:#22c55e;font-weight:800}
+.status-offline{color:var(--red);font-weight:800}
 
 /* PLAYERS */
 .player{
-  padding:12px;
-  border-radius:10px;
+  padding:14px;
+  border-radius:12px;
   background:rgba(59,130,246,.08);
-  margin-bottom:8px;
+  margin-bottom:10px;
   cursor:pointer;
   transition:.2s;
+  border:1px solid transparent;
 }
 
 .player:hover{
-  background:rgba(59,130,246,.2);
+  background:rgba(59,130,246,.18);
+  border-color:var(--blueGlow);
 }
 
 /* LOGS */
@@ -113,17 +123,18 @@ body{
   color:var(--muted);
 }
 
-/* SIDE PANEL */
+/* PANEL */
 #panel{
   position:fixed;
-  right:-400px;
+  right:-380px;
   top:0;
-  width:350px;
+  width:360px;
   height:100%;
-  background:#0f1a2e;
-  padding:25px;
-  transition:.3s;
+  background:linear-gradient(180deg,#0d1628,#0a1222);
   border-left:1px solid var(--border);
+  padding:30px;
+  transition:.3s;
+  box-shadow:-20px 0 50px rgba(0,0,0,.5);
 }
 
 #panel.active{right:0}
@@ -131,17 +142,20 @@ body{
 button{
   width:100%;
   padding:12px;
-  margin-top:10px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
+  margin-top:12px;
   cursor:pointer;
-  font-weight:700;
+  font-weight:800;
+  transition:.2s;
 }
 
+.btn-yellow{background:var(--yellow);color:#000}
+.btn-red{background:var(--red);color:white}
 .btn-blue{background:var(--blue);color:white}
-.btn-red{background:#ef4444;color:white}
-.btn-yellow{background:#f59e0b;color:white}
 .btn-grey{background:#1f2937;color:white}
+
+button:hover{filter:brightness(1.1)}
 </style>
 </head>
 
@@ -149,54 +163,48 @@ button{
 
 <div class="sidebar">
   <div class="logo">👻 GhostGuard</div>
-  <div class="nav active" onclick="show('dashboard',this)">Dashboard</div>
-  <div class="nav" onclick="show('players',this)">Players</div>
-  <div class="nav" onclick="show('logs',this)">Server Logs</div>
+  <div class="nav active" onclick="showView('dashboard',this)">Dashboard</div>
+  <div class="nav" onclick="showView('players',this)">Players</div>
+  <div class="nav" onclick="showView('logs',this)">Server Logs</div>
 </div>
 
 <div class="content">
 
-  <!-- DASHBOARD -->
-  <div id="dashboardView">
-    <div class="grid">
-
-      <div class="card">
-        <h3>License</h3>
-        <div class="row"><span>Status</span><span id="licenseStatus">Loading...</span></div>
-        <div class="row"><span>Expires</span><span id="licenseExpire">-</span></div>
-      </div>
-
-      <div class="card">
-        <h3>Server</h3>
-        <div class="row"><span>Status</span><span id="serverStatus">Loading...</span></div>
-        <div class="row"><span>Players</span><span id="playerCount">0</span></div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- PLAYERS -->
-  <div id="playersView" style="display:none;">
+<div id="dashboardView">
+  <div class="grid">
     <div class="card">
-      <h3>Online Players</h3>
-      <div id="playerList"></div>
+      <h3>License</h3>
+      <div class="row"><span>Status</span><span id="licenseStatus">Loading...</span></div>
+      <div class="row"><span>Expires</span><span id="licenseExpire">-</span></div>
     </div>
-  </div>
 
-  <!-- LOGS -->
-  <div id="logsView" style="display:none;">
     <div class="card">
-      <h3>Live Server Logs</h3>
-      <div id="logList"></div>
+      <h3>Server</h3>
+      <div class="row"><span>Status</span><span id="serverStatus">Loading...</span></div>
+      <div class="row"><span>Players</span><span id="playerCount">0</span></div>
     </div>
   </div>
+</div>
+
+<div id="playersView" style="display:none;">
+  <div class="card">
+    <h3>Online Players</h3>
+    <div id="playerList"></div>
+  </div>
+</div>
+
+<div id="logsView" style="display:none;">
+  <div class="card">
+    <h3>Live Logs</h3>
+    <div id="logList"></div>
+  </div>
+</div>
 
 </div>
 
-<!-- SIDE PANEL -->
 <div id="panel">
   <h3 id="panelName">Player</h3>
-  <div id="panelId"></div>
+  <div id="panelId" style="color:var(--muted);margin-bottom:20px;"></div>
 
   <button class="btn-yellow" onclick="kick()">Kick</button>
   <button class="btn-red" onclick="ban()">Ban</button>
@@ -208,11 +216,9 @@ button{
 const API="https://ghostgaurd-becakd.onrender.com";
 const licenseKey=localStorage.getItem("gg_license_key")||"";
 const token=localStorage.getItem("gg_token")||"";
-
 let selectedPlayer=null;
 
-/* VIEW */
-function show(view,el){
+function showView(view,el){
   document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
   dashboardView.style.display="none";
@@ -221,37 +227,31 @@ function show(view,el){
   document.getElementById(view+"View").style.display="block";
 }
 
-/* LICENSE */
 async function fetchLicense(){
   if(!token) return;
-  const res=await fetch(API+"/customer/dashboard",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({token})
-  });
+  const res=await fetch(API+"/customer/dashboard",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token})});
   const data=await res.json();
   if(!data.success) return;
   licenseStatus.innerText=data.data.status;
-  licenseExpire.innerText=data.data.expires_at?
-    new Date(data.data.expires_at).toLocaleString():"Lifetime";
+  licenseExpire.innerText=data.data.expires_at?new Date(data.data.expires_at).toLocaleString():"Lifetime";
 }
 
-/* SERVER */
 async function fetchServer(){
   const res=await fetch(API+"/api/server/status/"+encodeURIComponent(licenseKey));
   const data=await res.json();
   serverStatus.innerText=data.online?"Online":"Offline";
+  serverStatus.className=data.online?"status-online":"status-offline";
   playerCount.innerText=data.players||0;
 }
 
-/* PLAYERS */
 async function fetchPlayers(){
   const res=await fetch(API+"/api/server/players/"+encodeURIComponent(licenseKey));
   const data=await res.json();
   const list=data.players||[];
   playerList.innerHTML=list.map(p=>`
-    <div class="player" onclick="openPanel(${p.id},'${p.name}')">
-      ${p.name} (ID: ${p.id})
+    <div class="player" onclick="openPanel(${p.id},'${p.name.replace(/'/g,"")}')">
+      <b>${p.name}</b><br>
+      <span style="color:var(--muted)">ID: ${p.id}</span>
     </div>
   `).join("");
 }
@@ -263,55 +263,52 @@ function openPanel(id,name){
   panel.classList.add("active");
 }
 
-function closePanel(){
-  panel.classList.remove("active");
-}
+function closePanel(){ panel.classList.remove("active"); }
 
-/* ACTION */
 async function send(type,payload){
-  await fetch(API+"/api/dashboard/action",{
+  const res=await fetch(API+"/api/dashboard/action",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({token,license_key:licenseKey,type,payload})
   });
+  const data=await res.json();
+  return data.success;
 }
 
 async function kick(){
+  if(!selectedPlayer) return;
   const reason=prompt("Reason:");
-  if(!reason)return;
-  await send("kick",{player:selectedPlayer,reason});
-  alert("Kick sent");
+  if(!reason) return;
+  const ok=await send("kick",{player:selectedPlayer,reason});
+  if(ok) alert("Kick sent");
 }
 
 async function ban(){
+  if(!selectedPlayer) return;
   const reason=prompt("Reason:");
-  if(!reason)return;
+  if(!reason) return;
   const duration=prompt("Duration (30m,2h,7d,P):");
-  if(!duration)return;
-  await send("ban",{player:selectedPlayer,reason,duration});
-  alert("Ban sent");
+  if(!duration) return;
+  const ok=await send("ban",{player:selectedPlayer,reason,duration});
+  if(ok) alert("Ban sent");
 }
 
 async function dm(){
+  if(!selectedPlayer) return;
   const message=prompt("Message:");
-  if(!message)return;
-  await send("dm",{player:selectedPlayer,message});
-  alert("DM sent");
+  if(!message) return;
+  const ok=await send("dm",{player:selectedPlayer,message});
+  if(ok) alert("DM sent");
 }
 
-/* LOGS */
 async function fetchLogs(){
   const res=await fetch(API+"/api/server/logs/"+encodeURIComponent(licenseKey));
   const data=await res.json();
-  const logs=data.data||[];
-  logList.innerHTML=logs.slice(0,50).map(l=>`
-    <div class="log">
-      ${new Date(l.time).toLocaleTimeString()} - ${l.message}
-    </div>
+  logList.innerHTML=(data.data||[]).slice(0,50).map(l=>`
+    <div class="log">${new Date(l.time).toLocaleTimeString()} - ${l.message}</div>
   `).join("");
 }
 
-/* AUTO */
 setInterval(fetchServer,5000);
 setInterval(fetchPlayers,3000);
 setInterval(fetchLogs,3000);
