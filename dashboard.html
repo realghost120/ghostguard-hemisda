@@ -230,6 +230,44 @@ async function fetchLogs(){
     `).join("");
 }
 
+async function fetchLicense(){
+  const token = localStorage.getItem("gg_token") || "";
+
+  if(!token){
+    document.getElementById("license-status").innerText = "NO SESSION";
+    return;
+  }
+
+  try{
+    const res = await fetch(API + "/customer/dashboard", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ token })
+    });
+
+    const text = await res.text();
+    let data = null;
+    try{ data = JSON.parse(text); }catch{}
+
+    if(!data || !data.success){
+      document.getElementById("license-status").innerText = "ERROR";
+      return;
+    }
+
+    const lic = data.data;
+
+    document.getElementById("license-status").innerText = lic.status || "-";
+    document.getElementById("license-expire").innerText =
+      lic.expires_at ? new Date(lic.expires_at).toLocaleString() : "Lifetime";
+
+  }catch(e){
+    console.error("License error:", e);
+    document.getElementById("license-status").innerText = "NETWORK ERROR";
+  }
+}
+
+
+  
 setInterval(fetchPlayers, 3000);
 setInterval(fetchServerStatus, 5000);
 setInterval(fetchLogs, 3000);
@@ -241,3 +279,4 @@ fetchLogs();
 
 </body>
 </html>
+
