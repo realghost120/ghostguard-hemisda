@@ -18,116 +18,50 @@
   --text:#e6f0ff;
   --muted:rgba(230,240,255,.6);
 }
-
 *{box-sizing:border-box}
 body{
   margin:0;
   font-family:Inter,Arial,system-ui,sans-serif;
-  background:radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.15), transparent 60%), var(--bg);
+  background:var(--bg);
   color:var(--text);
   display:flex;
 }
-
 .sidebar{
   width:230px;
-  background:linear-gradient(180deg, rgba(12,20,38,.95), rgba(12,20,38,.85));
+  background:var(--sidebar);
   min-height:100vh;
   padding:20px 15px;
   border-right:1px solid var(--border);
 }
-
-.logo{
-  font-weight:900;
-  font-size:18px;
-  margin-bottom:22px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
+.logo{font-weight:900;font-size:18px;margin-bottom:22px}
 .nav-item{
-  padding:12px 14px;
+  padding:12px;
   border-radius:10px;
   margin-bottom:8px;
   cursor:pointer;
   color:var(--muted);
 }
-.nav-item:hover{
-  background:rgba(59,130,246,.15);
-  color:var(--text);
-}
 .nav-item.active{
   background:rgba(59,130,246,.25);
   color:var(--text);
 }
-
-.content{
-  flex:1;
-  padding:26px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:18px;
-}
-
+.content{flex:1;padding:26px}
 .card{
-  background:linear-gradient(180deg, rgba(17,28,51,.95), rgba(17,28,51,.78));
+  background:var(--card);
   padding:18px;
   border-radius:14px;
   border:1px solid var(--border);
+  margin-bottom:18px;
 }
-
-.card-title{
-  font-weight:900;
-  font-size:16px;
-  margin-bottom:12px;
-}
-
 .row{
   display:flex;
   justify-content:space-between;
   padding:6px 0;
-  border-bottom:1px solid rgba(255,255,255,.05);
 }
-
+.status-online{color:var(--green);font-weight:900}
+.status-offline{color:var(--red);font-weight:900}
+.status-warn{color:var(--yellow);font-weight:900}
 .hidden{display:none}
-
-.player-row{
-  display:flex;
-  justify-content:space-between;
-  padding:12px 14px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  cursor:pointer;
-}
-
-.player-name{font-weight:900}
-.player-sub{font-size:12px;color:var(--muted)}
-
-.logBox{
-  max-height:520px;
-  overflow:auto;
-  font-size:13px;
-}
-
-.logRow{
-  padding:8px 0;
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,.55);
-  padding:10px 14px;
-  border-radius:12px;
-  font-size:13px;
-  display:none;
-}
-.toast.show{display:block}
 </style>
 </head>
 
@@ -142,39 +76,36 @@ body{
 
 <div class="content">
 
-  <div id="dashboardView">
-    <div class="grid">
-      <div class="card">
-        <div class="card-title">License</div>
-        <div class="row"><div>Status</div><div id="license-status">-</div></div>
-        <div class="row"><div>Expires</div><div id="license-expire">-</div></div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Server</div>
-        <div class="row"><div>Status</div><div id="server-status">-</div></div>
-        <div class="row"><div>Players</div><div id="players-count">0</div></div>
-      </div>
-    </div>
+<div id="dashboardView">
+  <div class="card">
+    <h3>License</h3>
+    <div class="row"><span>Status</span><span id="license-status">Loading...</span></div>
+    <div class="row"><span>Expires</span><span id="license-expire">-</span></div>
+    <div class="row"><span>Time Left</span><span id="license-left">-</span></div>
   </div>
 
-  <div id="playersView" class="hidden">
-    <div class="card">
-      <div class="card-title">Online Players</div>
-      <div id="players-list"></div>
-    </div>
+  <div class="card">
+    <h3>Server</h3>
+    <div class="row"><span>Status</span><span id="server-status">Loading...</span></div>
+    <div class="row"><span>Players</span><span id="players-count">0</span></div>
   </div>
-
-  <div id="logsView" class="hidden">
-    <div class="card">
-      <div class="card-title">Logs</div>
-      <div id="logs-box" class="logBox"></div>
-    </div>
-  </div>
-
 </div>
 
-<div class="toast" id="toast"></div>
+<div id="playersView" class="hidden">
+  <div class="card">
+    <h3>Online Players</h3>
+    <div id="players-list"></div>
+  </div>
+</div>
+
+<div id="logsView" class="hidden">
+  <div class="card">
+    <h3>Server Logs</h3>
+    <div id="logs-box"></div>
+  </div>
+</div>
+
+</div>
 
 <script>
 const API = "https://ghostgaurd-becakd.onrender.com";
@@ -183,67 +114,33 @@ const licenseKey = localStorage.getItem("gg_license_key") || "";
 function showView(view, el){
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
-
   ["dashboard","players","logs"].forEach(v=>{
     document.getElementById(v+"View").classList.add("hidden");
   });
-
   document.getElementById(view+"View").classList.remove("hidden");
 }
 
-async function fetchPlayers(){
-  if(!licenseKey) return;
-  const res = await fetch(API + "/api/server/players/" + licenseKey);
-  const data = await res.json();
-  const list = data.players || [];
-  document.getElementById("players-count").innerText = list.length;
-
-  document.getElementById("players-list").innerHTML =
-    list.map(p=>`
-      <div class="player-row">
-        <div>
-          <div class="player-name">${p.name}</div>
-          <div class="player-sub">ID: ${p.id} • Ping: ${p.ping}</div>
-        </div>
-      </div>
-    `).join("");
-}
-
-async function fetchServerStatus(){
-  if(!licenseKey) return;
-  const res = await fetch(API + "/api/server/status/" + licenseKey);
-  const data = await res.json();
-  document.getElementById("server-status").innerText =
-    data.online ? "Online" : "Offline";
-}
-
-async function fetchLogs(){
-  if(!licenseKey) return;
-  const res = await fetch(API + "/api/server/logs/" + licenseKey);
-  const data = await res.json();
-  const logs = data.data || [];
-  document.getElementById("logs-box").innerHTML =
-    logs.slice(0,50).map(l=>`
-      <div class="logRow">
-        ${l.message}
-      </div>
-    `).join("");
+function calcTimeLeft(expiresAt){
+  if(!expiresAt) return "Lifetime";
+  const exp = new Date(expiresAt);
+  const now = new Date();
+  if(exp <= now) return "Expired";
+  const diff = exp - now;
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+  return `${days}d ${hours}h ${minutes}m`;
 }
 
 async function fetchLicense(){
   const token = localStorage.getItem("gg_token") || "";
-
-  const keyEl = document.getElementById("license-key");
   const statusEl = document.getElementById("license-status");
   const expireEl = document.getElementById("license-expire");
   const leftEl = document.getElementById("license-left");
 
   if(!token){
-    keyEl.innerText = "-";
     statusEl.innerText = "NO SESSION";
     statusEl.className = "status-warn";
-    expireEl.innerText = "-";
-    leftEl.innerText = "-";
     return;
   }
 
@@ -254,64 +151,55 @@ async function fetchLicense(){
       body: JSON.stringify({ token })
     });
 
-    if(!res.ok){
-      throw new Error("HTTP " + res.status);
-    }
+    if(!res.ok) throw new Error("HTTP "+res.status);
 
     const data = await res.json();
-
-    if(!data || !data.success || !data.data){
-      throw new Error("Invalid response");
-    }
+    if(!data.success) throw new Error("Invalid response");
 
     const lic = data.data;
 
-    keyEl.innerText = lic.license_key || "-";
-
-    statusEl.innerText = lic.status || "UNKNOWN";
-
-    if(lic.status === "ACTIVE"){
-      statusEl.className = "status-online";
-    }else if(lic.status === "DISABLED" || lic.status === "EXPIRED"){
-      statusEl.className = "status-offline";
-    }else{
-      statusEl.className = "status-warn";
-    }
+    statusEl.innerText = lic.status;
+    statusEl.className =
+      lic.status === "ACTIVE" ? "status-online" :
+      lic.status === "EXPIRED" ? "status-offline" :
+      "status-warn";
 
     expireEl.innerText =
       lic.expires_at
         ? new Date(lic.expires_at).toLocaleString()
         : "Lifetime";
 
-    leftEl.innerText =
-      lic.expires_at
-        ? calcTimeLeft(lic.expires_at)
-        : "Lifetime";
+    leftEl.innerText = calcTimeLeft(lic.expires_at);
 
   }catch(err){
-    console.error("License error:", err);
-
-    keyEl.innerText = "-";
+    console.error(err);
     statusEl.innerText = "OFFLINE";
     statusEl.className = "status-offline";
-    expireEl.innerText = "-";
-    leftEl.innerText = "-";
   }
 }
 
+async function fetchServerStatus(){
+  if(!licenseKey) return;
 
+  try{
+    const res = await fetch(API + "/api/server/status/" + encodeURIComponent(licenseKey));
+    const data = await res.json();
 
-  
-setInterval(fetchPlayers, 3000);
+    const el = document.getElementById("server-status");
+    el.innerText = data.online ? "Online" : "Offline";
+    el.className = data.online ? "status-online" : "status-offline";
+    document.getElementById("players-count").innerText = data.players || 0;
+  }catch(e){
+    console.error(e);
+  }
+}
+
+setInterval(fetchLicense, 10000);
 setInterval(fetchServerStatus, 5000);
-setInterval(fetchLogs, 3000);
 
-fetchPlayers();
+fetchLicense();
 fetchServerStatus();
-fetchLogs();
 </script>
 
 </body>
 </html>
-
-
