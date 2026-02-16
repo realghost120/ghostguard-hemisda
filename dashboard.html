@@ -108,98 +108,154 @@ body{
 </div>
 
 <script>
+<script>
 const API = "https://ghostgaurd-becakd.onrender.com";
 const licenseKey = localStorage.getItem("gg_license_key") || "";
+const token = localStorage.getItem("gg_token") || "";
 
+let selectedPlayer = null;
+
+/* ================= VIEW SWITCH ================= */
 function showView(view, el){
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
+
   ["dashboard","players","logs"].forEach(v=>{
     document.getElementById(v+"View").classList.add("hidden");
   });
+
   document.getElementById(view+"View").classList.remove("hidden");
 }
 
-function calcTimeLeft(expiresAt){
-  if(!expiresAt) return "Lifetime";
-  const exp = new Date(expiresAt);
-  const now = new Date();
-  if(exp <= now) return "Expired";
-  const diff = exp - now;
-  const days = Math.floor(diff / (1000*60*60*24));
-  const hours = Math.floor((diff / (1000*60*60)) % 24);
-  const minutes = Math.floor((diff / (1000*60)) % 60);
-  return `${days}d ${hours}h ${minutes}m`;
-}
-
-async function fetchLicense(){
-  const token = localStorage.getItem("gg_token") || "";
-  const statusEl = document.getElementById("license-status");
-  const expireEl = document.getElementById("license-expire");
-  const leftEl = document.getElementById("license-left");
-
-  if(!token){
-    statusEl.innerText = "NO SESSION";
-    statusEl.className = "status-warn";
-    return;
-  }
-
-  try{
-    const res = await fetch(API + "/customer/dashboard", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ token })
-    });
-
-    if(!res.ok) throw new Error("HTTP "+res.status);
-
-    const data = await res.json();
-    if(!data.success) throw new Error("Invalid response");
-
-    const lic = data.data;
-
-    statusEl.innerText = lic.status;
-    statusEl.className =
-      lic.status === "ACTIVE" ? "status-online" :
-      lic.status === "EXPIRED" ? "status-offline" :
-      "status-warn";
-
-    expireEl.innerText =
-      lic.expires_at
-        ? new Date(lic.expires_at).toLocaleString()
-        : "Lifetime";
-
-    leftEl.innerText = calcTimeLeft(lic.expires_at);
-
-  }catch(err){
-    console.error(err);
-    statusEl.innerText = "OFFLINE";
-    statusEl.className = "status-offline";
-  }
-}
-
-async function fetchServerStatus(){
+/* ================= PLAYERS ================= */
+async function fetchPlayers(){
   if(!licenseKey) return;
 
   try{
-    const res = await fetch(API + "/api/server/status/" + encodeURIComponent(licenseKey));
+    const res = await fetch(API + "/api/server/players/" + encodeURIComponent(licenseKey));
     const data = await res.json();
 
-    const el = document.getElementById("server-status");
-    el.innerText = data.online ? "Online" : "Offline";
-    el.className = data.online ? "status-online" : "status-offline";
-    document.getElementById("players-count").innerText = data.players || 0;
+    const list = data.players || [];
+    const container = document.getElementById("players-list");
+
+    if(list.length === 0){
+      container.innerHTML = "<div style='opacity:.6'>Inga spelare online</div>";
+      return;
+    }
+
+    container.innerHTML = list.map(p => `
+      <div class="player-row" onclick="openPlayerPanel(${p.id}, '${p.name.replace(/'/g,"")}')">
+        <div>
+          <div class="player-name">${p.name}</div>
+          <div class="player-sub">ID: ${p.id} • Ping: ${p.ping}</div>
+        </div>
+        <div class="arrow">→</div>
+      </div>
+    `).join("");
+
   }catch(e){
     console.error(e);
   }
 }
 
-setInterval(fetchLicense, 10000);
-setInterval(fetchServerStatus, 5000);
+/* ================= SIDE PANEL ================= */
+function openPlayerPanel(id, name){
+  selectedPlayer = id;
 
-fetchLicense();
-fetchServerStatus();
+  document.getElementById("panelPlayerName").innerText = name;
+  document.getElementById("panelInfo").innerText = "Server ID: " + id;
+
+  document.getElementById("playerPanel").classList.add("active");
+}
+
+function closePanel(){
+  document.getElementById("playerPanel").classList.remove("active");
+}
+
+/* ================= ACTION SYSTEM ================= */
+async function sendAction(type, payload){
+  try{
+    const res = await fetch(API + "/api/dashboard/action", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        token,
+        license_key: licenseKey,
+        type,
+        payload
+      })
+    });
+
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.message || "Backend error");
+
+    return true;
+  }catch(e){
+    console.error(e);
+    alert("Backend error");
+    return false;
+  }
+}
+
+/* ================= KICK ================= */
+async function openKick(){
+  if(!selectedPlayer) return;
+
+  const reason = prompt("Anledning för kick:");
+  if(!reason) return;
+
+  const ok = await sendAction("kick", {
+    player: selectedPlayer,
+    reason
+  });
+
+  if(ok) alert("Kick skickad ✅");
+  closePanel();
+}
+
+/* ================= BAN ================= */
+async function openBan(){
+  if(!selectedPlayer) return;
+
+  const reason = prompt("Anledning för ban:");
+  if(!reason) return;
+
+  const duration = prompt("Tid (30m, 2h, 7d, P):");
+  if(!duration) return;
+
+  const ok = await sendAction("ban", {
+    player: selectedPlayer,
+    reason,
+    duration
+  });
+
+  if(ok) alert("Ban skickad ✅");
+  closePanel();
+}
+
+/* ================= DM ================= */
+async function openDM(){
+  if(!selectedPlayer) return;
+
+  const message = prompt("Skriv DM:");
+  if(!message) return;
+
+  const ok = await sendAction("dm", {
+    player: selectedPlayer,
+    message
+  });
+
+  if(ok) alert("DM skickad ✅");
+  closePanel();
+}
+
+/* ================= AUTO REFRESH ================= */
+setInterval(fetchPlayers, 3000);
+fetchPlayers();
+</script>
+
 </script>
 
 </body>
 </html>
+
