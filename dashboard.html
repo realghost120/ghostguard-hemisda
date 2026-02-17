@@ -328,6 +328,7 @@ function showView(view, el){
   document.getElementById("logsView").style.display="none";
   document.getElementById("bansView").style.display="none"; // ← DENNA SAKNADES
 
+
   document.getElementById(view+"View").style.display="block";
 }
 
@@ -513,22 +514,55 @@ async function fetchBans(){
     const bans = data.data || [];
 
     document.getElementById("banList").innerHTML = bans.map(b=>`
-      <div class="player-card">
-        <div class="player-info">
-          <span class="player-name">${b.player_id}</span>
-          <span class="player-id">Ban ID: ${b.ban_id}</span>
-        </div>
-        <div class="player-actions">
-          <button class="btn btn-kick" onclick="showBanInfo('${b.ban_id}','${b.reason}','${b.duration}','${b.created_at}')">
-            Info
-          </button>
-        </div>
-      </div>
-    `).join("");
+  <div class="player-card">
+    <div class="player-info">
+      <span class="player-name">${b.player_id}</span>
+      <span class="player-id">Ban ID: ${b.ban_id}</span>
+    </div>
+
+    <div class="player-actions">
+
+      <button class="btn btn-kick"
+        onclick="showBanInfo('${b.ban_id}','${b.reason}','${b.duration}','${b.created_at}')">
+        Info
+      </button>
+
+      <button class="btn btn-ban"
+        onclick="unbanPlayer('${b.ban_id}')">
+        Unban
+      </button>
+
+    </div>
+  </div>
+`).join("");
+
 
   }catch(e){console.log(e);}
 }
 
+async function unbanPlayer(banId){
+
+  if(!confirm("Är du säker att du vill unbanna denna spelare?")) return;
+
+  try{
+    const res = await fetch(API + "/api/server/unban/" + banId, {
+      method: "DELETE"
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+      fetchBans();
+    }else{
+      alert("Unban failed");
+    }
+
+  }catch(e){
+    console.log(e);
+  }
+}
+
+  
 
   function showBanInfo(id, reason, duration, date){
   const modal = document.getElementById("actionModal");
@@ -547,9 +581,12 @@ async function fetchBans(){
       </div>
     </div>
   `;
-
+    
   modal.style.display = "block";
 }
+
+
+
 
   
 setInterval(fetchBans, 5000);
@@ -568,6 +605,7 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
+
 
 
 
