@@ -269,6 +269,7 @@ body{
   <div class="nav" onclick="showView('players', this)">Players</div>
   <div class="nav" onclick="showView('logs', this)">Server Logs</div>
   <div class="nav" onclick="showView('bans', this)">Ban List</div>
+  <div class="nav" onclick="showView('download', this)">Download</div>
 </div>
 
 <div class="content">
@@ -312,6 +313,53 @@ body{
   </div>
 </div>
 
+
+<div id="downloadView" style="display:none;">
+  <div class="card">
+    <h3>👻 GhostGuard Download Center</h3>
+
+    <p><b>Current Version:</b> v3.1.0</p>
+    <p><b>Status:</b> <span class="status-online">Stable</span></p>
+
+    <br>
+
+    <a href="https://drive.google.com/file/d/1Ayg8qnk5fuR4UrjgiIFdsW8veqLH4IS6/view"
+       target="_blank"
+       style="
+         display:inline-block;
+         padding:12px 20px;
+         background:#3b82f6;
+         color:white;
+         border-radius:10px;
+         text-decoration:none;
+         font-weight:700;
+       ">
+       ⬇ Download GhostGuard
+    </a>
+
+    <hr style="margin:30px 0; opacity:.1">
+
+    <h4>📦 Installation Guide</h4>
+
+    <p>1️⃣ Download the zip file</p>
+    <p>2️⃣ Extract the folder</p>
+    <p>3️⃣ Move folder to:</p>
+    <pre>resources/[ghostguard]/</pre>
+
+    <p>4️⃣ Add to server.cfg:</p>
+    <pre>ensure ghostguard</pre>
+
+    <p>5️⃣ Open config.lua and set:</p>
+    <pre>
+Config.LicenseKey = "DIN_LICENSE_KEY"
+    </pre>
+
+    <p>6️⃣ Restart server</p>
+
+  </div>
+</div>
+
+  
 </div>
 
 <script>
@@ -327,7 +375,7 @@ function showView(view, el){
   document.getElementById("playersView").style.display="none";
   document.getElementById("logsView").style.display="none";
   document.getElementById("bansView").style.display="none"; // ← DENNA SAKNADES
-
+  document.getElementById("downloadView").style.display="none";
 
   document.getElementById(view+"View").style.display="block";
 }
@@ -605,6 +653,7 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
+
 
 
 
