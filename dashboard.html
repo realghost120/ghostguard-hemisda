@@ -273,12 +273,6 @@ body{
 
 <div class="content">
 
-<div id="bansView" style="display:none;">
-  <div class="card">
-    <h3>Banned Players</h3>
-    <div id="banList"></div>
-  </div>
-</div>
 
   
 <div id="dashboardView">
@@ -297,6 +291,13 @@ body{
   </div>
 </div>
 
+<div id="bansView" style="display:none;">
+  <div class="card">
+    <h3>Banned Players</h3>
+    <div id="banList"></div>
+  </div>
+</div>
+  
 <div id="playersView" style="display:none;">
   <div class="card">
     <h3>Online Players</h3>
@@ -325,9 +326,11 @@ function showView(view, el){
   document.getElementById("dashboardView").style.display="none";
   document.getElementById("playersView").style.display="none";
   document.getElementById("logsView").style.display="none";
+  document.getElementById("bansView").style.display="none"; // ← DENNA SAKNADES
 
   document.getElementById(view+"View").style.display="block";
 }
+
 
 async function fetchLicense(){
   if(!token) return;
@@ -562,6 +565,7 @@ fetchLogs();
 
 </body>
 </html>
+
 
 
 
