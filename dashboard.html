@@ -14,7 +14,7 @@
   --red:#ef4444;
   --yellow:#f59e0b;
   --green:#22c55e;
-  --border:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.06);
   --text:#e6f0ff;
   --muted:rgba(230,240,255,.6);
 }
@@ -51,17 +51,9 @@ body{
   transition:.2s;
 }
 
-.nav:hover{
-  background:rgba(59,130,246,.15);
-  color:white;
-}
+.nav:hover{background:rgba(59,130,246,.15);color:white;}
+.nav.active{background:rgba(59,130,246,.25);color:white;}
 
-.nav.active{
-  background:rgba(59,130,246,.25);
-  color:white;
-}
-
-/* CONTENT */
 .content{
   flex:1;
   padding:40px;
@@ -71,7 +63,6 @@ body{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
   gap:25px;
-  margin-bottom:30px;
 }
 
 .card{
@@ -84,80 +75,55 @@ body{
 /* PLAYER CARD */
 .player-card{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  padding:18px;
-  border-radius:14px;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--border);
-  margin-bottom:14px;
+  align-items:center;
+  padding:15px;
+  border-radius:12px;
+  background:rgba(59,130,246,.08);
+  margin-bottom:10px;
+  border:1px solid transparent;
   transition:.2s;
 }
 
 .player-card:hover{
-  background:rgba(59,130,246,.08);
+  background:rgba(59,130,246,.18);
   border-color:var(--blueGlow);
 }
 
-.player-left{
+.player-info{
   display:flex;
-  align-items:center;
-  gap:16px;
-}
-
-.avatar{
-  width:50px;
-  height:50px;
-  border-radius:50%;
-  background:linear-gradient(180deg,#2a3d66,#1b2a4d);
+  flex-direction:column;
 }
 
 .player-name{font-weight:800}
-.player-meta{font-size:12px;color:var(--muted)}
-
-.badge{
-  padding:4px 10px;
-  border-radius:8px;
-  font-size:11px;
-  font-weight:800;
-  margin-left:10px;
-}
-
-.badge-clean{background:rgba(34,197,94,.2);color:var(--green);}
-.badge-warn{background:rgba(245,158,11,.2);color:var(--yellow);}
-.badge-danger{background:rgba(239,68,68,.2);color:var(--red);}
+.player-id{font-size:12px;color:var(--muted)}
 
 .player-actions{
   display:flex;
   gap:8px;
 }
 
-button{
-  padding:8px 12px;
+.btn{
+  padding:6px 12px;
   border-radius:8px;
-  border:1px solid transparent;
+  font-size:12px;
   font-weight:700;
+  border:none;
   cursor:pointer;
-  transition:.2s;
 }
 
-.btn-blue{background:rgba(59,130,246,.2);border-color:var(--blue);color:var(--blue);}
-.btn-yellow{background:rgba(245,158,11,.2);border-color:var(--yellow);color:var(--yellow);}
-.btn-red{background:rgba(239,68,68,.2);border-color:var(--red);color:var(--red);}
-.btn-grey{background:transparent;border-color:rgba(255,255,255,.2);color:white;}
-
-button:hover{filter:brightness(1.2)}
-
-.log{
-  padding:10px;
-  font-size:13px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  color:var(--muted);
-}
+.btn-kick{background:var(--yellow);color:#000}
+.btn-ban{background:var(--red);color:white}
 
 .status-online{color:var(--green);font-weight:800}
 .status-offline{color:var(--red);font-weight:800}
 
+.log{
+  font-size:13px;
+  padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  color:var(--muted);
+}
 </style>
 </head>
 
@@ -165,14 +131,13 @@ button:hover{filter:brightness(1.2)}
 
 <div class="sidebar">
   <div class="logo">👻 GhostGuard</div>
-  <div class="nav active" onclick="showView('dashboard',this)">Dashboard</div>
-  <div class="nav" onclick="showView('players',this)">Players</div>
-  <div class="nav" onclick="showView('logs',this)">Server Logs</div>
+  <div class="nav active" onclick="showView('dashboard', this)">Dashboard</div>
+  <div class="nav" onclick="showView('players', this)">Players</div>
+  <div class="nav" onclick="showView('logs', this)">Server Logs</div>
 </div>
 
 <div class="content">
 
-<!-- DASHBOARD -->
 <div id="dashboardView">
   <div class="grid">
     <div class="card">
@@ -189,16 +154,18 @@ button:hover{filter:brightness(1.2)}
   </div>
 </div>
 
-<!-- PLAYERS -->
 <div id="playersView" style="display:none;">
-  <h2>Aktiva Spelare (<span id="playerCount">0</span>)</h2>
-  <div id="playerList"></div>
+  <div class="card">
+    <h3>Online Players</h3>
+    <div id="playerList"></div>
+  </div>
 </div>
 
-<!-- LOGS -->
 <div id="logsView" style="display:none;">
-  <h2>Live Logs</h2>
-  <div id="logList"></div>
+  <div class="card">
+    <h3>Live Logs</h3>
+    <div id="logList"></div>
+  </div>
 </div>
 
 </div>
@@ -212,101 +179,74 @@ function showView(view, el){
   document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
 
-  dashboardView.style.display="none";
-  playersView.style.display="none";
-  logsView.style.display="none";
+  document.getElementById("dashboardView").style.display="none";
+  document.getElementById("playersView").style.display="none";
+  document.getElementById("logsView").style.display="none";
 
   document.getElementById(view+"View").style.display="block";
 }
 
-function getBadge(w){
-  if(w>=2) return `<span class="badge badge-danger">${w} VARNINGAR</span>`;
-  if(w==1) return `<span class="badge badge-warn">1 VARNING</span>`;
-  return `<span class="badge badge-clean">CLEAN</span>`;
-}
-
 async function fetchLicense(){
-  const res=await fetch(API+"/customer/dashboard",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token})});
-  const data=await res.json();
-  if(!data.success) return;
-  licenseStatus.innerText=data.data.status;
-  licenseExpire.innerText=data.data.expires_at?new Date(data.data.expires_at).toLocaleString():"Lifetime";
+  if(!token) return;
+  try{
+    const res=await fetch(API+"/customer/dashboard",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({token})
+    });
+    const data=await res.json();
+    if(data.success){
+      document.getElementById("licenseStatus").innerText=data.data.status;
+      document.getElementById("licenseExpire").innerText=
+        data.data.expires_at?new Date(data.data.expires_at).toLocaleString():"Lifetime";
+    }
+  }catch(e){console.log(e);}
 }
 
 async function fetchServer(){
-  const res=await fetch(API+"/api/server/status/"+licenseKey);
-  const data=await res.json();
-  serverStatus.innerText=data.online?"Online":"Offline";
-  serverStatus.className=data.online?"status-online":"status-offline";
-  playerCountDash.innerText=data.players||0;
+  try{
+    const res=await fetch(API+"/api/server/status/"+licenseKey);
+    const data=await res.json();
+    document.getElementById("serverStatus").innerText=data.online?"Online":"Offline";
+    document.getElementById("serverStatus").className=data.online?"status-online":"status-offline";
+    document.getElementById("playerCountDash").innerText=data.players||0;
+  }catch(e){console.log(e);}
 }
 
 async function fetchPlayers(){
-  const res=await fetch(API+"/api/server/players/"+licenseKey);
-  const data=await res.json();
-  const players=data.players||[];
-  playerCount.innerText=players.length;
+  try{
+    const res=await fetch(API+"/api/server/players/"+licenseKey);
+    const data=await res.json();
+    const players=data.players||[];
 
-  playerList.innerHTML=players.map(p=>`
-    <div class="player-card">
-      <div class="player-left">
-        <div class="avatar"></div>
-        <div>
-          <div>
-            <span class="player-name">${p.name}</span>
-            ${getBadge(p.warnings||0)}
-          </div>
-          <div class="player-meta">ID: ${p.id}</div>
+    document.getElementById("playerList").innerHTML=players.map(p=>`
+      <div class="player-card">
+        <div class="player-info">
+          <span class="player-name">${p.name}</span>
+          <span class="player-id">ID: ${p.id}</span>
+        </div>
+        <div class="player-actions">
+          <button class="btn btn-kick" onclick="kick(${p.id})">Kick</button>
+          <button class="btn btn-ban" onclick="ban(${p.id})">Ban</button>
         </div>
       </div>
-
-      <div class="player-actions">
-        <button class="btn-blue" onclick="screenshot(${p.id})">SCREENSHOT</button>
-        <button class="btn-yellow" onclick="kick(${p.id})">KICK</button>
-        <button class="btn-red" onclick="ban(${p.id})">BAN</button>
-      </div>
-    </div>
-  `).join("");
+    `).join("");
+  }catch(e){console.log(e);}
 }
 
 async function fetchLogs(){
-  const res=await fetch(API+"/api/server/logs/"+licenseKey);
-  const data=await res.json();
-  logList.innerHTML=(data.data||[]).slice(0,50).map(l=>`
-    <div class="log">${new Date(l.time).toLocaleTimeString()} - ${l.message}</div>
-  `).join("");
-}
-
-async function send(type,payload){
-  await fetch(API+"/api/dashboard/action",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({token,license_key:licenseKey,type,payload})
-  });
-}
-
-async function screenshot(id){
-  await send("screenshot",{player:id});
-  alert("Screenshot requested → Discord");
-}
-
-async function kick(id){
-  const reason=prompt("Reason:");
-  if(!reason) return;
-  await send("kick",{player:id,reason});
-}
-
-async function ban(id){
-  const reason=prompt("Reason:");
-  if(!reason) return;
-  const duration=prompt("Duration (30m,2h,7d,P):");
-  if(!duration) return;
-  await send("ban",{player:id,reason,duration});
+  try{
+    const res=await fetch(API+"/api/server/logs/"+licenseKey);
+    const data=await res.json();
+    document.getElementById("logList").innerHTML=(data.data||[]).slice(0,50).map(l=>`
+      <div class="log">${new Date(l.time).toLocaleTimeString()} - ${l.message}</div>
+    `).join("");
+  }catch(e){console.log(e);}
 }
 
 setInterval(fetchServer,5000);
 setInterval(fetchPlayers,3000);
-setInterval(fetchLogs,4000);
+setInterval(fetchLogs,3000);
 
 fetchLicense();
 fetchServer();
