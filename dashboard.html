@@ -268,10 +268,19 @@ body{
   <div class="nav active" onclick="showView('dashboard', this)">Dashboard</div>
   <div class="nav" onclick="showView('players', this)">Players</div>
   <div class="nav" onclick="showView('logs', this)">Server Logs</div>
+  <div class="nav" onclick="showView('bans', this)">Ban List</div>
 </div>
 
 <div class="content">
 
+<div id="bansView" style="display:none;">
+  <div class="card">
+    <h3>Banned Players</h3>
+    <div id="banList"></div>
+  </div>
+</div>
+
+  
 <div id="dashboardView">
   <div class="grid">
     <div class="card">
@@ -494,7 +503,53 @@ async function confirmAction(type, playerId){
 }
 
 
+async function fetchBans(){
+  try{
+    const res = await fetch(API + "/api/server/bans/" + licenseKey);
+    const data = await res.json();
+    const bans = data.data || [];
+
+    document.getElementById("banList").innerHTML = bans.map(b=>`
+      <div class="player-card">
+        <div class="player-info">
+          <span class="player-name">${b.player_id}</span>
+          <span class="player-id">Ban ID: ${b.ban_id}</span>
+        </div>
+        <div class="player-actions">
+          <button class="btn btn-kick" onclick="showBanInfo('${b.ban_id}','${b.reason}','${b.duration}','${b.created_at}')">
+            Info
+          </button>
+        </div>
+      </div>
+    `).join("");
+
+  }catch(e){console.log(e);}
+}
+
+
+  function showBanInfo(id, reason, duration, date){
+  const modal = document.getElementById("actionModal");
+
+  modal.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal">
+        <h3>Ban Info</h3>
+        <p><b>Ban ID:</b> ${id}</p>
+        <p><b>Reason:</b> ${reason}</p>
+        <p><b>Duration:</b> ${duration}</p>
+        <p><b>Date:</b> ${new Date(date).toLocaleString()}</p>
+        <div class="modal-actions">
+          <button class="modal-btn modal-cancel" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.style.display = "block";
+}
+
   
+setInterval(fetchBans, 5000);
 setInterval(fetchServer,5000);
 setInterval(fetchPlayers,3000);
 setInterval(fetchLogs,3000);
@@ -507,6 +562,7 @@ fetchLogs();
 
 </body>
 </html>
+
 
 
 
