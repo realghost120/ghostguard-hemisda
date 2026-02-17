@@ -414,6 +414,28 @@ async function fetchLogs(){
   }
 }
 
+
+async function send(type, payload){
+  try{
+    const res = await fetch(API + "/api/dashboard/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token,
+        type,
+        payload
+      })
+    });
+
+    const data = await res.json();
+    return data.success;
+  }catch(e){
+    console.log("SEND ERROR:", e);
+    return false;
+  }
+}
+
+  
 /* ===== MODAL LOGIC (ADDED, DOES NOT REMOVE ANYTHING) ===== */
 
 function openModal(type, playerId){
@@ -485,6 +507,7 @@ fetchLogs();
 
 </body>
 </html>
+
 
 
 
