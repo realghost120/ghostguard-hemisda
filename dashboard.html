@@ -191,7 +191,6 @@ button:hover{filter:brightness(1.1)}
   <div class="nav active" onclick="showView('dashboard',this)">Dashboard</div>
   <div class="nav" onclick="showView('players',this)">Players</div>
   <div class="nav" onclick="showView('logs',this)">Server Logs</div>
-  <div class="nav" onclick="showView('detections',this)">Detections</div>
 </div>
 
 
@@ -227,13 +226,6 @@ button:hover{filter:brightness(1.1)}
   </div>
 </div>
 
-<div id="detectionsView" style="display:none;">
-  <div class="card">
-    <h3>Detection Settings</h3>
-    <div id="detectionList"></div>
-  </div>
-</div>
-
   
 </div>
 
@@ -258,16 +250,13 @@ function showView(view, el){
   el.classList.add("active");
 
   dashboardView.style.display="none";
-  playersView.style.display="none";
-  logsView.style.display="none";
-  detectionsView.style.display="none";
+playersView.style.display="none";
+logsView.style.display="none";
+
 
   document.getElementById(view+"View").style.display="block";
 
-  if(view === "detections"){
-    fetchDetections();
-  }
-}
+  
 
 
 
@@ -354,50 +343,6 @@ async function fetchLogs(){
 }
 
 
-const detectionMap = {
-  noclip: "Noclip",
-  speed: "Speed > 500",
-  explosions: "Explosion Spam",
-  vehicleSpam: "Vehicle Spam",
-  blacklistedVehicle: "Blacklisted Vehicles",
-  godmode: "Godmode"
-};
-
-async function fetchDetections(){
-  const res = await fetch(API+"/api/server/detections/"+encodeURIComponent(licenseKey));
-  const data = await res.json();
-  if(!data.success) return;
-
-  const settings = data.settings;
-
-  detectionList.innerHTML = Object.keys(detectionMap).map(key=>{
-    const active = settings[key];
-    return `
-      <div class="toggle ${active ? "active":""}" onclick="toggleDetection('${key}', ${active})">
-        <span>${detectionMap[key]}</span>
-        <span>${active ? "ON":"OFF"}</span>
-      </div>
-    `;
-  }).join("");
-}
-
-async function toggleDetection(key,current){
-  const res = await fetch(API+"/api/dashboard/detections",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      token,
-      license_key:licenseKey,
-      key,
-      value:!current
-    })
-  });
-  const data = await res.json();
-  if(data.success){
-    fetchDetections();
-  }
-}
-
   
 setInterval(fetchServer,5000);
 setInterval(fetchPlayers,3000);
@@ -411,5 +356,6 @@ fetchLogs();
 
 </body>
 </html>
+
 
 
