@@ -150,6 +150,36 @@ body{
   font-size:11px;
 }
 
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+  backdrop-filter:blur(4px);
+}
+
+.modal{
+  width:400px;
+  background:linear-gradient(180deg,#0f1f3d,#0a162b);
+  border:1px solid rgba(59,130,246,.4);
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 0 40px rgba(59,130,246,.3);
+}
+
+.modal h3{
+  margin-top:0;
+  margin-bottom:15px;
+}
+
+
+
+  
 .log-info{background:#1f2937;color:#93c5fd;}
 .log-join{background:#052e1f;color:#22c55e;}
 .log-leave{background:#2e1a05;color:#f59e0b;}
@@ -161,11 +191,78 @@ body{
   color:rgba(230,240,255,.85);
 }
 
+
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+  backdrop-filter:blur(4px);
+}
+
+.modal{
+  width:400px;
+  background:linear-gradient(180deg,#0f1f3d,#0a162b);
+  border:1px solid rgba(59,130,246,.4);
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 0 40px rgba(59,130,246,.3);
+}
+
+.modal h3{
+  margin-top:0;
+  margin-bottom:15px;
+}
+
+.modal input{
+  width:100%;
+  padding:10px;
+  margin-bottom:12px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.1);
+  background:#0c1426;
+  color:white;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+.modal-btn{
+  padding:8px 14px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.modal-cancel{
+  background:#1f2937;
+  color:white;
+}
+
+.modal-confirm{
+  background:#3b82f6;
+  color:white;
+}
+
+  
 </style>
 </head>
 
 <body>
 
+  <div id="actionModal" style="display:none;"></div>
+
+
+  
 <div class="sidebar">
   <div class="logo">👻 GhostGuard</div>
   <div class="nav active" onclick="showView('dashboard', this)">Dashboard</div>
@@ -263,8 +360,8 @@ async function fetchPlayers(){
           <span class="player-id">ID: ${p.id}</span>
         </div>
         <div class="player-actions">
-          <button class="btn btn-kick" onclick="kick(${p.id})">Kick</button>
-          <button class="btn btn-ban" onclick="ban(${p.id})">Ban</button>
+      <button class="btn btn-kick" onclick="openModal('kick', ${p.id})">Kick</button>
+      <button class="btn btn-ban" onclick="openModal('ban', ${p.id})">Ban</button>
         </div>
       </div>
     `).join("");
@@ -317,7 +414,65 @@ async function fetchLogs(){
   }
 }
 
+/* ===== MODAL LOGIC (ADDED, DOES NOT REMOVE ANYTHING) ===== */
 
+function openModal(type, playerId){
+  const modal = document.getElementById("actionModal");
+
+  modal.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal">
+        <h3>${type === "kick" ? "Kick Player" : "Ban Player"}</h3>
+
+        <input id="reasonInput" placeholder="Reason..." />
+
+        ${type === "ban" ? `<input id="durationInput" placeholder="Duration (30m,2h,7d,P)" />` : ""}
+
+        <div class="modal-actions">
+          <button class="modal-btn modal-cancel" onclick="closeModal()">Cancel</button>
+          <button class="modal-btn modal-confirm" onclick="confirmAction('${type}', ${playerId})">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  modal.style.display = "block";
+}
+
+function closeModal(){
+  document.getElementById("actionModal").style.display = "none";
+}
+
+async function confirmAction(type, playerId){
+  const reason = document.getElementById("reasonInput").value;
+  if(!reason){
+    alert("Reason required");
+    return;
+  }
+
+  let payload = { player: playerId, reason };
+
+  if(type === "ban"){
+    const duration = document.getElementById("durationInput").value;
+    if(!duration){
+      alert("Duration required");
+      return;
+    }
+    payload.duration = duration;
+  }
+
+  // använder din befintliga send()
+  const ok = await send(type, payload);
+
+  if(ok){
+    closeModal();
+  }
+}
+
+
+  
 setInterval(fetchServer,5000);
 setInterval(fetchPlayers,3000);
 setInterval(fetchLogs,3000);
@@ -330,4 +485,5 @@ fetchLogs();
 
 </body>
 </html>
+
 
