@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_EVIDENCE_BUCKET = process.env.SUPABASE_EVIDENCE_BUCKET || "ban-evidence";
 
 const LICENSE_SECRET = process.env.LICENSE_SECRET || "change_me";
 const ADMIN_SECRET = process.env.ADMIN_SECRET || "";
@@ -58,6 +59,35 @@ function requireAdmin(req, res) {
 function generateLicenseKey() {
   const part = () => crypto.randomBytes(2).toString("hex").toUpperCase();
   return `GG-${part()}-${part()}`;
+}
+
+function computeExpiresAt(duration, explicitExpiresAt) {
+  if (explicitExpiresAt) return new Date(explicitExpiresAt).toISOString();
+
+  const raw = String(duration || "P").trim().toLowerCase();
+  if (raw === "p" || raw === "perm" || raw === "permanent") return null;
+
+  const match = raw.match(/^(\d+)([mhd])$/);
+  if (!match) return null;
+
+  const amount = Number(match[1]);
+  const unit = match[2];
+  const ms = unit === "m" ? amount * 60_000 : unit === "h" ? amount * 3_600_000 : amount * 86_400_000;
+  return new Date(Date.now() + ms).toISOString();
+}
+
+function normalizeIdentifiers(value) {
+  if (!Array.isArray(value)) return [];
+  const cleaned = value
+    .map((x) => String(x || "").trim())
+    .filter(Boolean);
+  return [...new Set(cleaned)];
+}
+
+function extractDataUriParts(imageData) {
+  const m = String(imageData || "").match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+  if (!m) return null;
+  return { mime: m[1], base64: m[2] };
 }
 
 /* ================= NEW: PANEL ADMINS HELPERS ================= */
@@ -164,23 +194,43 @@ app.post("/api/license/verify", async (req, res) => {
 
 app.post("/api/server/ban", async (req,res)=>{
   try{
-    const { license_key, player, reason, duration } = req.body || {};
+    const {
+      license_key,
+      player,
+      reason,
+      duration,
+      ban_id,
+      evidence_url,
+      banned_by,
+      identifiers,
+      created_at,
+      expires_at
+    } = req.body || {};
+
     if(!license_key || !player) {
       return res.status(400).json({success:false});
     }
 
-    const ban_id = "GG-" + Date.now();
+    const finalBanId = ban_id || ("GG-" + Date.now());
+    const finalDuration = duration || "P";
+    const finalCreatedAt = created_at ? new Date(created_at).toISOString() : new Date().toISOString();
+    const finalExpiresAt = computeExpiresAt(finalDuration, expires_at);
+    const finalIdentifiers = normalizeIdentifiers(identifiers);
 
     await supabase.from("bans").insert([{
       license_key,
       player_id: player,
       reason: reason || "No reason",
-      duration: duration || "P",
-      ban_id,
-      created_at: new Date().toISOString()
+      duration: finalDuration,
+      ban_id: finalBanId,
+      created_at: finalCreatedAt,
+      expires_at: finalExpiresAt,
+      banned_by: banned_by || "GhostGuard",
+      evidence_url: evidence_url || null,
+      identifiers: finalIdentifiers
     }]);
 
-    res.json({success:true, ban_id});
+    res.json({success:true, ban_id: finalBanId});
   }catch(e){
     console.log(e);
     res.status(500).json({success:false});
@@ -204,9 +254,93 @@ app.get("/api/server/bans/:license", async (req,res)=>{
   }
 });
 
+app.post("/api/server/ban/check", async (req, res) => {
+  try {
+    const { license_key, identifiers } = req.body || {};
+    if (!license_key || !Array.isArray(identifiers)) {
+      return res.status(400).json({ success: false, error: "MISSING_FIELDS" });
+    }
+
+    const identifierArray = normalizeIdentifiers(identifiers);
+
+    const { data, error } = await supabase.rpc("find_active_ban", {
+      p_license_key: license_key,
+      p_identifiers: identifierArray,
+    });
+
+    if (error) {
+      console.error("ban/check rpc error:", error);
+      return res.status(500).json({ success: false, error: "DB_ERROR" });
+    }
+
+    const ban = Array.isArray(data) ? data[0] : null;
+    return res.json({ success: true, banned: !!ban, ban: ban || null });
+  } catch (e) {
+    console.error("ban/check error:", e);
+    return res.status(500).json({ success: false });
+  }
+});
+
+app.post("/api/server/ban/evidence", async (req, res) => {
+  try {
+    const { license_key, ban_id, image_data } = req.body || {};
+    if (!license_key || !ban_id || !image_data) {
+      return res.status(400).json({ success: false, error: "MISSING_FIELDS" });
+    }
+
+    const parsed = extractDataUriParts(image_data);
+    if (!parsed) {
+      return res.status(400).json({ success: false, error: "INVALID_IMAGE_DATA" });
+    }
+
+    const ext = parsed.mime.includes("png") ? "png" : "jpg";
+    const objectPath = `${license_key}/${ban_id}-${Date.now()}.${ext}`;
+    const binary = Buffer.from(parsed.base64, "base64");
+
+    const { error: uploadError } = await supabase.storage
+      .from(SUPABASE_EVIDENCE_BUCKET)
+      .upload(objectPath, binary, {
+        contentType: parsed.mime,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("evidence upload error:", uploadError);
+      return res.status(500).json({ success: false, error: "UPLOAD_FAILED" });
+    }
+
+    const { data: urlData } = supabase.storage
+      .from(SUPABASE_EVIDENCE_BUCKET)
+      .getPublicUrl(objectPath);
+
+    const publicUrl = urlData?.publicUrl || null;
+    if (!publicUrl) {
+      return res.status(500).json({ success: false, error: "PUBLIC_URL_FAILED" });
+    }
+
+    await supabase
+      .from("bans")
+      .update({ evidence_url: publicUrl })
+      .eq("license_key", license_key)
+      .eq("ban_id", ban_id);
+
+    return res.json({ success: true, evidence_url: publicUrl });
+  } catch (e) {
+    console.error("ban/evidence error:", e);
+    return res.status(500).json({ success: false });
+  }
+});
+
 app.delete("/api/server/unban/:banId", async (req, res) => {
   try {
     const { banId } = req.params;
+    const bearer = req.headers.authorization || "";
+    const token = bearer.startsWith("Bearer ") ? bearer.slice(7) : null;
+    const identity = await resolvePanelIdentity(token);
+
+    if (!identity) {
+      return res.status(401).json({ success: false, error: "UNAUTHORIZED" });
+    }
 
     // 1️⃣ Hämta ban så vi vet license_key
     const { data: ban } = await supabase
@@ -219,10 +353,13 @@ app.delete("/api/server/unban/:banId", async (req, res) => {
       return res.json({ success: false });
     }
 
-    // 2️⃣ Ta bort ban från DB
+    if (ban.license_key !== identity.license_key) {
+      return res.status(403).json({ success: false, error: "FORBIDDEN" });
+    }
+
     await supabase
       .from("bans")
-      .delete()
+      .update({ expires_at: new Date().toISOString() })
       .eq("ban_id", banId);
 
     // 3️⃣ SKICKA action till FiveM-servern
@@ -239,6 +376,21 @@ app.delete("/api/server/unban/:banId", async (req, res) => {
 
   } catch (e) {
     console.log("UNBAN ERROR:", e);
+    return res.status(500).json({ success: false });
+  }
+});
+
+app.delete("/api/server/ban/:banId", async (req, res) => {
+  try {
+    const { banId } = req.params;
+    await supabase
+      .from("bans")
+      .update({ expires_at: new Date().toISOString() })
+      .eq("ban_id", banId);
+
+    return res.json({ success: true });
+  } catch (e) {
+    console.log("UNBAN LEGACY ERROR:", e);
     return res.status(500).json({ success: false });
   }
 });

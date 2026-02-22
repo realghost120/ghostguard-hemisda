@@ -3,25 +3,55 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <title>GhostGuard</title>
 
 <style>
 :root{
-  --bg1:#070b14; --bg2:#05070d;
-  --card:#0f172a;
-  --text:#e8f0ff; --muted:rgba(232,240,255,.65);
-  --blue:#3b82f6; --green:#22c55e; --yellow:#fbbf24;
-  --shadow:0 25px 80px rgba(0,0,0,.55);
-  --radius:20px;
+  --bg-dark: #060c18;
+  --bg-card: #101a2e;
+  --bg-light: #0a1222;
+  --card-dark: #101a2e;
+  --card-light: #0d1628;
+  --blue: #3b82f6;
+  --blue-glow: rgba(59,130,246,.4);
+  --blue-hover: rgba(59,130,246,.15);
+  --blue-active: rgba(59,130,246,.25);
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --green: #22c55e;
+  --border: rgba(255,255,255,.06);
+  --text: #e6f0ff;
+  --text-muted: rgba(230,240,255,.6);
 }
 *{box-sizing:border-box}
 body{
-  margin:0; font-family:Arial, sans-serif; color:var(--text);
+  margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:var(--text);
   background:
     radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.25), transparent 60%),
     radial-gradient(900px 500px at 50% 100%, rgba(34,197,94,.10), transparent 60%),
-    linear-gradient(180deg,var(--bg1),var(--bg2));
+    linear-gradient(180deg,var(--bg-dark),var(--bg-light));
   min-height:100vh;
+  animation:fadeIn .35s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 header{
@@ -34,18 +64,19 @@ header{
 
 .btn{
   border:none; cursor:pointer; font-weight:900;
-  padding:11px 16px; border-radius:12px;
-  color:var(--text); background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.08);
+  padding:11px 16px; border-radius:10px;
+  color:var(--text); background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
   transition:.2s;
 }
-.btn:hover{transform:translateY(-2px)}
+.btn:hover{transform:translateY(-2px);border-color:var(--blue-glow)}
 .btn-primary{
-  background:linear-gradient(90deg,#3b82f6,#2563eb);
-  border:none;
+  background:var(--blue);
+  border-color:transparent;
   box-shadow:0 8px 25px rgba(37,99,235,.35);
 }
 .btn-primary:hover{box-shadow:0 12px 35px rgba(37,99,235,.5)}
+.btn-outline{background:transparent;border-color:var(--blue-glow)}
 
 .wrap{max-width:1100px; margin:0 auto; padding:60px 20px 80px}
 
@@ -57,14 +88,42 @@ header{
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
-.hero p{color:var(--muted); font-size:18px}
+.hero p{color:var(--text-muted); font-size:18px}
+.hero .buttons{display:flex;justify-content:center;gap:12px;margin-top:14px;flex-wrap:wrap}
 
 .pill{
   display:inline-block; margin-top:16px;
   padding:8px 14px; border-radius:999px;
   background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.1);
+  border:1px solid var(--border);
   font-weight:800;
+}
+.online-dot{display:inline-block;animation:pulse 2s infinite}
+
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-top:26px;
+}
+
+.feature-card{
+  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px;
+  transition:.2s;
+}
+
+.feature-card i{color:#8ebdff;font-size:18px;margin-bottom:8px}
+.feature-card h3{margin:6px 0;font-size:16px}
+.feature-card p{margin:0;color:var(--text-muted);font-size:13px}
+
+.feature-card:hover,
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue);
+  box-shadow: 0 0 20px var(--blue-glow);
 }
 
 .grid{
@@ -74,18 +133,20 @@ header{
   margin-top:40px;
 }
 .price-card{
-  background:linear-gradient(180deg,#0f172a,#0b1428);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:var(--radius);
+  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
+  border:1px solid var(--border);
+  border-radius:16px;
   padding:28px;
-  box-shadow:var(--shadow);
+  box-shadow:0 22px 70px rgba(0,0,0,.35);
   transition:.25s;
 }
 .price-card:hover{
-  transform:translateY(-6px);
-  border-color:rgba(59,130,246,.4);
-  box-shadow:0 0 30px rgba(59,130,246,.25), var(--shadow);
+  transform:translateY(-4px);
+  border-color:var(--blue-glow);
+  box-shadow:0 0 30px rgba(59,130,246,.25), 0 22px 70px rgba(0,0,0,.35);
 }
+.price-card ul{list-style:none;padding:0;margin:18px 0;color:var(--text-muted);font-size:14px;line-height:1.7}
+.price-card li i{color:var(--green);margin-right:6px}
 
 .plan{font-size:20px; font-weight:900; margin-bottom:10px}
 .price{
@@ -94,12 +155,12 @@ header{
   color:var(--green);
   margin:10px 0 4px;
 }
-.muted{color:var(--muted)}
+.muted{color:var(--text-muted)}
 
 .features{
   margin:18px 0;
   font-size:14px;
-  color:var(--muted);
+  color:var(--text-muted);
   line-height:1.6;
 }
 
@@ -115,19 +176,25 @@ header{
   gap:16px;
 }
 .review{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
+  border:1px solid var(--border);
   border-radius:16px;
   padding:16px;
+  transition:.2s;
 }
+.review:hover{transform:translateY(-2px);border-color:var(--blue-glow)}
 .stars{color:var(--yellow); margin-bottom:6px}
 
 .footer{
-  text-align:center;
+  display:flex;
+  justify-content:center;
+  gap:18px;
   margin-top:80px;
   font-size:12px;
   color:rgba(232,240,255,.5);
 }
+.footer a{color:var(--text-muted);text-decoration:none}
+.footer a:hover{color:#fff}
 
 /* MODALS */
 .modal{
@@ -139,27 +206,37 @@ header{
 .modal.open{display:flex}
 .modal-box{
   width:380px; max-width:92vw;
-  background:linear-gradient(180deg,#0f172a,#0b1428);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:18px;
+  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
+  border:1px solid var(--border);
+  border-radius:16px;
   box-shadow:0 30px 90px rgba(0,0,0,.65);
   padding:18px;
 }
 .modal-top{display:flex; justify-content:space-between; align-items:center}
 .x{cursor:pointer; opacity:.75; font-weight:900}
 .x:hover{opacity:1}
-label{display:block; margin-top:12px; font-size:12px; color:var(--muted); font-weight:800}
+label{display:block; margin-top:12px; font-size:12px; color:var(--text-muted); font-weight:800}
 input{
   width:100%; margin-top:6px;
-  padding:11px 12px; border-radius:12px;
+  padding:11px 12px; border-radius:10px;
   background:rgba(0,0,0,.25); color:var(--text);
-  border:1px solid rgba(255,255,255,.10);
+  border:1px solid var(--border);
 }
+input:focus{outline:none;border-color:var(--blue-glow);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
 .err{color:#ff6b6b; margin-top:10px; min-height:18px; font-size:13px}
 .row{display:flex; gap:10px; margin-top:14px}
 .row .btn{flex:1}
 
+.muted{color:var(--text-muted)}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-dark) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
 @media (max-width:900px){
+  .features-grid{grid-template-columns:1fr 1fr}
   .grid{grid-template-columns:1fr}
   .reviews{grid-template-columns:1fr}
   .hero h1{font-size:42px}
@@ -169,43 +246,54 @@ input{
 <body>
 
 <header>
-  <div class="brand">GhostGuard</div>
+  <div class="brand"><i class="fas fa-ghost"></i> GhostGuard</div>
   <div style="display:flex; gap:12px;">
-    <button class="btn btn-primary" id="buyBtn">🛒 Köp</button>
-    <button class="btn" id="loginBtn">Logga in</button>
+    <button class="btn btn-primary" id="buyBtn"><i class="fas fa-shopping-cart"></i> Köp</button>
+    <button class="btn" id="loginBtn"><i class="fas fa-right-to-bracket"></i> Logga in</button>
   </div>
 </header>
 
 <div class="wrap">
   <div class="hero">
-    <h1>GhostGuard AntiCheat</h1>
+    <h1>GhostGuard <i class="fas fa-ghost"></i></h1>
     <p>Avancerat skydd för din FiveM-server med real-time detection.</p>
-    <div class="pill">💬 <span id="discordCount">128</span>+ medlemmar i Discord</div>
+    <div class="buttons">
+      <button class="btn btn-primary" id="heroBuyBtn"><i class="fas fa-shopping-cart"></i> Köp nu</button>
+      <button class="btn btn-outline" id="heroDiscordBtn"><i class="fab fa-discord"></i> Discord</button>
+    </div>
+    <div class="pill"><span class="online-dot"><i class="fas fa-circle" style="color: var(--green);"></i></span> <span id="discordCount">128</span>+ medlemmar i Discord</div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card"><i class="fas fa-shield-alt"></i><h3>Anti-Cheat</h3><p>Real-time detection av fusk</p></div>
+    <div class="feature-card"><i class="fas fa-scroll"></i><h3>Live Logs</h3><p>Djup servertelemetri i realtid</p></div>
+    <div class="feature-card"><i class="fas fa-users"></i><h3>Admin Tools</h3><p>Snabba actions för moderation</p></div>
+    <div class="feature-card"><i class="fas fa-chart-line"></i><h3>Dashboard</h3><p>Tydlig kontroll över licens och server</p></div>
   </div>
 
   <div class="grid">
     <div class="price-card">
       <div class="plan">Månadsplan</div>
       <div class="price">49 kr <span class="muted" style="font-size:14px">/ månad</span></div>
-      <div class="features">
-        ✔ Full tillgång till anticheat<br>
-        ✔ Alla uppdateringar<br>
-        ✔ Dashboard & loggar<br>
-        ✔ Discord support
-      </div>
-      <button class="btn btn-primary" data-buy="monthly">Köp</button>
+      <ul>
+        <li><i class="fas fa-check"></i> Full tillgång till anticheat</li>
+        <li><i class="fas fa-check"></i> Alla uppdateringar</li>
+        <li><i class="fas fa-check"></i> Dashboard & loggar</li>
+        <li><i class="fas fa-check"></i> Discord support</li>
+      </ul>
+      <button class="btn btn-primary" data-buy="monthly"><i class="fas fa-check"></i> Välj</button>
     </div>
 
     <div class="price-card">
       <div class="plan">Livstid</div>
       <div class="price">89 kr</div>
-      <div class="features">
-        ✔ Engångsbetalning<br>
-        ✔ Livstidsuppdateringar<br>
-        ✔ Dashboard & loggar<br>
-        ✔ Prioriterad support
-      </div>
-      <button class="btn btn-primary" data-buy="lifetime">Köp</button>
+      <ul>
+        <li><i class="fas fa-check"></i> Engångsbetalning</li>
+        <li><i class="fas fa-check"></i> Livstidsuppdateringar</li>
+        <li><i class="fas fa-check"></i> Dashboard & loggar</li>
+        <li><i class="fas fa-check"></i> Prioriterad support</li>
+      </ul>
+      <button class="btn btn-primary" data-buy="lifetime"><i class="fas fa-check"></i> Välj</button>
     </div>
   </div>
 
@@ -216,7 +304,11 @@ input{
     <div class="review"><div class="stars">★★★★★</div><b>“Stabil & snabb support.”</b><div class="muted">Allt via Discord tickets.</div></div>
   </div>
 
-  <div class="footer">GhostGuard • Support & köp sker via Discord</div>
+  <div class="footer">
+    <a href="#"><i class="fas fa-shield-alt"></i> Security</a>
+    <a href="#"><i class="fas fa-file-contract"></i> Terms</a>
+    <a href="#"><i class="fab fa-discord"></i> Discord</a>
+  </div>
 </div>
 
 <!-- LOGIN MODAL -->
@@ -224,7 +316,7 @@ input{
   <div class="modal-box">
     <div class="modal-top">
       <div style="font-weight:900; font-size:18px">Kund Login</div>
-      <div class="x" id="closeLogin">✕</div>
+      <div class="x" id="closeLogin"><i class="fas fa-times"></i></div>
     </div>
 
     <label>Användarnamn</label>
@@ -237,7 +329,7 @@ input{
 
     <div class="row">
       <button class="btn" id="cancelLogin">Avbryt</button>
-      <button class="btn btn-primary" id="doLogin">Logga in</button>
+      <button class="btn btn-primary" id="doLogin"><i class="fas fa-right-to-bracket"></i> Logga in</button>
     </div>
   </div>
 </div>
@@ -247,12 +339,12 @@ input{
   <div class="modal-box">
     <div class="modal-top">
       <div style="font-weight:900; font-size:18px">Köp GhostGuard</div>
-      <div class="x" id="closeBuy">✕</div>
+      <div class="x" id="closeBuy"><i class="fas fa-times"></i></div>
     </div>
     <p class="muted">Köp & support sker i Discord via ticket.</p>
     <div class="row">
       <button class="btn" id="cancelBuy">Avbryt</button>
-      <button class="btn btn-primary" id="goDiscord">Öppna Discord</button>
+      <button class="btn btn-primary" id="goDiscord"><i class="fab fa-discord"></i> Öppna Discord</button>
     </div>
   </div>
 </div>
@@ -268,6 +360,8 @@ input{
   // Elements (måste finnas i HTML)
   const loginBtn = $("loginBtn");
   const buyBtn = $("buyBtn");
+  const heroBuyBtn = $("heroBuyBtn");
+  const heroDiscordBtn = $("heroDiscordBtn");
 
   const loginModal = $("loginModal");
   const buyModal = $("buyModal");
@@ -322,6 +416,16 @@ input{
   on(buyBtn, "click", (e) => {
     e.preventDefault();
     openBuy();
+  });
+
+  on(heroBuyBtn, "click", (e) => {
+    e.preventDefault();
+    openBuy();
+  });
+
+  on(heroDiscordBtn, "click", (e) => {
+    e.preventDefault();
+    window.open("https://discord.gg/dxwyCUNEZv", "_blank");
   });
 
   on(closeBuyBtn, "click", closeBuy);

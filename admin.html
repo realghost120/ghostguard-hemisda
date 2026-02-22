@@ -3,24 +3,52 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <title>GhostGuard Admin</title>
 
 <style>
 :root{
- --bg1:#070b14; --bg2:#05070d;
- --text:#e8f0ff; --muted:rgba(232,240,255,.65);
- --blue:#3b82f6; --green:#22c55e; --red:#ef4444;
- --shadow:0 18px 70px rgba(0,0,0,.55);
- --radius:18px;
+  --bg-dark: #060c18;
+  --bg-card: #101a2e;
+  --bg-light: #0a1222;
+  --card-dark: #101a2e;
+  --card-light: #0d1628;
+  --blue: #3b82f6;
+  --blue-glow: rgba(59,130,246,.4);
+  --blue-hover: rgba(59,130,246,.15);
+  --blue-active: rgba(59,130,246,.25);
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --green: #22c55e;
+  --border: rgba(255,255,255,.06);
+  --text: #e6f0ff;
+  --text-muted: rgba(230,240,255,.6);
 }
 *{box-sizing:border-box}
 body{
  margin:0;
- font-family:Arial,sans-serif;
+ font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
  color:var(--text);
  background:radial-gradient(900px 500px at 50% 0%,rgba(59,130,246,.20),transparent 60%),
-            linear-gradient(180deg,var(--bg1),var(--bg2));
+            linear-gradient(180deg,var(--bg-dark),var(--bg-light));
  min-height:100vh;
+ animation:fadeIn .35s ease;
+}
+@keyframes fadeIn {
+ from { opacity: 0; transform: translateY(10px); }
+ to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 header{
  display:flex;justify-content:space-between;align-items:center;
@@ -32,70 +60,78 @@ header{
 .brand{font-weight:900;font-size:18px}
 .wrap{max-width:1100px;margin:0 auto;padding:26px 18px 60px}
 .card{
- background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
- border:1px solid rgba(255,255,255,.08);
- border-radius:var(--radius);
+ background:linear-gradient(180deg,var(--card-dark),var(--card-light));
+ border:1px solid var(--border);
+ border-radius:16px;
  padding:16px;
- box-shadow:var(--shadow);
+ box-shadow:0 22px 70px rgba(0,0,0,.35);
  margin-bottom:14px;
+ transition:.2s;
 }
+.card:hover{transform:translateY(-2px);border-color:var(--blue-glow)}
 .title{font-weight:900;font-size:18px;margin-bottom:10px}
-label{display:block;margin-top:10px;font-size:12px;color:var(--muted);font-weight:800}
+label{display:block;margin-top:10px;font-size:12px;color:var(--text-muted);font-weight:800}
 input{
  width:100%;
  margin-top:6px;
  padding:11px 12px;
- border-radius:12px;
+ border-radius:10px;
  background:rgba(0,0,0,.25);
  color:var(--text);
- border:1px solid rgba(255,255,255,.10);
+ border:1px solid var(--border);
  outline:none;
 }
-input:focus{border-color:rgba(59,130,246,.55)}
+input:focus{border-color:var(--blue-glow);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
 .row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .btn{
  border:none;cursor:pointer;font-weight:900;
- padding:10px 14px;border-radius:12px;
+ padding:10px 14px;border-radius:10px;
  color:var(--text);
- background:rgba(255,255,255,.06);
- border:1px solid rgba(255,255,255,.08);
+ background:rgba(255,255,255,.05);
+ border:1px solid var(--border);
  transition:.18s;
 }
-.btn:hover{transform:translateY(-1px);border-color:rgba(96,165,250,.35)}
-.btn-blue{background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.35)}
-.btn-green{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.35)}
-.btn-red{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35)}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;font-size:13px}
-th{color:rgba(232,240,255,.8);font-size:12px}
+.btn:hover{transform:translateY(-1px);border-color:var(--blue-glow)}
+.btn-primary,.btn-blue{background:var(--blue);border-color:transparent;color:#fff}
+.btn-success,.btn-green{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.45);color:#b8f3cc}
+.btn-danger,.btn-red{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.45);color:#ffc1c1}
+table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
+th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
+th{color:rgba(232,240,255,.8);font-size:12px;background:rgba(59,130,246,.08)}
+tbody tr:hover td{background:rgba(59,130,246,.08)}
 .pill{display:inline-flex;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);
  background:rgba(0,0,0,.22);font-weight:900;font-size:12px}
 .good{color:var(--green)}
 .bad{color:var(--red)}
 .mono{font-family:monospace}
-.msg{margin-top:10px;color:var(--muted);min-height:18px;white-space:pre-wrap}
-.small{font-size:12px;color:var(--muted)}
+.msg{margin-top:10px;color:var(--text-muted);min-height:18px;white-space:pre-wrap}
+.small{font-size:12px;color:var(--text-muted)}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-dark) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">GhostGuard • Admin Panel</div>
-  <button class="btn" id="refresh">Refresh</button>
+  <div class="brand"><i class="fas fa-ghost"></i> GhostGuard • Admin Panel</div>
+  <button class="btn" id="refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
 </header>
 
 <div class="wrap">
 
   <div class="card">
-    <div class="title">🔐 Admin Secret</div>
+    <div class="title"><i class="fas fa-lock"></i> Admin Secret</div>
     <input id="secret" type="password" placeholder="ADMIN_SECRET"/>
-    <button class="btn btn-blue" id="saveSecret">Spara</button>
+    <button class="btn btn-blue" id="saveSecret"><i class="fas fa-save"></i> Spara</button>
     <div class="small">Skickas som: <span class="mono">Authorization: Bearer &lt;secret&gt;</span></div>
     <div class="msg" id="secretMsg"></div>
   </div>
 
   <div class="card">
-    <div class="title">➕ Skapa ny licens</div>
+    <div class="title"><i class="fas fa-plus-circle"></i> Skapa ny licens</div>
     <div class="row">
       <div>
         <label>Dagar giltig</label>
@@ -103,7 +139,7 @@ th{color:rgba(232,240,255,.8);font-size:12px}
       </div>
       <div>
         <label>&nbsp;</label>
-        <button class="btn btn-green" id="createLicense">Skapa</button>
+        <button class="btn btn-green" id="createLicense"><i class="fas fa-key"></i> Skapa</button>
       </div>
       <div>
         <label>Resultat</label>
@@ -114,7 +150,7 @@ th{color:rgba(232,240,255,.8);font-size:12px}
   </div>
 
   <div class="card">
-    <div class="title">👤 Skapa kund</div>
+    <div class="title"><i class="fas fa-user"></i> Skapa kund</div>
 
     <div class="row">
       <div>
@@ -134,14 +170,14 @@ th{color:rgba(232,240,255,.8);font-size:12px}
     </div>
 
     <div style="margin-top:10px;">
-      <button class="btn btn-blue" id="createCustomer">Skapa kund</button>
+      <button class="btn btn-blue" id="createCustomer"><i class="fas fa-user-plus"></i> Skapa kund</button>
     </div>
 
     <div class="msg" id="custMsg"></div>
   </div>
 
   <div class="card">
-    <div class="title">📋 Alla licenser</div>
+    <div class="title"><i class="fas fa-clipboard-list"></i> Alla licenser</div>
     <table>
       <thead>
         <tr>
@@ -170,7 +206,7 @@ document.getElementById("secret").value = getSecret();
 
 document.getElementById("saveSecret").onclick = () => {
   setSecret(document.getElementById("secret").value.trim());
-  document.getElementById("secretMsg").innerText = "Secret sparat ✅";
+  document.getElementById("secretMsg").innerText = "Secret sparat";
 };
 
 /** ========= HELPERS ========= */
@@ -274,7 +310,7 @@ document.getElementById("createLicense").onclick = async () => {
 
   if (json?.success){
     document.getElementById("newLicense").value = json.license_key || "";
-    showMsg("licMsg", "Licens skapad ✅");
+    showMsg("licMsg", "Licens skapad");
     await loadLicenses();
   } else {
     showMsg("licMsg", "Fel: " + (json?.error || raw || "okänt"));
@@ -307,7 +343,7 @@ document.getElementById("createCustomer").onclick = async () => {
   }
 
   if (json?.success){
-    showMsg("custMsg", "Kund skapad ✅");
+    showMsg("custMsg", "Kund skapad");
     document.getElementById("cu").value = "";
     document.getElementById("cp").value = "";
     document.getElementById("ck").value = "";
