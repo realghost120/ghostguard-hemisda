@@ -246,60 +246,62 @@ body{
 
 
 /* MODAL */
-.modal-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
+.log-wrapper{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:70vh;
+  overflow-y:auto;
+  padding-right:5px;
+}
+
+.log-card{
   display:flex;
   align-items:center;
-  justify-content:center;
-  z-index:999;
-  backdrop-filter:blur(4px);
+  justify-content:space-between;
+  padding:14px 18px;
+  border-radius:14px;
+  background:linear-gradient(145deg,#0f1f3d,#0b1426);
+  border:1px solid rgba(59,130,246,.1);
+  transition:.25s ease;
 }
 
-.modal{
-  width:400px;
-  background:linear-gradient(180deg,#0f1f3d,#0a162b);
-  border:1px solid rgba(59,130,246,.4);
-  border-radius:16px;
-  padding:25px;
-  box-shadow:0 0 40px rgba(59,130,246,.3);
+.log-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(59,130,246,.5);
+  box-shadow:0 0 25px rgba(59,130,246,.15);
 }
 
-.modal h3{
-  margin-top:0;
-  margin-bottom:15px;
+.log-left{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
 }
 
-.evidence-thumb{
-  width:44px;
-  height:44px;
-  border-radius:8px;
-  object-fit:cover;
-  border:1px solid var(--border);
-  cursor:pointer;
+.log-time{
+  font-size:11px;
+  opacity:.5;
 }
-
-.evidence-preview{
-  width:100%;
-  border-radius:10px;
-  border:1px solid var(--border);
-}
-
-
-
-  
-.log-info{background:#1f2937;color:#93c5fd;}
-.log-join{background:#052e1f;color:#22c55e;}
-.log-leave{background:#2e1a05;color:#f59e0b;}
-.log-ban{background:#3b0a0a;color:#ef4444;}
-.log-detect{background:#1e1b4b;color:#a78bfa;}
 
 .log-message{
   font-size:13px;
-  color:rgba(230,240,255,.85);
+  font-weight:500;
+  color:#dbeafe;
 }
 
+.log-badge{
+  padding:6px 12px;
+  font-size:11px;
+  border-radius:20px;
+  font-weight:700;
+  text-transform:uppercase;
+}
+
+.badge-join{ background:rgba(34,197,94,.15); color:#22c55e; }
+.badge-leave{ background:rgba(245,158,11,.15); color:#f59e0b; }
+.badge-ban{ background:rgba(239,68,68,.15); color:#ef4444; }
+.badge-detect{ background:rgba(168,85,247,.15); color:#a855f7; }
+.badge-info{ background:rgba(59,130,246,.15); color:#3b82f6; }
 
 
 /* MODAL */
@@ -930,6 +932,7 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
+
 
 
 
