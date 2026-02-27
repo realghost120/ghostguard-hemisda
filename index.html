@@ -3,606 +3,242 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <title>GhostGuard</title>
 
 <style>
 :root{
-  --bg-dark: #050b17;
-  --bg-light: #0a1222;
-  --card-dark: #0f1a2f;
-  --card-light: #0c1628;
-  --blue: #3b82f6;
-  --blue-glow: rgba(59,130,246,.45);
-  --green: #22c55e;
-  --yellow: #f59e0b;
-  --border: rgba(255,255,255,.07);
-  --text: #e6f0ff;
-  --text-muted: rgba(230,240,255,.6);
+  --bg1:#070b14; --bg2:#05070d;
+  --card:#0f172a;
+  --text:#e8f0ff; --muted:rgba(232,240,255,.65);
+  --blue:#3b82f6; --green:#22c55e; --yellow:#fbbf24;
+  --shadow:0 25px 80px rgba(0,0,0,.55);
+  --radius:20px;
 }
-
-*{
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
 body{
-  margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  color:var(--text);
+  margin:0; font-family:Arial, sans-serif; color:var(--text);
   background:
-    radial-gradient(900px 500px at 50% -100px, rgba(59,130,246,.25), transparent 60%),
-    linear-gradient(180deg,var(--bg-dark),var(--bg-light));
+    radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.25), transparent 60%),
+    radial-gradient(900px 500px at 50% 100%, rgba(34,197,94,.10), transparent 60%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
   min-height:100vh;
 }
 
-/* HEADER */
-
 header{
-  position:sticky;
-  top:0;
-  z-index:10;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:18px 28px;
-  backdrop-filter: blur(14px);
-  background:rgba(6,10,20,.65);
-  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:10;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:20px 32px; backdrop-filter: blur(12px);
+  background:rgba(5,7,13,.6); border-bottom:1px solid rgba(255,255,255,.06);
 }
-
-.brand{
-  font-weight:900;
-  font-size:20px;
-  letter-spacing:.5px;
-}
-
-/* BUTTONS */
+.brand{font-weight:900; font-size:22px}
 
 .btn{
-  border:none;
-  cursor:pointer;
-  font-weight:800;
-  padding:10px 16px;
-  border-radius:10px;
-  color:var(--text);
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--border);
-  transition:.25s ease;
+  border:none; cursor:pointer; font-weight:900;
+  padding:11px 16px; border-radius:12px;
+  color:var(--text); background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  transition:.2s;
 }
-
-.btn:hover{
-  transform:translateY(-2px);
-  border-color:var(--blue-glow);
-}
-
+.btn:hover{transform:translateY(-2px)}
 .btn-primary{
-  background:var(--blue);
+  background:linear-gradient(90deg,#3b82f6,#2563eb);
   border:none;
-  box-shadow:0 10px 30px rgba(59,130,246,.35);
+  box-shadow:0 8px 25px rgba(37,99,235,.35);
 }
+.btn-primary:hover{box-shadow:0 12px 35px rgba(37,99,235,.5)}
 
-.btn-primary:hover{
-  box-shadow:0 15px 40px rgba(59,130,246,.5);
-}
+.wrap{max-width:1100px; margin:0 auto; padding:60px 20px 80px}
 
-.btn-outline{
-  background:transparent;
-  border:1px solid rgba(59,130,246,.4);
-}
-
-/* WRAP */
-
-.wrap{
-  max-width:1250px;
-  margin:0 auto;
-  padding:80px 20px 100px;
-}
-
-/* HERO */
-
-.hero{
-  text-align:center;
-  margin-bottom:60px;
-}
-
+.hero{text-align:center; margin-bottom:40px}
 .hero h1{
-  font-size:60px;
+  font-size:56px;
   margin:10px 0;
-  font-weight:900;
   background:linear-gradient(90deg,#60a5fa,#22c55e);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
-
-.hero p{
-  color:var(--text-muted);
-  font-size:18px;
-  margin-top:10px;
-}
-
-.hero .buttons{
-  display:flex;
-  justify-content:center;
-  gap:14px;
-  margin-top:24px;
-  flex-wrap:wrap;
-}
+.hero p{color:var(--muted); font-size:18px}
 
 .pill{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  margin-top:22px;
-  padding:8px 16px;
-  border-radius:999px;
+  display:inline-block; margin-top:16px;
+  padding:8px 14px; border-radius:999px;
   background:rgba(255,255,255,.05);
-  border:1px solid var(--border);
-  font-weight:700;
-  font-size:14px;
+  border:1px solid rgba(255,255,255,.1);
+  font-weight:800;
 }
-
-/* FEATURES */
-
-.features-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:18px;
-  margin-top:40px;
-}
-
-.feature-card{
-  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:22px;
-  transition:.3s;
-}
-
-.feature-card:hover{
-  transform:translateY(-4px);
-  border-color:var(--blue);
-  box-shadow:0 0 30px var(--blue-glow);
-}
-
-.feature-card h3{
-  margin:8px 0 6px;
-  font-size:16px;
-}
-
-.feature-card p{
-  margin:0;
-  color:var(--text-muted);
-  font-size:14px;
-}
-
-/* PRICING */
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:28px;
-  margin-top:90px;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  margin-top:40px;
 }
-
 .price-card{
-  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:32px;
-  transition:.3s;
-  position:relative;
+  background:linear-gradient(180deg,#0f172a,#0b1428);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius);
+  padding:28px;
+  box-shadow:var(--shadow);
+  transition:.25s;
 }
-
 .price-card:hover{
   transform:translateY(-6px);
   border-color:rgba(59,130,246,.4);
+  box-shadow:0 0 30px rgba(59,130,246,.25), var(--shadow);
 }
 
-.price-card.featured{
-  transform:scale(1.05);
-  border:1px solid rgba(59,130,246,.5);
-  box-shadow:
-    0 0 50px rgba(59,130,246,.35),
-    0 30px 80px rgba(0,0,0,.4);
-  z-index:2;
-}
-
-.badge{
-  position:absolute;
-  top:-14px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--blue);
-  padding:6px 14px;
-  font-size:12px;
-  font-weight:900;
-  border-radius:999px;
-  box-shadow:0 6px 20px rgba(59,130,246,.4);
-}
-
-.plan{
-  font-size:18px;
-  font-weight:800;
-  opacity:.85;
-}
-
+.plan{font-size:20px; font-weight:900; margin-bottom:10px}
 .price{
-  font-size:46px;
+  font-size:44px;
   font-weight:900;
   color:var(--green);
-  margin:12px 0;
+  margin:10px 0 4px;
 }
+.muted{color:var(--muted)}
 
-.price-card ul{
-  list-style:none;
-  padding:0;
-  margin:20px 0;
-  color:var(--text-muted);
+.features{
+  margin:18px 0;
   font-size:14px;
-  line-height:1.8;
+  color:var(--muted);
+  line-height:1.6;
 }
-
-.price-card li i{
-  color:var(--green);
-  margin-right:8px;
-}
-
-
-/* Overlay */
-.login-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(8px);
-    display: none; /* 🔥 DENNA VAR FEL */
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-}
-
-/* Box */
-.login-box {
-    position: relative;
-    width: 400px;
-    padding: 35px;
-    border-radius: 16px;
-    background: linear-gradient(145deg, #0f172a, #1e293b);
-    box-shadow: 0 0 40px rgba(0, 150, 255, 0.15);
-    animation: fadeIn 0.25s ease;
-}
-
-.login-box h2 {
-    margin-bottom: 25px;
-    font-size: 22px;
-    font-weight: 600;
-    color: #fff;
-}
-
-/* Close button */
-.login-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    color: #aaa;
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.login-close:hover {
-    color: #fff;
-}
-
-/* Inputs */
-.input-group {
-    margin-bottom: 18px;
-}
-
-.input-group label {
-    display: block;
-    font-size: 13px;
-    margin-bottom: 6px;
-    color: #94a3b8;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #334155;
-    background: #0f172a;
-    color: white;
-    outline: none;
-    transition: 0.2s;
-}
-
-.input-group input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 10px rgba(59,130,246,0.4);
-}
-
-/* Buttons */
-.login-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.btn-primary {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: #3b82f6;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-primary:hover {
-    background: #2563eb;
-    box-shadow: 0 0 15px rgba(59,130,246,0.6);
-}
-
-.btn-secondary {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #334155;
-    background: transparent;
-    color: #94a3b8;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-secondary:hover {
-    background: #1e293b;
-    color: white;
-}
-
-/* Animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-  
-/* REVIEWS */
 
 .section-title{
   text-align:center;
-  font-size:32px;
+  font-size:30px;
   font-weight:900;
-  margin:110px 0 30px;
+  margin:80px 0 20px;
 }
-
 .reviews{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:20px;
+  gap:16px;
 }
-
 .review{
-  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:22px;
-  transition:.3s;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:16px;
 }
-
-.review:hover{
-  transform:translateY(-4px);
-  border-color:var(--blue-glow);
-}
-
-.stars{
-  color:var(--yellow);
-  margin-bottom:8px;
-}
-
-/* FOOTER */
+.stars{color:var(--yellow); margin-bottom:6px}
 
 .footer{
-  display:flex;
-  justify-content:center;
-  gap:24px;
-  margin-top:100px;
-  font-size:13px;
+  text-align:center;
+  margin-top:80px;
+  font-size:12px;
   color:rgba(232,240,255,.5);
 }
 
 /* MODALS */
-
 .modal{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.75);
-  padding:20px;
-  z-index:999;
+  position:fixed; inset:0; display:none;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.65);
+  padding:18px; z-index:999;
 }
-
-.modal.open{
-  display:flex;
-}
-
+.modal.open{display:flex}
 .modal-box{
-  width:400px;
-  max-width:95vw;
-  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
-  border:1px solid var(--border);
+  width:380px; max-width:92vw;
+  background:linear-gradient(180deg,#0f172a,#0b1428);
+  border:1px solid rgba(255,255,255,.10);
   border-radius:18px;
-  padding:24px;
+  box-shadow:0 30px 90px rgba(0,0,0,.65);
+  padding:18px;
 }
-
-/* MOBILE OPTIMIZATION */
-
-@media (max-width:1000px){
-  .features-grid{
-    grid-template-columns:1fr 1fr;
-  }
+.modal-top{display:flex; justify-content:space-between; align-items:center}
+.x{cursor:pointer; opacity:.75; font-weight:900}
+.x:hover{opacity:1}
+label{display:block; margin-top:12px; font-size:12px; color:var(--muted); font-weight:800}
+input{
+  width:100%; margin-top:6px;
+  padding:11px 12px; border-radius:12px;
+  background:rgba(0,0,0,.25); color:var(--text);
+  border:1px solid rgba(255,255,255,.10);
 }
+.err{color:#ff6b6b; margin-top:10px; min-height:18px; font-size:13px}
+.row{display:flex; gap:10px; margin-top:14px}
+.row .btn{flex:1}
 
-@media (max-width:768px){
-
-  .hero h1{
-    font-size:42px;
-  }
-
-  .wrap{
-    padding:60px 18px 80px;
-  }
-
-  .features-grid{
-    grid-template-columns:1fr;
-  }
-
-  .grid{
-    grid-template-columns:1fr;
-    gap:24px;
-    margin-top:70px;
-  }
-
-  .price-card.featured{
-    transform:none;
-  }
-
-  .reviews{
-    grid-template-columns:1fr;
-  }
-
-  header{
-    padding:14px 18px;
-  }
-
-  .brand{
-    font-size:18px;
-  }
-
-  .btn{
-    padding:9px 14px;
-    font-size:14px;
-  }
-
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .reviews{grid-template-columns:1fr}
+  .hero h1{font-size:42px}
 }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand"><i class="fas fa-ghost"></i> GhostGuard</div>
+  <div class="brand">GhostGuard</div>
   <div style="display:flex; gap:12px;">
-    <button class="btn btn-primary" id="buyBtn"><i class="fas fa-shopping-cart"></i> Köp</button>
-    <button class="btn" id="loginBtn"><i class="fas fa-right-to-bracket"></i> Logga in</button>
+    <button class="btn btn-primary" id="buyBtn">🛒 Köp</button>
+    <button class="btn" id="loginBtn">Logga in</button>
   </div>
 </header>
 
 <div class="wrap">
   <div class="hero">
-    <h1>GhostGuard <i class="fas fa-ghost"></i></h1>
+    <h1>GhostGuard AntiCheat</h1>
     <p>Avancerat skydd för din FiveM-server med real-time detection.</p>
-    <div class="buttons">
-      <button class="btn btn-primary" id="heroBuyBtn"><i class="fas fa-shopping-cart"></i> Köp nu</button>
-      <button class="btn btn-outline" id="heroDiscordBtn"><i class="fab fa-discord"></i> Discord</button>
-    </div>
-    <div class="pill"><span class="online-dot"><i class="fas fa-circle" style="color: var(--green);"></i></span> <span id="discordCount">128</span>+ medlemmar i Discord</div>
-  </div>
-
-  <div class="features-grid">
-    <div class="feature-card"><i class="fas fa-shield-alt"></i><h3>Anti-Cheat</h3><p>Real-time detection av fusk</p></div>
-    <div class="feature-card"><i class="fas fa-scroll"></i><h3>Live Logs</h3><p>Djup servertelemetri i realtid</p></div>
-    <div class="feature-card"><i class="fas fa-users"></i><h3>Admin Tools</h3><p>Snabba actions för moderation</p></div>
-    <div class="feature-card"><i class="fas fa-chart-line"></i><h3>Dashboard</h3><p>Tydlig kontroll över licens och server</p></div>
+    <div class="pill">💬 <span id="discordCount">128</span>+ medlemmar i Discord</div>
   </div>
 
   <div class="grid">
+    <div class="price-card">
+      <div class="plan">Månadsplan</div>
+      <div class="price">49 kr <span class="muted" style="font-size:14px">/ månad</span></div>
+      <div class="features">
+        ✔ Full tillgång till anticheat<br>
+        ✔ Alla uppdateringar<br>
+        ✔ Dashboard & loggar<br>
+        ✔ Discord support
+      </div>
+      <button class="btn btn-primary" data-buy="monthly">Köp</button>
+    </div>
 
-  <!-- Monthly -->
-  <div class="price-card">
-    <div class="plan">Månadsplan</div>
-    <div class="price">69 kr <span class="muted" style="font-size:14px">/ månad</span></div>
-    <ul>
-      <li><i class="fas fa-check"></i> Full tillgång till anticheat</li>
-      <li><i class="fas fa-check"></i> Alla uppdateringar</li>
-      <li><i class="fas fa-check"></i> Dashboard & loggar</li>
-      <li><i class="fas fa-check"></i> Discord support</li>
-    </ul>
-    <button class="btn btn-primary" data-buy="monthly">Välj</button>
+    <div class="price-card">
+      <div class="plan">Livstid</div>
+      <div class="price">89 kr</div>
+      <div class="features">
+        ✔ Engångsbetalning<br>
+        ✔ Livstidsuppdateringar<br>
+        ✔ Dashboard & loggar<br>
+        ✔ Prioriterad support
+      </div>
+      <button class="btn btn-primary" data-buy="lifetime">Köp</button>
+    </div>
   </div>
 
-  <!-- 3 Months (Featured) -->
-  <div class="price-card featured">
-    <div class="badge">Mest Populär</div>
-    <div class="plan">3 Månader</div>
-    <div class="price">99 kr</div>
-    <div class="muted" style="font-size:13px">≈ 49 kr / månad</div>
-    <ul>
-      <li><i class="fas fa-check"></i> Full tillgång till anticheat</li>
-      <li><i class="fas fa-check"></i> Alla uppdateringar</li>
-      <li><i class="fas fa-check"></i> Dashboard & loggar</li>
-      <li><i class="fas fa-check"></i> Prioriterad Discord support</li>
-    </ul>
-    <button class="btn btn-primary" data-buy="3months">Välj</button>
-  </div>
-
-  <!-- Lifetime -->
-  <div class="price-card">
-    <div class="plan">LifeTime</div>
-    <div class="price">139 kr</div>
-    <ul>
-      <li><i class="fas fa-check"></i> Engångsbetalning</li>
-      <li><i class="fas fa-check"></i> Livstidsuppdateringar</li>
-      <li><i class="fas fa-check"></i> Dashboard & loggar</li>
-      <li><i class="fas fa-check"></i> Prioriterad support</li>
-    </ul>
-    <button class="btn btn-primary" data-buy="lifetime">Välj</button>
-  </div>
-
-</div>
   <div class="section-title">Kundrecensioner</div>
   <div class="reviews">
-    <div class="review"><div class="stars">★★★★★</div><b>“+++rep Älskar att ni är så himla snabba i köp tickets!!!.”</b><div class="muted">Snabb setup och stabilt.</div></div>
-    <div class="review"><div class="stars">★★★★★</div><b>“+++ Superbra Anticheat som du kan hitta! Rekommenderar verkligen.”</b><div class="muted">Riktigt bra alerts + logs.</div></div>
+    <div class="review"><div class="stars">★★★★★</div><b>“Bästa AC vi haft.”</b><div class="muted">Snabb setup och stabilt.</div></div>
+    <div class="review"><div class="stars">★★★★★</div><b>“Upptäcker allt!”</b><div class="muted">Riktigt bra alerts + logs.</div></div>
     <div class="review"><div class="stars">★★★★★</div><b>“Stabil & snabb support.”</b><div class="muted">Allt via Discord tickets.</div></div>
   </div>
 
-  <div class="footer">
-    <a href="security.html"><i class="fas fa-shield-alt"></i> Security</a>
-    <a href="terms.html"><i class="fas fa-file-contract"></i> Terms</a>
-    <a href="#"><i class="fab fa-discord"></i> Discord</a>
-  </div>
+  <div class="footer">GhostGuard • Support & köp sker via Discord</div>
 </div>
 
 <!-- LOGIN MODAL -->
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-box">
-    
-    <button class="login-close" onclick="closeLogin()">✕</button>
-
-    <h2>Kund Login</h2>
-
-    <div class="input-group">
-      <label>Användarnamn</label>
-      <input type="text" id="username" placeholder="Skriv användarnamn">
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div style="font-weight:900; font-size:18px">Kund Login</div>
+      <div class="x" id="closeLogin">✕</div>
     </div>
 
-    <div class="input-group">
-      <label>Lösenord</label>
-      <input type="password" id="password" placeholder="Skriv lösenord">
-    </div>
+    <label>Användarnamn</label>
+    <input id="user" placeholder="Username"/>
 
-    <div class="login-buttons">
-      <button class="btn-secondary" onclick="closeLogin()">Avbryt</button>
-      <button class="btn-primary" onclick="login()">Logga in</button>
-    </div>
+    <label>Lösenord</label>
+    <input id="pass" type="password" placeholder="Password"/>
 
+    <div class="err" id="err"></div>
+
+    <div class="row">
+      <button class="btn" id="cancelLogin">Avbryt</button>
+      <button class="btn btn-primary" id="doLogin">Logga in</button>
+    </div>
   </div>
 </div>
 
@@ -611,12 +247,12 @@ header{
   <div class="modal-box">
     <div class="modal-top">
       <div style="font-weight:900; font-size:18px">Köp GhostGuard</div>
-      <div class="x" id="closeBuy"><i class="fas fa-times"></i></div>
+      <div class="x" id="closeBuy">✕</div>
     </div>
     <p class="muted">Köp & support sker i Discord via ticket.</p>
     <div class="row">
       <button class="btn" id="cancelBuy">Avbryt</button>
-      <button class="btn btn-primary" id="goDiscord"><i class="fab fa-discord"></i> Öppna Discord</button>
+      <button class="btn btn-primary" id="goDiscord">Öppna Discord</button>
     </div>
   </div>
 </div>
@@ -632,8 +268,6 @@ header{
   // Elements (måste finnas i HTML)
   const loginBtn = $("loginBtn");
   const buyBtn = $("buyBtn");
-  const heroBuyBtn = $("heroBuyBtn");
-  const heroDiscordBtn = $("heroDiscordBtn");
 
   const loginModal = $("loginModal");
   const buyModal = $("buyModal");
@@ -690,16 +324,6 @@ header{
     openBuy();
   });
 
-  on(heroBuyBtn, "click", (e) => {
-    e.preventDefault();
-    openBuy();
-  });
-
-  on(heroDiscordBtn, "click", (e) => {
-    e.preventDefault();
-    window.open("https://discord.com/invite/jCYGgWVSXp", "_blank");
-  });
-
   on(closeBuyBtn, "click", closeBuy);
   on(cancelBuyBtn, "click", closeBuy);
 
@@ -713,44 +337,33 @@ header{
 
   // Discord
   const goDiscord = $("goDiscord");
-  on(goDiscord, "click", () => window.open("https://discord.com/invite/jCYGgWVSXp", "_blank"));
+  on(goDiscord, "click", () => window.open("https://discord.gg/dxwyCUNEZv", "_blank"));
 
- // LOGIN OVERLAY
-const loginOverlay = document.getElementById("loginOverlay");
-const loginBtn = document.getElementById("loginBtn");
+  // LOGIN
+  async function login() {
+    const username = ($("user")?.value || "").trim();
+    const password = ($("pass")?.value || "");
 
-// Öppna
-if (loginBtn) {
-  loginBtn.addEventListener("click", () => {
-    loginOverlay.style.display = "flex";
-  });
-}
+    if (errEl) errEl.textContent = "";
 
-// Stäng
-function closeLogin() {
-  loginOverlay.style.display = "none";
-}
+    if (!username || !password) {
+      if (errEl) errEl.textContent = "Fyll i användarnamn och lösenord.";
+      return;
+    }
 
-// Login redirect
-function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+    try {
+      const res = await fetch(API + "/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-  if (!username || !password) {
-    alert("Fyll i alla fält");
-    return;
-  }
+      const data = await res.json().catch(() => ({}));
 
-  closeLogin();
-  window.location.href = "dashboard.html";
-}
-
-// Klick utanför box = stäng
-loginOverlay.addEventListener("click", (e) => {
-  if (e.target === loginOverlay) {
-    closeLogin();
-  }
-});
+      if (!res.ok || !data.success) {
+        if (errEl) errEl.textContent = data.error || "Fel login uppgifter.";
+        return;
+      }
 
       // Spara session
       localStorage.setItem("gg_license_key", data.license_key || "");
@@ -785,18 +398,6 @@ loginOverlay.addEventListener("click", (e) => {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
