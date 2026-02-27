@@ -11,268 +11,241 @@
 
 <style>
 :root{
-  --bg:#0b1220;
-  --sidebar:#0f172a;
-  --card:#111827;
-  --border:#1f2937;
-  --primary:#3b82f6;
+  --bg-dark:#060c18;
+  --bg-card:#101a2e;
+  --bg-light:#0a1222;
+  --card-dark:#101a2e;
+  --card-light:#0d1628;
+  --blue:#3b82f6;
+  --blue-glow:rgba(59,130,246,.4);
+  --blue-hover:rgba(59,130,246,.15);
+  --blue-active:rgba(59,130,246,.25);
   --red:#ef4444;
   --yellow:#f59e0b;
   --green:#22c55e;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
+  --border:rgba(255,255,255,.06);
+  --text:#e6f0ff;
+  --text-muted:rgba(230,240,255,.6);
 }
 
 *{box-sizing:border-box}
-html,body{height:100%}
-
+html, body { height: 100%; }
 body{
   margin:0;
-  font-family:Inter,system-ui,-apple-system,sans-serif;
-  background:var(--bg);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:radial-gradient(circle at 20% 0%, #0f1f3d, var(--bg-dark));
   color:var(--text);
   display:flex;
+  min-height:100vh;
+  height:100%;
+  animation:fadeIn .35s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* SIDEBAR */
-
 .sidebar{
   width:240px;
-  background:var(--sidebar);
-  padding:24px;
+  background:linear-gradient(180deg,#0b1426,var(--bg-light));
+  padding:30px 20px;
   border-right:1px solid var(--border);
   display:flex;
   flex-direction:column;
-  position:fixed;
   height:100vh;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.01);
+  position:sticky;
+  top:0;
 }
 
 .logo{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:30px;
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:35px;
 }
 
 .nav{
-  padding:10px 14px;
-  border-radius:8px;
+  padding:12px 14px;
+  border-radius:10px;
   cursor:pointer;
-  margin-bottom:8px;
-  color:var(--muted);
+  margin-bottom:10px;
+  color:var(--text-muted);
+  transition:.2s;
   display:flex;
   align-items:center;
   gap:10px;
-  transition:.15s ease;
 }
 
-.nav:hover{
-  background:#1e293b;
-  color:white;
-}
-
-.nav.active{
-  background:#1e293b;
-  color:white;
-}
-
-/* CONTENT */
+.nav:hover{background:var(--blue-hover);color:white;}
+.nav.active{background:var(--blue-active);color:white;}
 
 .content{
-  margin-left:240px;
-  width:100%;
-  display:flex;
-  justify-content:center;
-  padding:60px 40px;
-}
-
-/* CENTER CONTAINER */
-
-.main-container{
-  width:100%;
-  max-width:1100px;
-}
-
-/* HIDE ALL VIEWS BY DEFAULT */
-
-.content{
-  flex:1;
-  margin-left:240px;
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding:80px 40px;
-}
-
-
-  .center-wrapper{
-  width:100%;
-  max-width:900px;
-}
-  
-/* CARDS */
-
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:24px;
-}
-
-/* DASHBOARD */
-
-.dashboard-header{
-  margin-bottom:30px;
-}
-
-.dashboard-header h2{
-  margin:0;
-  font-size:24px;
-  font-weight:700;
-}
-
-.dashboard-header p{
-  color:var(--muted);
-  margin-top:4px;
-}
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
-}
-
-.stat-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:20px;
-  display:flex;
-  gap:16px;
-  align-items:center;
-}
-
-.stat-icon{
-  font-size:22px;
-  width:44px;
-  height:44px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:10px;
-  background:#1e293b;
-}
-
-.stat-title{
-  font-size:12px;
-  color:var(--muted);
-}
-
-.stat-value{
-  font-size:18px;
-  font-weight:600;
-}
-
-.stat-sub{
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* BUTTONS */
-
-.btn{
-  padding:6px 12px;
-  border-radius:6px;
-  border:1px solid var(--border);
-  background:#1e293b;
-  color:white;
-  font-size:12px;
-  cursor:pointer;
-  transition:.15s;
-}
-
-.btn:hover{
-  background:#273449;
-}
-
-/* STATUS */
-
-.status-online{ color:var(--green); font-weight:600; }
-.status-offline{ color:var(--red); font-weight:600; }
-
-/* LOGS */
-
-#logsView{
-  display:flex;
-  justify-content:center;
-}
-
-.logs-container{
-  width:100%;
-  max-width:900px;
-}
-
-.log-wrapper{
-  margin-top:15px;
-  max-height:65vh;
-  overflow-y:auto;
+  flex:1 1 auto;
+  padding:40px;
+  min-height:100vh;
+  height:100%;
+  overflow:auto;
   display:flex;
   flex-direction:column;
-  gap:10px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:25px;
+}
+
+.content > div {
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+}
+.content .grid{
+  flex:0 0 auto;
+}
+
+.card{
+  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
+  border-radius:16px;
+  padding:25px;
+  border:1px solid var(--border);
+  box-shadow:0 22px 70px rgba(0,0,0,.35);
+  transition:.2s ease;
+}
+
+.card:hover{
+  transform:translateY(-2px);
+  border-color:var(--blue-glow);
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: .5; }
+  100% { opacity: 1; }
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.online-dot { animation:pulse 2s infinite; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-dark) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+/* PLAYER CARD */
+.player-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px;
+  border-radius:12px;
+  background:rgba(59,130,246,.08);
+  margin-bottom:10px;
+  border:1px solid transparent;
+  transition:.2s;
+}
+
+.player-card:hover{
+  background:rgba(59,130,246,.18);
+  border-color:var(--blue-glow);
+  transform:translateY(-1px);
+}
+
+.player-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.player-name{font-weight:800}
+.player-id{font-size:12px;color:var(--text-muted)}
+
+.player-actions{
+  display:flex;
+  gap:8px;
+}
+
+.btn{
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:700;
+  border:1px solid var(--border);
+  cursor:pointer;
+  color:var(--text);
+  background:rgba(255,255,255,.05);
+  transition:.2s;
+}
+
+.btn:hover{transform:translateY(-1px);border-color:var(--blue-glow)}
+.btn-primary{background:var(--blue);border-color:transparent;color:#fff}
+.btn-warning,.btn-kick{background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.45);color:#ffdca0}
+.btn-danger,.btn-ban{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.45);color:#ffc1c1}
+.btn-ghost{background:rgba(255,255,255,.05)}
+
+.status-online{color:var(--green);font-weight:800}
+.status-offline{color:var(--red);font-weight:800}
+.status-online::before,.status-offline::before{content:"";display:inline-block;width:8px;height:8px;border-radius:999px;margin-right:8px;animation:pulse 2s infinite}
+.status-online::before{background:var(--green)}
+.status-offline::before{background:var(--red)}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-dark) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
 }
 
 .log-card{
-  background:#0f172a;
-  border:1px solid var(--border);
-  border-radius:10px;
   padding:12px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:13px;
+  border-radius:12px;
+  margin-bottom:10px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  transition:.2s;
 }
 
-.log-left{
+.log-card:hover{
+  background:rgba(59,130,246,.08);
+  border-color:rgba(59,130,246,.3);
+}
+
+.log-header{
   display:flex;
-  flex-direction:column;
-  gap:4px;
+  justify-content:space-between;
+  font-size:12px;
+  margin-bottom:4px;
 }
 
 .log-time{
-  font-size:11px;
-  color:var(--muted);
+  color:rgba(230,240,255,.5);
 }
 
-.log-message{
-  color:var(--text);
-}
-
-.log-badge{
-  padding:4px 10px;
-  font-size:11px;
+.log-type{
+  font-weight:700;
+  padding:2px 8px;
   border-radius:20px;
-  font-weight:600;
+  font-size:11px;
 }
 
-.badge-join{ background:rgba(34,197,94,.1); color:var(--green); }
-.badge-leave{ background:rgba(245,158,11,.1); color:var(--yellow); }
-.badge-ban{ background:rgba(239,68,68,.1); color:var(--red); }
-.badge-detect{ background:rgba(168,85,247,.1); color:#a855f7; }
-
-/* PLAYER */
-
-.player-card{
-  background:#0f172a;
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:14px;
-  margin-bottom:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
 
 /* MODAL */
-
 .modal-overlay{
   position:fixed;
   inset:0;
@@ -280,24 +253,202 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
+  z-index:999;
+  backdrop-filter:blur(4px);
 }
 
 .modal{
   width:400px;
-  background:var(--card);
+  background:linear-gradient(180deg,#0f1f3d,#0a162b);
+  border:1px solid rgba(59,130,246,.4);
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 0 40px rgba(59,130,246,.3);
+}
+
+.modal h3{
+  margin-top:0;
+  margin-bottom:15px;
+}
+
+.evidence-thumb{
+  width:44px;
+  height:44px;
+  border-radius:8px;
+  object-fit:cover;
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:24px;
+  cursor:pointer;
+}
+
+.evidence-preview{
+  width:100%;
+  border-radius:10px;
+  border:1px solid var(--border);
+}
+
+
+
+  
+.log-info{background:#1f2937;color:#93c5fd;}
+.log-join{background:#052e1f;color:#22c55e;}
+.log-leave{background:#2e1a05;color:#f59e0b;}
+.log-ban{background:#3b0a0a;color:#ef4444;}
+.log-detect{background:#1e1b4b;color:#a78bfa;}
+
+.log-message{
+  font-size:13px;
+  color:rgba(230,240,255,.85);
+}
+
+
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+  backdrop-filter:blur(4px);
+}
+
+.modal{
+  width:400px;
+  background:linear-gradient(180deg,#0f1f3d,#0a162b);
+  border:1px solid rgba(59,130,246,.4);
+  border-radius:16px;
+  padding:25px;
+  box-shadow:0 0 40px rgba(59,130,246,.3);
+}
+
+.modal h3{
+  margin-top:0;
+  margin-bottom:15px;
 }
 
 .modal input{
   width:100%;
-  padding:8px;
+  padding:10px;
   margin-bottom:12px;
-  border-radius:6px;
+  border-radius:10px;
   border:1px solid var(--border);
-  background:#0f172a;
+  background:#0c1426;
   color:white;
+}
+
+.modal input:focus{
+  outline:none;
+  border-color:var(--blue-glow);
+  box-shadow:0 0 0 3px rgba(59,130,246,.2);
+}
+
+.content::after{
+  content:'';
+  display:block;
+  flex:1 1 auto;
+  background:linear-gradient(180deg, rgba(10,20,34,0.02), transparent 40%);
+  margin-top:20px;
+  border-radius:12px;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+.modal-btn{
+  padding:8px 14px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.modal-cancel{
+  background:#1f2937;
+  color:white;
+}
+
+.modal-confirm{
+  background:#3b82f6;
+  color:white;
+}
+
+.dashboard-header{
+  margin-bottom:30px;
+}
+
+.dashboard-header h2{
+  margin:0;
+  font-size:26px;
+  font-weight:900;
+  background:linear-gradient(90deg,#3b82f6,#22c55e);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.dashboard-header p{
+  margin:6px 0 0;
+  color:rgba(230,240,255,.6);
+}
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:25px;
+}
+
+.stat-card{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  padding:25px;
+  border-radius:18px;
+  background:linear-gradient(145deg,#0f1f3d,#0b1426);
+  border:1px solid rgba(59,130,246,.2);
+  box-shadow:0 0 25px rgba(59,130,246,.08);
+  transition:.3s;
+}
+
+.stat-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 0 35px rgba(59,130,246,.2);
+  border-color:rgba(59,130,246,.5);
+}
+
+.stat-icon{
+  font-size:30px;
+  width:55px;
+  height:55px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:14px;
+  background:rgba(59,130,246,.15);
+}
+
+.stat-content{
+  display:flex;
+  flex-direction:column;
+}
+
+.stat-title{
+  font-size:13px;
+  color:rgba(230,240,255,.6);
+}
+
+.stat-value{
+  font-size:20px;
+  font-weight:800;
+  margin:4px 0;
+}
+
+.stat-sub{
+  font-size:12px;
+  color:rgba(230,240,255,.5);
 }
   
   
@@ -332,8 +483,8 @@ body{
   <div class="stats-grid">
 
     <div class="stat-card">
-      <i class="fas fa-id-badge"></i>
-      
+      <div class="stat-icon">🛡</div>
+      <div class="stat-content">
         <span class="stat-title">License Status</span>
         <span class="stat-value" id="licenseStatus">Loading...</span>
         <span class="stat-sub" id="licenseExpire">-</span>
@@ -341,7 +492,8 @@ body{
     </div>
 
     <div class="stat-card">
-      <i class="fas fa-network-wired"></i>
+      <div class="stat-icon">🌐</div>
+      <div class="stat-content">
         <span class="stat-title">Server Status</span>
         <span class="stat-value" id="serverStatus">Loading...</span>
         <span class="stat-sub">Live Monitoring Active</span>
@@ -349,11 +501,20 @@ body{
     </div>
 
     <div class="stat-card">
-      <i class="fas fa-user-friends"></i>
-      
+      <div class="stat-icon">👥</div>
+      <div class="stat-content">
         <span class="stat-title">Online Players</span>
         <span class="stat-value" id="playerCountDash">0</span>
         <span class="stat-sub">Real-time</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🚨</div>
+      <div class="stat-content">
+        <span class="stat-title">Active Detections</span>
+        <span class="stat-value">Live</span>
+        <span class="stat-sub">Monitoring Enabled</span>
       </div>
     </div>
 
@@ -361,8 +522,8 @@ body{
 </div>
 
 
-<div id="downloadView">
-  <div class="center-wrapper">
+<div id="downloadView" style="display:none;">
+  <div class="card">
     <h3><i class="fas fa-download"></i> GhostGuard Download Center</h3>
 
     <p><b>Current Version:</b> v3.1.0</p>
@@ -409,35 +570,6 @@ Config.LicenseKey = "DIN_LICENSE_KEY"
   
 </div>
 
-</div>   <!-- dashboardView slut -->
-
-<!-- HÄR KLISTRAR DU IN DETTA ↓↓↓ -->
-
-<div id="playersView" style="display:none;">
-  <div class="card">
-    <h3>Online Players</h3>
-    <div id="playerList"></div>
-  </div>
-</div>
-
-<div id="logsView" style="display:none;">
-  <div class="logs-container">
-    <div class="card">
-      <h3>Server Logs</h3>
-      <div id="logList"></div>
-    </div>
-  </div>
-</div>
-
-<div id="bansView" style="display:none;">
-  <div class="card">
-    <h3>Ban List</h3>
-    <div id="banList"></div>
-  </div>
-</div>
-
-</div>   <!-- content slut -->
-
 <script>
 const API="https://ghostgaurd-becakd.onrender.com";
 const licenseKey=localStorage.getItem("gg_license_key")||"";
@@ -459,35 +591,23 @@ function isViewActive(viewId){
 }
 
 function showView(view, el){
-
-  // Ta bort active från alla
-  document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
+  document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
   el.classList.add("active");
 
-  // Hämta ALLA views
-  const views = [
-    "dashboardView",
-    "playersView",
-    "logsView",
-    "bansView",
-    "downloadView"
-  ];
+  document.getElementById("dashboardView").style.display="none";
+  document.getElementById("playersView").style.display="none";
+  document.getElementById("logsView").style.display="none";
+  document.getElementById("bansView").style.display="none"; // ← DENNA SAKNADES
+  document.getElementById("downloadView").style.display="none";
 
-  // Dölj ALLA
-  views.forEach(v => {
-    const element = document.getElementById(v);
-    if(element){
-      element.style.display = "none";
-      element.style.flex = "unset";
-    }
-  });
+  document.getElementById(view+"View").style.display="block";
 
-  // Visa endast den aktiva
-  const activeView = document.getElementById(view + "View");
-  if(activeView){
-    activeView.style.display = "block";
-  }
+  if(view === "dashboard") fetchServer();
+  if(view === "players") fetchPlayers();
+  if(view === "logs") fetchLogs();
+  if(view === "bans") fetchBans();
 }
+
 
 async function fetchLicense(){
   if(!token) return;
@@ -792,28 +912,4 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
