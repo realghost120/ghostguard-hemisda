@@ -28,7 +28,7 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 /* ================= MIDDLEWARE ================= */
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json({ limit: "15mb" }));
 
 const corsOptions = {
   origin: DASHBOARD_ORIGIN ? [DASHBOARD_ORIGIN] : true,
