@@ -3,65 +3,209 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GhostGuard Security</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<title>GhostGuard – Terms of Service</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <style>
+:root{
+  --bg-dark:#050b17;
+  --bg-light:#0a1222;
+  --card:#0f1a2f;
+  --border:rgba(255,255,255,.07);
+  --blue:#3b82f6;
+  --text:#e6f0ff;
+  --muted:rgba(230,240,255,.6);
+  --red:#ef4444;
+}
+
+*{box-sizing:border-box}
+
 body{
   margin:0;
-  font-family:Inter,sans-serif;
-  background:#050b17;
-  color:#e6f0ff;
-  padding:60px 20px;
+  font-family:Inter,system-ui;
+  background:
+    radial-gradient(800px 400px at 50% -100px, rgba(59,130,246,.25), transparent 60%),
+    linear-gradient(180deg,var(--bg-dark),var(--bg-light));
+  color:var(--text);
 }
+
+/* HEADER */
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 30px;
+  backdrop-filter:blur(14px);
+  background:rgba(6,10,20,.75);
+  border-bottom:1px solid var(--border);
+}
+
+.brand{
+  font-weight:900;
+  font-size:20px;
+}
+
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:var(--muted);
+  text-decoration:none;
+  font-weight:600;
+  transition:.2s;
+}
+
+.back-btn:hover{
+  color:#fff;
+  transform:translateX(-3px);
+}
+
+/* CONTENT */
 
 .wrap{
   max-width:900px;
-  margin:auto;
+  margin:0 auto;
+  padding:80px 20px 100px;
 }
 
 h1{
-  font-size:40px;
-  margin-bottom:20px;
+  font-size:42px;
+  margin-bottom:10px;
+  background:linear-gradient(90deg,#60a5fa,#22c55e);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
-.section{
-  margin-bottom:40px;
-}
-
-.section h2{
-  font-size:20px;
+.subtitle{
+  color:var(--muted);
   margin-bottom:10px;
 }
 
+.updated{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:50px;
+}
+
+.section{
+  background:linear-gradient(180deg,#0f1a2f,#0c1628);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:28px;
+  margin-bottom:30px;
+  transition:.3s;
+}
+
+.section:hover{
+  border-color:rgba(59,130,246,.4);
+  box-shadow:0 0 25px rgba(59,130,246,.15);
+}
+
+.section h2{
+  margin-top:0;
+  font-size:20px;
+}
+
 .section p{
-  color:rgba(230,240,255,.7);
-  line-height:1.6;
+  color:var(--muted);
+  line-height:1.8;
+  margin:10px 0;
+}
+
+.section ul{
+  padding-left:18px;
+  margin:12px 0;
+  color:var(--muted);
+  line-height:1.8;
+}
+
+.warning{
+  color:var(--red);
+  font-weight:600;
+}
+
+.footer{
+  text-align:center;
+  margin-top:80px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+@media (max-width:768px){
+  h1{font-size:30px}
+  .wrap{padding:60px 18px 80px}
 }
 </style>
 </head>
+
 <body>
 
+<header>
+  <div class="brand"><i class="fas fa-ghost"></i> GhostGuard</div>
+  <a href="index.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Tillbaka
+  </a>
+</header>
+
 <div class="wrap">
-  <h1>GhostGuard Security</h1>
+
+  <h1>Terms of Service</h1>
+  <div class="subtitle">
+    Genom att köpa, använda eller få tillgång till GhostGuard accepterar du följande villkor.
+  </div>
+  <div class="updated">Senast uppdaterad: Februari 2026</div>
 
   <div class="section">
-    <h2>Infrastructure</h2>
-    <p>GhostGuard använder en säker backend-arkitektur med HTTPS-kryptering och token-baserad autentisering. All kommunikation mellan FiveM-server, backend och dashboard är krypterad.</p>
+    <h2>1. Licens & Användning</h2>
+    <p>GhostGuard är en privat och licensierad mjukvara.</p>
+    <p>Licenser är personliga om inget annat avtalats skriftligt.</p>
+    <p>Du ansvarar själv för hur produkten används på din server.</p>
   </div>
 
   <div class="section">
-    <h2>Data Protection</h2>
-    <p>Lösenord lagras aldrig i klartext. API:er är skyddade med autentisering och validering för att förhindra obehörig åtkomst.</p>
+    <h2>2. Förbjudet beteende</h2>
+    <ul>
+      <li>Dela, sprida eller sälja vidare produkten</li>
+      <li>Ge obehöriga tillgång till systemet</li>
+      <li>Modifiera, cracka eller reverse-engineera mjukvaran</li>
+      <li>Försöka kringgå säkerhetssystem</li>
+      <li>Läcka intern information</li>
+    </ul>
+    <p class="warning">
+      Brott mot dessa regler leder till permanent avstängning och svartlistning utan förvarning.
+    </p>
   </div>
 
   <div class="section">
-    <h2>Anti-Tamper Protection</h2>
-    <p>Systemet innehåller skydd mot resource-stopping, manipulation och otillåten modifiering av anticheat-komponenter.</p>
+    <h2>3. Betalning & Refunds</h2>
+    <ul>
+      <li>Endast godkända betalningsmetoder accepteras.</li>
+      <li>Alla köp är slutgiltiga.</li>
+      <li>Chargebacks leder till permanent blacklist.</li>
+    </ul>
   </div>
 
   <div class="section">
-    <h2>System Monitoring</h2>
-    <p>Backend och licenssystem övervakas kontinuerligt för att säkerställa stabilitet och tillgänglighet.</p>
+    <h2>4. Ansvarsbegränsning</h2>
+    <p>GhostGuard tillhandahålls i befintligt skick.</p>
+    <p>Vi ansvarar inte för indirekta skador, förlust av data eller ekonomiska förluster kopplade till användning av produkten.</p>
+  </div>
+
+  <div class="section">
+    <h2>5. Ändringar</h2>
+    <p>Vi förbehåller oss rätten att uppdatera produkt och villkor när som helst.</p>
+    <p>Fortsatt användning innebär att du accepterar uppdateringar.</p>
+  </div>
+
+  <div class="section">
+    <h2>6. Avstängning</h2>
+    <p>Vi kan när som helst neka eller avsluta tillgång vid brott mot dessa villkor eller misstanke om missbruk.</p>
+  </div>
+
+  <div class="footer">
+    © 2026 GhostGuard. Alla rättigheter förbehållna.
   </div>
 
 </div>
