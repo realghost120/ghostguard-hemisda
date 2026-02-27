@@ -249,27 +249,27 @@ body{
 .log-wrapper{
   display:flex;
   flex-direction:column;
-  gap:10px;
-  max-height:70vh;
+  gap:8px;
+  max-height:65vh;
   overflow-y:auto;
-  padding-right:5px;
+  padding-right:6px;
 }
 
 .log-card{
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  padding:14px 18px;
-  border-radius:14px;
-  background:linear-gradient(145deg,#0f1f3d,#0b1426);
-  border:1px solid rgba(59,130,246,.1);
-  transition:.25s ease;
+  align-items:center;
+  padding:10px 14px;
+  border-radius:12px;
+  background:rgba(59,130,246,.05);
+  border:1px solid rgba(59,130,246,.15);
+  font-size:13px;
+  transition:.2s ease;
 }
 
 .log-card:hover{
-  transform:translateY(-2px);
-  border-color:rgba(59,130,246,.5);
-  box-shadow:0 0 25px rgba(59,130,246,.15);
+  background:rgba(59,130,246,.12);
+  border-color:rgba(59,130,246,.4);
 }
 
 .log-left{
@@ -304,6 +304,17 @@ body{
 .badge-info{ background:rgba(59,130,246,.15); color:#3b82f6; }
 
 
+#logsView{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+}
+
+.logs-container{
+  width:100%;
+  max-width:900px;
+}
+  
 /* MODAL */
 .modal-overlay{
   position:fixed;
@@ -575,9 +586,11 @@ Config.LicenseKey = "DIN_LICENSE_KEY"
 </div>
 
 <div id="logsView" style="display:none;">
-  <div class="card">
-    <h3>Server Logs</h3>
-    <div id="logList"></div>
+  <div class="logs-container">
+    <div class="card">
+      <h3>Server Logs</h3>
+      <div id="logList"></div>
+    </div>
   </div>
 </div>
 
@@ -932,6 +945,7 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
+
 
 
 
