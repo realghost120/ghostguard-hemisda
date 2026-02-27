@@ -3,72 +3,37 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <title>GhostGuard Panel</title>
 
 <style>
 :root{
-  --bg-dark:#060c18;
-  --bg-card:#101a2e;
-  --bg-light:#0a1222;
-  --card-dark:#101a2e;
-  --card-light:#0d1628;
+  --bg:#060c18;
+  --card:#101a2e;
   --blue:#3b82f6;
-  --blue-glow:rgba(59,130,246,.4);
-  --blue-hover:rgba(59,130,246,.15);
-  --blue-active:rgba(59,130,246,.25);
+  --blueGlow:rgba(59,130,246,.4);
   --red:#ef4444;
   --yellow:#f59e0b;
   --green:#22c55e;
   --border:rgba(255,255,255,.06);
   --text:#e6f0ff;
-  --text-muted:rgba(230,240,255,.6);
+  --muted:rgba(230,240,255,.6);
 }
 
 *{box-sizing:border-box}
-html, body { height: 100%; }
 body{
   margin:0;
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-  background:radial-gradient(circle at 20% 0%, #0f1f3d, var(--bg-dark));
+  font-family:Inter,system-ui;
+  background:radial-gradient(circle at 20% 0%, #0f1f3d, #060c18);
   color:var(--text);
   display:flex;
-  min-height:100vh;
-  height:100%;
-  animation:fadeIn .35s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
-}
-
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
 }
 
 /* SIDEBAR */
 .sidebar{
   width:240px;
-  background:linear-gradient(180deg,#0b1426,var(--bg-light));
+  background:linear-gradient(180deg,#0b1426,#0a1222);
   padding:30px 20px;
   border-right:1px solid var(--border);
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-  box-shadow: inset -1px 0 0 rgba(255,255,255,.01);
-  position:sticky;
-  top:0;
 }
 
 .logo{
@@ -82,24 +47,16 @@ body{
   border-radius:10px;
   cursor:pointer;
   margin-bottom:10px;
-  color:var(--text-muted);
+  color:var(--muted);
   transition:.2s;
-  display:flex;
-  align-items:center;
-  gap:10px;
 }
 
-.nav:hover{background:var(--blue-hover);color:white;}
-.nav.active{background:var(--blue-active);color:white;}
+.nav:hover{background:rgba(59,130,246,.15);color:white;}
+.nav.active{background:rgba(59,130,246,.25);color:white;}
 
 .content{
-  flex:1 1 auto;
+  flex:1;
   padding:40px;
-  min-height:100vh;
-  height:100%;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
 }
 
 .grid{
@@ -108,46 +65,11 @@ body{
   gap:25px;
 }
 
-.content > div {
-  flex:1 1 auto;
-  display:flex;
-  flex-direction:column;
-}
-.content .grid{
-  flex:0 0 auto;
-}
-
 .card{
-  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
+  background:linear-gradient(180deg,var(--card),#0d1628);
   border-radius:16px;
   padding:25px;
   border:1px solid var(--border);
-  box-shadow:0 22px 70px rgba(0,0,0,.35);
-  transition:.2s ease;
-}
-
-.card:hover{
-  transform:translateY(-2px);
-  border-color:var(--blue-glow);
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: .5; }
-  100% { opacity: 1; }
-}
-
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-.online-dot { animation:pulse 2s infinite; }
-
-.skeleton {
-  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-dark) 50%, var(--bg-card) 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
 }
 
 /* PLAYER CARD */
@@ -165,8 +87,7 @@ body{
 
 .player-card:hover{
   background:rgba(59,130,246,.18);
-  border-color:var(--blue-glow);
-  transform:translateY(-1px);
+  border-color:var(--blueGlow);
 }
 
 .player-info{
@@ -175,7 +96,7 @@ body{
 }
 
 .player-name{font-weight:800}
-.player-id{font-size:12px;color:var(--text-muted)}
+.player-id{font-size:12px;color:var(--muted)}
 
 .player-actions{
   display:flex;
@@ -183,34 +104,19 @@ body{
 }
 
 .btn{
-  padding:8px 12px;
-  border-radius:10px;
+  padding:6px 12px;
+  border-radius:8px;
   font-size:12px;
   font-weight:700;
-  border:1px solid var(--border);
+  border:none;
   cursor:pointer;
-  color:var(--text);
-  background:rgba(255,255,255,.05);
-  transition:.2s;
 }
 
-.btn:hover{transform:translateY(-1px);border-color:var(--blue-glow)}
-.btn-primary{background:var(--blue);border-color:transparent;color:#fff}
-.btn-warning,.btn-kick{background:rgba(245,158,11,.2);border-color:rgba(245,158,11,.45);color:#ffdca0}
-.btn-danger,.btn-ban{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.45);color:#ffc1c1}
-.btn-ghost{background:rgba(255,255,255,.05)}
+.btn-kick{background:var(--yellow);color:#000}
+.btn-ban{background:var(--red);color:white}
 
 .status-online{color:var(--green);font-weight:800}
 .status-offline{color:var(--red);font-weight:800}
-.status-online::before,.status-offline::before{content:"";display:inline-block;width:8px;height:8px;border-radius:999px;margin-right:8px;animation:pulse 2s infinite}
-.status-online::before{background:var(--green)}
-.status-offline::before{background:var(--red)}
-
-.skeleton {
-  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-dark) 50%, var(--bg-card) 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-}
 
 .log-card{
   padding:12px 16px;
@@ -271,21 +177,6 @@ body{
   margin-bottom:15px;
 }
 
-.evidence-thumb{
-  width:44px;
-  height:44px;
-  border-radius:8px;
-  object-fit:cover;
-  border:1px solid var(--border);
-  cursor:pointer;
-}
-
-.evidence-preview{
-  width:100%;
-  border-radius:10px;
-  border:1px solid var(--border);
-}
-
 
 
   
@@ -332,25 +223,10 @@ body{
   width:100%;
   padding:10px;
   margin-bottom:12px;
-  border-radius:10px;
-  border:1px solid var(--border);
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.1);
   background:#0c1426;
   color:white;
-}
-
-.modal input:focus{
-  outline:none;
-  border-color:var(--blue-glow);
-  box-shadow:0 0 0 3px rgba(59,130,246,.2);
-}
-
-.content::after{
-  content:'';
-  display:block;
-  flex:1 1 auto;
-  background:linear-gradient(180deg, rgba(10,20,34,0.02), transparent 40%);
-  margin-top:20px;
-  border-radius:12px;
 }
 
 .modal-actions{
@@ -361,7 +237,7 @@ body{
 
 .modal-btn{
   padding:8px 14px;
-  border-radius:10px;
+  border-radius:8px;
   border:none;
   cursor:pointer;
   font-weight:700;
@@ -377,80 +253,6 @@ body{
   color:white;
 }
 
-.dashboard-header{
-  margin-bottom:30px;
-}
-
-.dashboard-header h2{
-  margin:0;
-  font-size:26px;
-  font-weight:900;
-  background:linear-gradient(90deg,#3b82f6,#22c55e);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-
-.dashboard-header p{
-  margin:6px 0 0;
-  color:rgba(230,240,255,.6);
-}
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:25px;
-}
-
-.stat-card{
-  display:flex;
-  gap:18px;
-  align-items:center;
-  padding:25px;
-  border-radius:18px;
-  background:linear-gradient(145deg,#0f1f3d,#0b1426);
-  border:1px solid rgba(59,130,246,.2);
-  box-shadow:0 0 25px rgba(59,130,246,.08);
-  transition:.3s;
-}
-
-.stat-card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 0 35px rgba(59,130,246,.2);
-  border-color:rgba(59,130,246,.5);
-}
-
-.stat-icon{
-  font-size:30px;
-  width:55px;
-  height:55px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:14px;
-  background:rgba(59,130,246,.15);
-}
-
-.stat-content{
-  display:flex;
-  flex-direction:column;
-}
-
-.stat-title{
-  font-size:13px;
-  color:rgba(230,240,255,.6);
-}
-
-.stat-value{
-  font-size:20px;
-  font-weight:800;
-  margin:4px 0;
-}
-
-.stat-sub{
-  font-size:12px;
-  color:rgba(230,240,255,.5);
-}
-  
   
 </style>
 </head>
@@ -462,12 +264,12 @@ body{
 
   
 <div class="sidebar">
-  <div class="logo"><i class="fas fa-ghost"></i> GhostGuard</div>
-  <div class="nav active" onclick="showView('dashboard', this)"><i class="fas fa-chart-line"></i><span>Dashboard</span></div>
-  <div class="nav" onclick="showView('players', this)"><i class="fas fa-users"></i><span>Players</span></div>
-  <div class="nav" onclick="showView('logs', this)"><i class="fas fa-scroll"></i><span>Server Logs</span></div>
-  <div class="nav" onclick="showView('bans', this)"><i class="fas fa-ban"></i><span>Ban List</span></div>
-  <div class="nav" onclick="showView('download', this)"><i class="fas fa-download"></i><span>Download</span></div>
+  <div class="logo">👻 GhostGuard</div>
+  <div class="nav active" onclick="showView('dashboard', this)">Dashboard</div>
+  <div class="nav" onclick="showView('players', this)">Players</div>
+  <div class="nav" onclick="showView('logs', this)">Server Logs</div>
+  <div class="nav" onclick="showView('bans', this)">Ban List</div>
+  <div class="nav" onclick="showView('download', this)">Download</div>
 </div>
 
 <div class="content">
@@ -475,59 +277,49 @@ body{
 
   
 <div id="dashboardView">
-  <div class="dashboard-header">
-    <h2>GhostGuard Control Panel</h2>
-    <p>Advanced FiveM Security System</p>
+  <div class="grid">
+    <div class="card">
+      <h3>License</h3>
+      <p>Status: <span id="licenseStatus">Loading...</span></p>
+      <p>Expires: <span id="licenseExpire">-</span></p>
+    </div>
+
+    <div class="card">
+      <h3>Server</h3>
+      <p>Status: <span id="serverStatus">Loading...</span></p>
+      <p>Players: <span id="playerCountDash">0</span></p>
+    </div>
   </div>
+</div>
 
-  <div class="stats-grid">
+<div id="bansView" style="display:none;">
+  <div class="card">
+    <h3>Banned Players</h3>
+    <div id="banList"></div>
+  </div>
+</div>
+  
+<div id="playersView" style="display:none;">
+  <div class="card">
+    <h3>Online Players</h3>
+    <div id="playerList"></div>
+  </div>
+</div>
 
-    <div class="stat-card">
-      <div class="stat-icon">🛡</div>
-      <div class="stat-content">
-        <span class="stat-title">License Status</span>
-        <span class="stat-value" id="licenseStatus">Loading...</span>
-        <span class="stat-sub" id="licenseExpire">-</span>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon">🌐</div>
-      <div class="stat-content">
-        <span class="stat-title">Server Status</span>
-        <span class="stat-value" id="serverStatus">Loading...</span>
-        <span class="stat-sub">Live Monitoring Active</span>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon">👥</div>
-      <div class="stat-content">
-        <span class="stat-title">Online Players</span>
-        <span class="stat-value" id="playerCountDash">0</span>
-        <span class="stat-sub">Real-time</span>
-      </div>
-    </div>
-
-    <div class="stat-card">
-      <div class="stat-icon">🚨</div>
-      <div class="stat-content">
-        <span class="stat-title">Active Detections</span>
-        <span class="stat-value">Live</span>
-        <span class="stat-sub">Monitoring Enabled</span>
-      </div>
-    </div>
-
+<div id="logsView" style="display:none;">
+  <div class="card">
+    <h3>Live Logs</h3>
+    <div id="logList"></div>
   </div>
 </div>
 
 
 <div id="downloadView" style="display:none;">
   <div class="card">
-    <h3><i class="fas fa-download"></i> GhostGuard Download Center</h3>
+    <h3>👻 GhostGuard Download Center</h3>
 
     <p><b>Current Version:</b> v3.1.0</p>
-    <p><b>Status:</b> <span class="status-online" style="color: var(--green);">Stable</span></p>
+    <p><b>Status:</b> <span class="status-online">Stable</span></p>
 
     <br>
 
@@ -542,12 +334,12 @@ body{
          text-decoration:none;
          font-weight:700;
        ">
-       <i class="fas fa-download"></i> Download GhostGuard
+       ⬇ Download GhostGuard
     </a>
 
     <hr style="margin:30px 0; opacity:.1">
 
-    <h4><i class="fas fa-cog"></i> Installation Guide</h4>
+    <h4>📦 Installation Guide</h4>
 
     <p>1️⃣ Download the zip file</p>
     <p>2️⃣ Extract the folder</p>
@@ -574,21 +366,6 @@ Config.LicenseKey = "DIN_LICENSE_KEY"
 const API="https://ghostgaurd-becakd.onrender.com";
 const licenseKey=localStorage.getItem("gg_license_key")||"";
 const token=localStorage.getItem("gg_token")||"";
-let cachedBans = [];
-
-function escapeHtml(value){
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function isViewActive(viewId){
-  const el = document.getElementById(viewId);
-  return !!el && el.style.display !== "none";
-}
 
 function showView(view, el){
   document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
@@ -601,11 +378,6 @@ function showView(view, el){
   document.getElementById("downloadView").style.display="none";
 
   document.getElementById(view+"View").style.display="block";
-
-  if(view === "dashboard") fetchServer();
-  if(view === "players") fetchPlayers();
-  if(view === "logs") fetchLogs();
-  if(view === "bans") fetchBans();
 }
 
 
@@ -637,7 +409,6 @@ async function fetchServer(){
 }
 
 async function fetchPlayers(){
-  if(!isViewActive("playersView")) return;
   try{
     const res=await fetch(API+"/api/server/players/"+licenseKey);
     const data=await res.json();
@@ -646,12 +417,12 @@ async function fetchPlayers(){
     document.getElementById("playerList").innerHTML=players.map(p=>`
       <div class="player-card">
         <div class="player-info">
-          <span class="player-name">${escapeHtml(p.name)}</span>
-          <span class="player-id">ID: ${escapeHtml(p.id)}</span>
+          <span class="player-name">${p.name}</span>
+          <span class="player-id">ID: ${p.id}</span>
         </div>
         <div class="player-actions">
-      <button class="btn btn-kick" onclick="openModal('kick', ${p.id})"><i class="fas fa-user-slash"></i> Kick</button>
-    <button class="btn btn-ban" onclick="openModal('ban', ${p.id})"><i class="fas fa-gavel"></i> Ban</button>
+      <button class="btn btn-kick" onclick="openModal('kick', ${p.id})">Kick</button>
+<button class="btn btn-ban" onclick="openModal('ban', ${p.id})">Ban</button>
         </div>
       </div>
     `).join("");
@@ -659,7 +430,6 @@ async function fetchPlayers(){
 }
 
 async function fetchLogs(){
-  if(!isViewActive("logsView")) return;
   try{
     const res=await fetch(API+"/api/server/logs/"+licenseKey);
     const data=await res.json();
@@ -692,10 +462,10 @@ async function fetchLogs(){
       return `
         <div class="log-card">
           <div class="log-header">
-            <span class="log-time">${escapeHtml(new Date(l.time).toLocaleTimeString())}</span>
+            <span class="log-time">${new Date(l.time).toLocaleTimeString()}</span>
             <span class="log-type ${typeClass}">${typeLabel}</span>
           </div>
-          <div class="log-message">${escapeHtml(l.message)}</div>
+          <div class="log-message">${l.message}</div>
         </div>
       `;
     }).join("");
@@ -786,31 +556,28 @@ async function confirmAction(type, playerId){
 
 
 async function fetchBans(){
-  if(!isViewActive("bansView")) return;
   try{
     const res = await fetch(API + "/api/server/bans/" + licenseKey);
     const data = await res.json();
     const bans = data.data || [];
-    cachedBans = bans;
 
-    document.getElementById("banList").innerHTML = bans.map((b, idx)=>`
+    document.getElementById("banList").innerHTML = bans.map(b=>`
   <div class="player-card">
     <div class="player-info">
-      <span class="player-name">${escapeHtml(b.player_id)}</span>
-      <span class="player-id">Ban ID: ${escapeHtml(b.ban_id)}</span>
+      <span class="player-name">${b.player_id}</span>
+      <span class="player-id">Ban ID: ${b.ban_id}</span>
     </div>
 
     <div class="player-actions">
-      ${b.evidence_url ? `<img class="evidence-thumb" src="${encodeURI(b.evidence_url)}" alt="evidence" onclick="previewEvidence(${idx})"/>` : ""}
 
       <button class="btn btn-kick"
-        onclick="showBanInfo(${idx})">
-        <i class="fas fa-info-circle"></i> Info
+        onclick="showBanInfo('${b.ban_id}','${b.reason}','${b.duration}','${b.created_at}')">
+        Info
       </button>
 
       <button class="btn btn-ban"
-        onclick="unbanPlayer('${encodeURIComponent(b.ban_id || "")}')">
-        <i class="fas fa-check-circle"></i> Unban
+        onclick="unbanPlayer('${b.ban_id}')">
+        Unban
       </button>
 
     </div>
@@ -826,11 +593,8 @@ async function unbanPlayer(banId){
   if(!confirm("Är du säker att du vill unbanna denna spelare?")) return;
 
   try{
-    const res = await fetch(API + "/api/server/unban/" + decodeURIComponent(banId), {
-      method: "DELETE",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
+    const res = await fetch(API + "/api/server/unban/" + banId, {
+      method: "DELETE"
     });
 
     const data = await res.json();
@@ -847,21 +611,18 @@ async function unbanPlayer(banId){
 }
 
   
-function showBanInfo(index){
-  const b = cachedBans[index];
-  if(!b) return;
+
+  function showBanInfo(id, reason, duration, date){
   const modal = document.getElementById("actionModal");
 
   modal.innerHTML = `
     <div class="modal-overlay">
       <div class="modal">
         <h3>Ban Info</h3>
-        <p><b>Ban ID:</b> ${escapeHtml(b.ban_id)}</p>
-        <p><b>Reason:</b> ${escapeHtml(b.reason)}</p>
-        <p><b>Duration:</b> ${escapeHtml(b.duration || "P")}</p>
-        <p><b>By:</b> ${escapeHtml(b.banned_by || "GhostGuard")}</p>
-        <p><b>Expiry:</b> ${escapeHtml(b.expires_at ? new Date(b.expires_at).toLocaleString() : "PERMANENT")}</p>
-        <p><b>Date:</b> ${escapeHtml(new Date(b.created_at).toLocaleString())}</p>
+        <p><b>Ban ID:</b> ${id}</p>
+        <p><b>Reason:</b> ${reason}</p>
+        <p><b>Duration:</b> ${duration}</p>
+        <p><b>Date:</b> ${new Date(date).toLocaleString()}</p>
         <div class="modal-actions">
           <button class="modal-btn modal-cancel" onclick="closeModal()">Close</button>
         </div>
@@ -872,34 +633,14 @@ function showBanInfo(index){
   modal.style.display = "block";
 }
 
-function previewEvidence(index){
-  const b = cachedBans[index];
-  if(!b || !b.evidence_url) return;
-
-  const modal = document.getElementById("actionModal");
-  modal.innerHTML = `
-    <div class="modal-overlay">
-      <div class="modal">
-        <h3>Evidence Preview</h3>
-        <img class="evidence-preview" src="${encodeURI(b.evidence_url)}" alt="evidence" />
-        <div class="modal-actions">
-          <button class="modal-btn modal-cancel" onclick="closeModal()">Close</button>
-        </div>
-      </div>
-    </div>
-  `;
-
-  modal.style.display = "block";
-}
-
 
 
 
   
-setInterval(()=>{ if(isViewActive("bansView")) fetchBans(); }, 5000);
-setInterval(()=>{ if(isViewActive("dashboardView")) fetchServer(); },5000);
-setInterval(()=>{ if(isViewActive("playersView")) fetchPlayers(); },3000);
-setInterval(()=>{ if(isViewActive("logsView")) fetchLogs(); },3000);
+setInterval(fetchBans, 5000);
+setInterval(fetchServer,5000);
+setInterval(fetchPlayers,3000);
+setInterval(fetchLogs,3000);
 
 fetchLicense();
 fetchServer();
@@ -912,4 +653,12 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
+
+
+
+
+
+
+
+
 
