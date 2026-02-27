@@ -250,6 +250,128 @@ header{
   margin-right:8px;
 }
 
+
+/* Overlay */
+.login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+/* Box */
+.login-box {
+    position: relative;
+    width: 400px;
+    padding: 35px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #0f172a, #1e293b);
+    box-shadow: 0 0 40px rgba(0, 150, 255, 0.15);
+    animation: fadeIn 0.25s ease;
+}
+
+.login-box h2 {
+    margin-bottom: 25px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Close button */
+.login-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-close:hover {
+    color: #fff;
+}
+
+/* Inputs */
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #94a3b8;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: white;
+    outline: none;
+    transition: 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59,130,246,0.4);
+}
+
+/* Buttons */
+.login-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #3b82f6;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    box-shadow: 0 0 15px rgba(59,130,246,0.6);
+}
+
+.btn-secondary {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #1e293b;
+    color: white;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+  
 /* REVIEWS */
 
 .section-title{
@@ -459,25 +581,28 @@ header{
 </div>
 
 <!-- LOGIN MODAL -->
-<div class="modal" id="loginModal">
-  <div class="modal-box">
-    <div class="modal-top">
-      <div style="font-weight:900; font-size:18px">Kund Login</div>
-      <div class="x" id="closeLogin"><i class="fas fa-times"></i></div>
+<div class="login-overlay">
+  <div class="login-box">
+    
+    <button class="login-close" onclick="closeLogin()">✕</button>
+
+    <h2>Kund Login</h2>
+
+    <div class="input-group">
+      <label>Användarnamn</label>
+      <input type="text" placeholder="Skriv användarnamn">
     </div>
 
-    <label>Användarnamn</label>
-    <input id="user" placeholder="Username"/>
-
-    <label>Lösenord</label>
-    <input id="pass" type="password" placeholder="Password"/>
-
-    <div class="err" id="err"></div>
-
-    <div class="row">
-      <button class="btn" id="cancelLogin">Avbryt</button>
-      <button class="btn btn-primary" id="doLogin"><i class="fas fa-right-to-bracket"></i> Logga in</button>
+    <div class="input-group">
+      <label>Lösenord</label>
+      <input type="password" placeholder="Skriv lösenord">
     </div>
+
+    <div class="login-buttons">
+      <button class="btn-secondary" onclick="closeLogin()">Avbryt</button>
+      <button class="btn-primary">Logga in</button>
+    </div>
+
   </div>
 </div>
 
@@ -649,6 +774,7 @@ header{
 
 </body>
 </html>
+
 
 
 
