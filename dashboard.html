@@ -94,11 +94,21 @@ body{
 
 /* HIDE ALL VIEWS BY DEFAULT */
 
-.content > div{
-  display:none;
-  width:100%;
+.content{
+  flex:1;
+  margin-left:240px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:80px 40px;
 }
 
+
+  .center-wrapper{
+  width:100%;
+  max-width:900px;
+}
+  
 /* CARDS */
 
 .card{
@@ -351,8 +361,8 @@ body{
 </div>
 
 
-<div id="downloadView" style="display:none;">
-  <div class="card">
+<div id="downloadView">
+  <div class="center-wrapper">
     <h3><i class="fas fa-download"></i> GhostGuard Download Center</h3>
 
     <p><b>Current Version:</b> v3.1.0</p>
@@ -782,6 +792,7 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
+
 
 
 
