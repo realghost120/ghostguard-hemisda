@@ -257,7 +257,7 @@ header{
     inset: 0;
     background: rgba(0,0,0,0.65);
     backdrop-filter: blur(8px);
-    display: flex;
+    display: none; /* 🔥 DENNA VAR FEL */
     align-items: center;
     justify-content: center;
     z-index: 999;
@@ -715,28 +715,42 @@ header{
   const goDiscord = $("goDiscord");
   on(goDiscord, "click", () => window.open("https://discord.com/invite/jCYGgWVSXp", "_blank"));
 
-  // LOGIN
-  // STÄNG LOGIN
+ // LOGIN OVERLAY
+const loginOverlay = document.getElementById("loginOverlay");
+const loginBtn = document.getElementById("loginBtn");
+
+// Öppna
+if (loginBtn) {
+  loginBtn.addEventListener("click", () => {
+    loginOverlay.style.display = "flex";
+  });
+}
+
+// Stäng
 function closeLogin() {
-    document.getElementById("loginOverlay").style.display = "none";
+  loginOverlay.style.display = "none";
 }
 
-// LOGIN FUNKTION
+// Login redirect
 function login() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-    if (!username || !password) {
-        alert("Fyll i användarnamn och lösenord");
-        return;
-    }
+  if (!username || !password) {
+    alert("Fyll i alla fält");
+    return;
+  }
 
-    // 🔥 Om du bara vill redirecta direkt:
-    window.location.href = "/dashboard.html";
-
-    // Om du istället använder backend login (Node/Supabase)
-    // så kan vi koppla det också
+  closeLogin();
+  window.location.href = "dashboard.html";
 }
+
+// Klick utanför box = stäng
+loginOverlay.addEventListener("click", (e) => {
+  if (e.target === loginOverlay) {
+    closeLogin();
+  }
+});
 
       // Spara session
       localStorage.setItem("gg_license_key", data.license_key || "");
@@ -771,6 +785,7 @@ function login() {
 
 </body>
 </html>
+
 
 
 
