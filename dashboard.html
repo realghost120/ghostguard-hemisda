@@ -444,23 +444,35 @@ function isViewActive(viewId){
 }
 
 function showView(view, el){
-  document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
+
+  // Ta bort active från alla
+  document.querySelectorAll(".nav").forEach(n => n.classList.remove("active"));
   el.classList.add("active");
 
-  document.getElementById("dashboardView").style.display="none";
-  document.getElementById("playersView").style.display="none";
-  document.getElementById("logsView").style.display="none";
-  document.getElementById("bansView").style.display="none"; // ← DENNA SAKNADES
-  document.getElementById("downloadView").style.display="none";
+  // Hämta ALLA views
+  const views = [
+    "dashboardView",
+    "playersView",
+    "logsView",
+    "bansView",
+    "downloadView"
+  ];
 
-  document.getElementById(view+"View").style.display="block";
+  // Dölj ALLA
+  views.forEach(v => {
+    const element = document.getElementById(v);
+    if(element){
+      element.style.display = "none";
+      element.style.flex = "unset";
+    }
+  });
 
-  if(view === "dashboard") fetchServer();
-  if(view === "players") fetchPlayers();
-  if(view === "logs") fetchLogs();
-  if(view === "bans") fetchBans();
+  // Visa endast den aktiva
+  const activeView = document.getElementById(view + "View");
+  if(activeView){
+    activeView.style.display = "block";
+  }
 }
-
 
 async function fetchLicense(){
   if(!token) return;
@@ -765,6 +777,7 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
+
 
 
 
