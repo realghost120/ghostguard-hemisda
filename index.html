@@ -312,6 +312,76 @@ input{
     grid-template-columns:1fr;
   }
 }
+
+/* ===== FEATURES ===== */
+
+.features-section{
+  margin:80px 0 40px;
+  text-align:center;
+}
+
+.features-section h2{
+  font-size:26px;
+  margin-bottom:30px;
+}
+
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:22px;
+}
+
+.feature-box{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:24px;
+  text-align:left;
+}
+
+.feature-box h3{
+  margin:0 0 8px;
+  font-size:16px;
+}
+
+.feature-box p{
+  margin:0;
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+/* ===== HELP SECTION ===== */
+
+.help-section{
+  margin:100px 0 60px;
+}
+
+.help-box{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:40px;
+  text-align:left;
+}
+
+.help-content h2{
+  margin:0 0 10px;
+  font-size:26px;
+}
+
+.help-content p{
+  margin:0 0 20px;
+  color:var(--muted);
+  font-size:15px;
+  max-width:600px;
+}
+
+@media(max-width:900px){
+  .features-grid{
+    grid-template-columns:1fr;
+  }
+}
   
 </style>
 </head>
@@ -327,6 +397,46 @@ input{
 
 <div class="wrap">
   <div class="hero">
+    <!-- FEATURES -->
+<div class="features-section">
+  <h2>Features</h2>
+
+  <div class="features-grid">
+
+    <div class="feature-box">
+      <h3>Web Dashboard</h3>
+      <p>
+        Hantera licenser, bans och loggar via vår säkra
+        webbpanel utan att dela server-access.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Advanced Detection</h3>
+      <p>
+        Realtidsdetektion av godmode, noclip, speedhack,
+        injection och manipulation av resources.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Secure Event System</h3>
+      <p>
+        Safe-event validering som blockerar exploiter
+        och otillåtna server events.
+      </p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Entity Protection</h3>
+      <p>
+        Skydd mot mass-spawn av fordon, explosion abuse
+        och onormalt entity-beteende.
+      </p>
+    </div>
+
+  </div>
+</div>
     <!-- LIVE STATS -->
 <div class="stats">
   <div class="stat">
@@ -417,6 +527,22 @@ input{
     <div class="review"><b>"Stabil support."</b> Allt via Discord.</div>
   </div>
 
+<!-- HELP SECTION -->
+<div class="help-section">
+  <div class="help-box">
+    <div class="help-content">
+      <h2>Behöver du hjälp?</h2>
+      <p>
+        Har du frågor om GhostGuard eller behöver support?
+        Öppna en ticket i vår Discord-server så hjälper vi dig direkt.
+      </p>
+      <button class="btn btn-primary" id="discordHelp">
+        Öppna ticket i Discord
+      </button>
+    </div>
+  </div>
+</div>
+  
  <div class="footer">
   <div class="footer-links">
     <a href="terms.html">Terms</a>
@@ -482,6 +608,10 @@ input{
     window.open("https://discord.com/invite/HZM5S6qRnP", "_blank");
   });
 
+on($("discordHelp"), "click", () => {
+  window.open("https://discord.com/invite/HZM5S6qRnP", "_blank");
+});
+  
   on(loginModal, "click", e => { if(e.target === loginModal) closeLogin(); });
   on(buyModal, "click", e => { if(e.target === buyModal) closeBuy(); });
 
@@ -530,6 +660,7 @@ input{
 
 </body>
 </html>
+
 
 
 
