@@ -581,7 +581,7 @@ header{
 </div>
 
 <!-- LOGIN MODAL -->
-<div class="login-overlay">
+<div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     
     <button class="login-close" onclick="closeLogin()">✕</button>
@@ -590,17 +590,17 @@ header{
 
     <div class="input-group">
       <label>Användarnamn</label>
-      <input type="text" placeholder="Skriv användarnamn">
+      <input type="text" id="username" placeholder="Skriv användarnamn">
     </div>
 
     <div class="input-group">
       <label>Lösenord</label>
-      <input type="password" placeholder="Skriv lösenord">
+      <input type="password" id="password" placeholder="Skriv lösenord">
     </div>
 
     <div class="login-buttons">
       <button class="btn-secondary" onclick="closeLogin()">Avbryt</button>
-      <button class="btn-primary">Logga in</button>
+      <button class="btn-primary" onclick="login()">Logga in</button>
     </div>
 
   </div>
@@ -716,30 +716,27 @@ header{
   on(goDiscord, "click", () => window.open("https://discord.com/invite/jCYGgWVSXp", "_blank"));
 
   // LOGIN
-  async function login() {
-    const username = ($("user")?.value || "").trim();
-    const password = ($("pass")?.value || "");
+  // STÄNG LOGIN
+function closeLogin() {
+    document.getElementById("loginOverlay").style.display = "none";
+}
 
-    if (errEl) errEl.textContent = "";
+// LOGIN FUNKTION
+function login() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
     if (!username || !password) {
-      if (errEl) errEl.textContent = "Fyll i användarnamn och lösenord.";
-      return;
+        alert("Fyll i användarnamn och lösenord");
+        return;
     }
 
-    try {
-      const res = await fetch(API + "/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
+    // 🔥 Om du bara vill redirecta direkt:
+    window.location.href = "/dashboard.html";
 
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok || !data.success) {
-        if (errEl) errEl.textContent = data.error || "Fel login uppgifter.";
-        return;
-      }
+    // Om du istället använder backend login (Node/Supabase)
+    // så kan vi koppla det också
+}
 
       // Spara session
       localStorage.setItem("gg_license_key", data.license_key || "");
@@ -774,6 +771,7 @@ header{
 
 </body>
 </html>
+
 
 
 
