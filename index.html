@@ -128,22 +128,29 @@ header{
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
+  grid-template-columns:repeat(3,1fr);
   gap:20px;
   margin-top:40px;
 }
-.price-card{
-  background:linear-gradient(180deg,var(--card-dark),var(--card-light));
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:28px;
-  box-shadow:0 22px 70px rgba(0,0,0,.35);
-  transition:.25s;
+.price-card.featured{
+  border:1px solid var(--blue);
+  box-shadow:0 0 40px rgba(59,130,246,.35);
+  transform:scale(1.03);
+  position:relative;
 }
-.price-card:hover{
-  transform:translateY(-4px);
-  border-color:var(--blue-glow);
-  box-shadow:0 0 30px rgba(59,130,246,.25), 0 22px 70px rgba(0,0,0,.35);
+
+.badge{
+  position:absolute;
+  top:-12px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--blue);
+  color:white;
+  font-size:12px;
+  font-weight:900;
+  padding:6px 12px;
+  border-radius:999px;
+  box-shadow:0 6px 20px rgba(59,130,246,.4);
 }
 .price-card ul{list-style:none;padding:0;margin:18px 0;color:var(--text-muted);font-size:14px;line-height:1.7}
 .price-card li i{color:var(--green);margin-right:6px}
@@ -272,35 +279,53 @@ input:focus{outline:none;border-color:var(--blue-glow);box-shadow:0 0 0 3px rgba
   </div>
 
   <div class="grid">
-    <div class="price-card">
-      <div class="plan">Månadsplan</div>
-      <div class="price">59 kr <span class="muted" style="font-size:14px">/ månad</span></div>
-      <ul>
-        <li><i class="fas fa-check"></i> Full tillgång till anticheat</li>
-        <li><i class="fas fa-check"></i> Alla uppdateringar</li>
-        <li><i class="fas fa-check"></i> Dashboard & loggar</li>
-        <li><i class="fas fa-check"></i> Discord support</li>
-      </ul>
-      <button class="btn btn-primary" data-buy="monthly"><i class="fas fa-check"></i> Välj</button>
-    </div>
 
-    <div class="price-card">
-      <div class="plan">LifeTime</div>
-      <div class="price">99 kr</div>
-      <ul>
-        <li><i class="fas fa-check"></i> Engångsbetalning</li>
-        <li><i class="fas fa-check"></i> Livstidsuppdateringar</li>
-        <li><i class="fas fa-check"></i> Dashboard & loggar</li>
-        <li><i class="fas fa-check"></i> Prioriterad support</li>
-      </ul>
-      <button class="btn btn-primary" data-buy="lifetime"><i class="fas fa-check"></i> Välj</button>
-    </div>
+  <!-- Monthly -->
+  <div class="price-card">
+    <div class="plan">Månadsplan</div>
+    <div class="price">59 kr <span class="muted" style="font-size:14px">/ månad</span></div>
+    <ul>
+      <li><i class="fas fa-check"></i> Full tillgång till anticheat</li>
+      <li><i class="fas fa-check"></i> Alla uppdateringar</li>
+      <li><i class="fas fa-check"></i> Dashboard & loggar</li>
+      <li><i class="fas fa-check"></i> Discord support</li>
+    </ul>
+    <button class="btn btn-primary" data-buy="monthly">Välj</button>
   </div>
 
+  <!-- 3 Months (Featured) -->
+  <div class="price-card featured">
+    <div class="badge">Mest Populär</div>
+    <div class="plan">3 Månader</div>
+    <div class="price">149 kr</div>
+    <div class="muted" style="font-size:13px">≈ 49 kr / månad</div>
+    <ul>
+      <li><i class="fas fa-check"></i> Full tillgång till anticheat</li>
+      <li><i class="fas fa-check"></i> Alla uppdateringar</li>
+      <li><i class="fas fa-check"></i> Dashboard & loggar</li>
+      <li><i class="fas fa-check"></i> Prioriterad Discord support</li>
+    </ul>
+    <button class="btn btn-primary" data-buy="3months">Välj</button>
+  </div>
+
+  <!-- Lifetime -->
+  <div class="price-card">
+    <div class="plan">LifeTime</div>
+    <div class="price">299 kr</div>
+    <ul>
+      <li><i class="fas fa-check"></i> Engångsbetalning</li>
+      <li><i class="fas fa-check"></i> Livstidsuppdateringar</li>
+      <li><i class="fas fa-check"></i> Dashboard & loggar</li>
+      <li><i class="fas fa-check"></i> Prioriterad support</li>
+    </ul>
+    <button class="btn btn-primary" data-buy="lifetime">Välj</button>
+  </div>
+
+</div>
   <div class="section-title">Kundrecensioner</div>
   <div class="reviews">
-    <div class="review"><div class="stars">★★★★★</div><b>“Bästa AC vi haft.”</b><div class="muted">Snabb setup och stabilt.</div></div>
-    <div class="review"><div class="stars">★★★★★</div><b>“Upptäcker allt!”</b><div class="muted">Riktigt bra alerts + logs.</div></div>
+    <div class="review"><div class="stars">★★★★★</div><b>“+++rep Älskar att ni är så himla snabba i köp tickets!!!.”</b><div class="muted">Snabb setup och stabilt.</div></div>
+    <div class="review"><div class="stars">★★★★★</div><b>“+++ Superbra Anticheat som du kan hitta! Rekommenderar verkligen.”</b><div class="muted">Riktigt bra alerts + logs.</div></div>
     <div class="review"><div class="stars">★★★★★</div><b>“Stabil & snabb support.”</b><div class="muted">Allt via Discord tickets.</div></div>
   </div>
 
@@ -502,6 +527,7 @@ input:focus{outline:none;border-color:var(--blue-glow);box-shadow:0 0 0 3px rgba
 
 </body>
 </html>
+
 
 
 
