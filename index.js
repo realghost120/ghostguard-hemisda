@@ -62,7 +62,11 @@ function generateLicenseKey() {
 }
 
 function computeExpiresAt(duration, explicitExpiresAt) {
-  if (explicitExpiresAt) return new Date(explicitExpiresAt).toISOString();
+  if (explicitExpiresAt) {
+    const parsed = new Date(explicitExpiresAt);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toISOString();
+  }
 
   const raw = String(duration || "P").trim().toLowerCase();
   if (raw === "p" || raw === "perm" || raw === "permanent") return null;
@@ -74,6 +78,22 @@ function computeExpiresAt(duration, explicitExpiresAt) {
   const unit = match[2];
   const ms = unit === "m" ? amount * 60_000 : unit === "h" ? amount * 3_600_000 : amount * 86_400_000;
   return new Date(Date.now() + ms).toISOString();
+}
+
+function normalizeDuration(duration) {
+  const raw = String(duration || "P").trim().toLowerCase();
+
+  if (raw === "p" || raw === "perm" || raw === "permanent") {
+    return { ok: true, value: "P" };
+  }
+
+  const match = raw.match(/^(\d+)([mhd])$/);
+  if (!match) return { ok: false, value: null };
+
+  const amount = Number(match[1]);
+  if (!Number.isFinite(amount) || amount <= 0) return { ok: false, value: null };
+
+  return { ok: true, value: `${amount}${match[2]}` };
 }
 
 function normalizeIdentifiers(value) {
@@ -208,16 +228,21 @@ app.post("/api/server/ban", async (req,res)=>{
     } = req.body || {};
 
     if(!license_key || !player) {
-      return res.status(400).json({success:false});
+      return res.status(400).json({success:false, error:"MISSING_FIELDS"});
+    }
+
+    const durationInfo = normalizeDuration(duration || "P");
+    if (!durationInfo.ok) {
+      return res.status(400).json({ success: false, error: "INVALID_DURATION" });
     }
 
     const finalBanId = ban_id || ("GG-" + Date.now());
-    const finalDuration = duration || "P";
+    const finalDuration = durationInfo.value;
     const finalCreatedAt = created_at ? new Date(created_at).toISOString() : new Date().toISOString();
     const finalExpiresAt = computeExpiresAt(finalDuration, expires_at);
     const finalIdentifiers = normalizeIdentifiers(identifiers);
 
-    await supabase.from("bans").insert([{
+    const { error: insertError } = await supabase.from("bans").insert([{
       license_key,
       player_id: player,
       reason: reason || "No reason",
@@ -229,6 +254,15 @@ app.post("/api/server/ban", async (req,res)=>{
       evidence_url: evidence_url || null,
       identifiers: finalIdentifiers
     }]);
+
+    if (insertError) {
+      console.error("ban insert error:", insertError);
+      const duplicate = String(insertError.code || "") === "23505";
+      return res.status(duplicate ? 409 : 500).json({
+        success: false,
+        error: duplicate ? "BAN_EXISTS" : "DB_ERROR"
+      });
+    }
 
     res.json({success:true, ban_id: finalBanId});
   }catch(e){
