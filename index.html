@@ -245,6 +245,73 @@ input{
     text-align:center;
   }
 }
+
+
+/* ===== Stats ===== */
+.stats{
+  display:flex;
+  justify-content:center;
+  gap:60px;
+  margin-top:40px;
+  text-align:center;
+}
+
+.stat h3{
+  margin:0;
+  font-size:24px;
+  font-weight:700;
+}
+
+.stat p{
+  margin:6px 0 0;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* ===== How it works ===== */
+.how-section{
+  margin:80px 0 40px;
+}
+
+.how-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+.how-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+}
+
+.how-card span{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.how-card h4{
+  margin:6px 0 8px;
+  font-size:16px;
+}
+
+.how-card p{
+  margin:0;
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+@media(max-width:900px){
+  .stats{
+    flex-direction:column;
+    gap:25px;
+  }
+  .how-grid{
+    grid-template-columns:1fr;
+  }
+}
   
 </style>
 </head>
@@ -260,6 +327,21 @@ input{
 
 <div class="wrap">
   <div class="hero">
+    <!-- LIVE STATS -->
+<div class="stats">
+  <div class="stat">
+    <h3>12,482</h3>
+    <p>Detections Blocked</p>
+  </div>
+  <div class="stat">
+    <h3>284</h3>
+    <p>Active Servers</p>
+  </div>
+  <div class="stat">
+    <h3>99.98%</h3>
+    <p>Uptime</p>
+  </div>
+</div>
     <h1>GhostGuard AntiCheat</h1>
     <p>Avancerat skydd för din FiveM-server.</p>
   </div>
@@ -303,6 +385,31 @@ input{
     </div>
   </div>
 
+<!-- HOW IT WORKS -->
+<div class="how-section">
+  <div class="how-grid">
+
+    <div class="how-card">
+      <span>01</span>
+      <h4>Client Layer</h4>
+      <p>Detekterar manipulation av resurser, movement och otillåtna natives.</p>
+    </div>
+
+    <div class="how-card">
+      <span>02</span>
+      <h4>Server Validation</h4>
+      <p>Rate limiting, strike-system och regelmotor för automatisk åtgärd.</p>
+    </div>
+
+    <div class="how-card">
+      <span>03</span>
+      <h4>Backend Sync</h4>
+      <p>Licensverifiering, ban-synk och logghantering via extern API.</p>
+    </div>
+
+  </div>
+</div>
+  
   <div class="section-title">Kundrecensioner</div>
   <div class="reviews">
     <div class="review"><b>"Bästa AC vi haft."</b> Snabb setup och stabilt.</div>
@@ -423,6 +530,7 @@ input{
 
 </body>
 </html>
+
 
 
 
