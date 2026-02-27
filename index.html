@@ -205,6 +205,47 @@ input{
   .grid{grid-template-columns:1fr}
   .reviews{grid-template-columns:1fr}
 }
+
+
+  .footer{
+  margin-top:80px;
+  padding-top:30px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  color:var(--muted);
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.footer-links{
+  display:flex;
+  gap:18px;
+}
+
+.footer a{
+  color:var(--muted);
+  text-decoration:none;
+  transition:.15s;
+}
+
+.footer a:hover{
+  color:var(--text);
+}
+
+.footer-copy{
+  opacity:.8;
+}
+
+@media(max-width:700px){
+  .footer{
+    flex-direction:column;
+    text-align:center;
+  }
+}
+  
 </style>
 </head>
 <body>
@@ -269,7 +310,14 @@ input{
     <div class="review"><b>"Stabil support."</b> Allt via Discord.</div>
   </div>
 
-  <div class="footer">GhostGuard • Support & köp sker via Discord</div>
+ <div class="footer">
+  <div class="footer-links">
+    <a href="terms.html">Terms</a>
+    <a href="security.html">Security</a>
+  </div>
+  <div class="footer-copy">
+    © 2026 GhostGuard. All rights reserved.
+  </div>
 </div>
 
 <!-- LOGIN MODAL -->
@@ -375,3 +423,4 @@ input{
 
 </body>
 </html>
+
