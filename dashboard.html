@@ -570,6 +570,33 @@ Config.LicenseKey = "DIN_LICENSE_KEY"
   
 </div>
 
+</div>   <!-- dashboardView slut -->
+
+<!-- HÄR KLISTRAR DU IN DETTA ↓↓↓ -->
+
+<div id="playersView" style="display:none;">
+  <div class="card">
+    <h3>Online Players</h3>
+    <div id="playerList"></div>
+  </div>
+</div>
+
+<div id="logsView" style="display:none;">
+  <div class="card">
+    <h3>Server Logs</h3>
+    <div id="logList"></div>
+  </div>
+</div>
+
+<div id="bansView" style="display:none;">
+  <div class="card">
+    <h3>Ban List</h3>
+    <div id="banList"></div>
+  </div>
+</div>
+
+</div>   <!-- content slut -->
+
 <script>
 const API="https://ghostgaurd-becakd.onrender.com";
 const licenseKey=localStorage.getItem("gg_license_key")||"";
@@ -912,6 +939,7 @@ fetchBans(); // ← lägg till denna
 
 </body>
 </html>
+
 
 
 
