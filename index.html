@@ -6,290 +6,204 @@
 <title>GhostGuard</title>
 
 <style>
-  :root{
-  --bg1:#070b14; --bg2:#05070d;
-  --card:#0f172a;
-  --text:#e8f0ff; --muted:rgba(232,240,255,.68);
-  --blue:#3b82f6; --green:#22c55e; --yellow:#fbbf24;
-  --shadow:0 25px 80px rgba(0,0,0,.55);
-  --radius:22px;
+:root{
+  --bg:#0c111b;
+  --card:#111827;
+  --border:#1f2937;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --blue:#2563eb;
+  --green:#22c55e;
+  --red:#ef4444;
 }
 
-*{ box-sizing:border-box; }
-
+*{box-sizing:border-box}
 body{
   margin:0;
-  font-family: Arial, sans-serif;
+  font-family: Inter, system-ui, sans-serif;
+  background:var(--bg);
   color:var(--text);
-  background:
-    radial-gradient(900px 500px at 50% 0%, rgba(59,130,246,.22), transparent 60%),
-    radial-gradient(900px 500px at 50% 100%, rgba(34,197,94,.10), transparent 60%),
-    linear-gradient(180deg,var(--bg1),var(--bg2));
-  min-height:100vh;
 }
 
-/* ===== Header ===== */
 header{
-  position:sticky; top:0; z-index:10;
-  display:flex; justify-content:space-between; align-items:center;
-  padding:18px 28px;
-  backdrop-filter: blur(12px);
-  background:rgba(5,7,13,.62);
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-.brand{ font-weight:900; font-size:22px; }
-
-/* ===== Buttons ===== */
-.btn{
-  border:none;
-  cursor:pointer;
-  font-weight:900;
-  padding:11px 16px;
-  border-radius:12px;
-  color:var(--text);
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.08);
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-}
-.btn:hover{ transform:translateY(-2px); }
-
-.btn-primary{
-  background:linear-gradient(90deg,#3b82f6,#2563eb);
-  border:none;
-  box-shadow:0 10px 28px rgba(37,99,235,.32);
-}
-.btn-primary:hover{ box-shadow:0 14px 40px rgba(37,99,235,.45); }
-
-/* ===== Layout ===== */
-.wrap{
-  max-width:1200px;
-  margin:0 auto;
-  padding:72px 24px 96px;
-}
-
-.hero{
-  text-align:center;
-  margin-bottom:56px;
-}
-.hero h1{
-  font-size:56px;
-  margin:10px 0;
-  background:linear-gradient(90deg,#60a5fa,#22c55e);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-.hero p{ color:var(--muted); font-size:18px; margin:0; }
-
-.pill{
-  display:inline-flex;
+  display:flex;
+  justify-content:space-between;
   align-items:center;
-  gap:8px;
-  margin-top:18px;
-  padding:9px 14px;
-  border-radius:999px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.10);
-  font-weight:800;
+  padding:20px 32px;
+  border-bottom:1px solid var(--border);
 }
 
-/* ===== Pricing grid ===== */
+.brand{
+  font-weight:700;
+  font-size:18px;
+}
+
+.btn{
+  padding:9px 14px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--text);
+  cursor:pointer;
+  font-weight:600;
+  transition:.15s;
+}
+
+.btn:hover{background:#1f2937}
+.btn-primary{
+  background:var(--blue);
+  border:none;
+}
+.btn-primary:hover{opacity:.9}
+
+.wrap{
+  max-width:1100px;
+  margin:0 auto;
+  padding:70px 20px 100px;
+}
+
+.hero{text-align:center;margin-bottom:60px}
+.hero h1{font-size:42px;margin:0 0 10px}
+.hero p{color:var(--muted);margin:0}
+
+/* Pricing */
 .grid{
   display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns:repeat(3,1fr);
   gap:22px;
-  align-items:stretch;
-  margin-top:44px;
+  margin-top:50px;
 }
 
-.price-card{
-  position:relative;
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:26px;
   display:flex;
   flex-direction:column;
-  justify-content:space-between;
-  min-height:320px;
-
-  background:
-    radial-gradient(900px 260px at 20% 0%, rgba(59,130,246,.16), transparent 58%),
-    linear-gradient(180deg,#0f172a,#0b1428);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:var(--radius);
-  padding:28px;
-
-  box-shadow:var(--shadow);
-  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+  min-height:260px;
 }
 
-.price-card:hover{
-  transform:translateY(-6px);
-  border-color:rgba(59,130,246,.35);
-  box-shadow:0 0 40px rgba(59,130,246,.18), var(--shadow);
-}
-
-.plan{
-  font-size:18px;
-  font-weight:950;
-  letter-spacing:.2px;
-  margin-bottom:10px;
-}
-
+.card h3{margin:0 0 10px;font-size:16px}
 .price{
-  font-size:46px;
-  font-weight:950;
+  font-size:32px;
+  font-weight:700;
+  margin:5px 0 15px;
   color:var(--green);
-  margin:6px 0 8px;
 }
-
-.muted{ color:var(--muted); }
 
 .features{
-  margin:14px 0 18px;
   font-size:14px;
-  color:rgba(232,240,255,.72);
-  line-height:1.75;
+  color:var(--muted);
+  line-height:1.8;
 }
 
-.price-card .btn{
-  align-self:flex-start;
-  padding:10px 16px;
-  border-radius:12px;
+.card .btn{
+  margin-top:auto;
+  width:fit-content;
 }
 
-/* ===== Featured plan (3 månader) ===== */
-.price-card.featured{
-  transform:translateY(-6px);
-  border-color:rgba(59,130,246,.55);
-  box-shadow:
-    0 0 55px rgba(59,130,246,.20),
-    0 35px 100px rgba(0,0,0,.65);
+.featured{
+  border-color:#374151;
+  position:relative;
 }
 
 .badge{
   position:absolute;
   top:14px;
   right:14px;
-  left:auto;
-  transform:none;
-
-  background:rgba(59,130,246,.16);
-  border:1px solid rgba(59,130,246,.55);
-  color:#dbeafe;
-
-  font-weight:950;
-  font-size:12px;
-  padding:7px 12px;
-  border-radius:999px;
-  box-shadow:0 10px 25px rgba(37,99,235,.18);
+  font-size:11px;
+  background:#1f2937;
+  padding:4px 8px;
+  border-radius:6px;
+  color:#d1d5db;
 }
 
-/* ===== Reviews ===== */
+/* Reviews */
 .section-title{
   text-align:center;
-  font-size:32px;
-  font-weight:950;
-  margin:90px 0 18px;
+  margin:90px 0 25px;
+  font-size:22px;
 }
 
 .reviews{
   display:grid;
-  grid-template-columns:repeat(3, minmax(0, 1fr));
-  gap:16px;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
 }
 
 .review{
-  border-radius:18px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
   padding:18px;
-  min-height:120px;
-  background:
-    radial-gradient(700px 220px at 30% 0%, rgba(34,197,94,.10), transparent 60%),
-    rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.10);
+  font-size:14px;
+  color:var(--muted);
 }
 
-.stars{ color:var(--yellow); margin-bottom:6px; }
-.review b{ display:block; margin:6px 0 6px; }
+.review b{
+  display:block;
+  margin-bottom:6px;
+  color:var(--text);
+}
 
-/* ===== Footer ===== */
 .footer{
   text-align:center;
-  margin-top:70px;
+  margin-top:80px;
   font-size:12px;
-  color:rgba(232,240,255,.55);
+  color:var(--muted);
 }
 
-/* ===== Modals ===== */
+/* MODALS */
 .modal{
   position:fixed;
   inset:0;
   display:none;
   align-items:center;
   justify-content:center;
-  background:rgba(0,0,0,.65);
-  padding:18px;
+  background:rgba(0,0,0,.6);
   z-index:999;
 }
-.modal.open{ display:flex; }
+
+.modal.open{display:flex}
 
 .modal-box{
-  width:380px;
-  max-width:92vw;
-  background:linear-gradient(180deg,#0f172a,#0b1428);
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:18px;
-  box-shadow:0 30px 90px rgba(0,0,0,.65);
-  padding:18px;
+  width:350px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
 }
 
-.modal-top{ display:flex; justify-content:space-between; align-items:center; }
-.x{ cursor:pointer; opacity:.8; font-weight:900; }
-.x:hover{ opacity:1; }
-
-label{
-  display:block;
-  margin-top:12px;
-  font-size:12px;
-  color:var(--muted);
-  font-weight:900;
-}
+.modal-box h3{margin:0 0 10px}
 
 input{
   width:100%;
-  margin-top:6px;
-  padding:11px 12px;
-  border-radius:12px;
-  background:rgba(0,0,0,.25);
-  color:var(--text);
-  border:1px solid rgba(255,255,255,.12);
-  outline:none;
-}
-
-input:focus{
-  border-color: rgba(59,130,246,.55);
-  box-shadow: 0 0 0 3px rgba(59,130,246,.18);
+  padding:10px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:#0f172a;
+  color:white;
+  margin-bottom:10px;
 }
 
 .err{
-  color:#ff6b6b;
-  margin-top:10px;
-  min-height:18px;
+  color:var(--red);
   font-size:13px;
+  min-height:18px;
 }
 
-.row{ display:flex; gap:10px; margin-top:14px; }
-.row .btn{ flex:1; }
-
-/* ===== Responsive ===== */
-@media (max-width:1100px){
-  .grid{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
-  .reviews{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
-  .price-card.featured{ transform:none; }
+.row{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
 }
 
-@media (max-width:720px){
-  header{ padding:14px 16px; }
-  .wrap{ padding:60px 16px 86px; }
-  .hero h1{ font-size:42px; }
-  .grid{ grid-template-columns:1fr; }
-  .reviews{ grid-template-columns:1fr; }
+.row .btn{flex:1}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .reviews{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -297,60 +211,62 @@ input:focus{
 
 <header>
   <div class="brand">GhostGuard</div>
-  <div style="display:flex; gap:12px;">
-    <button class="btn btn-primary" id="buyBtn">🛒 Köp</button>
+  <div>
     <button class="btn" id="loginBtn">Logga in</button>
+    <button class="btn btn-primary" id="buyBtn">Köp</button>
   </div>
 </header>
 
-<div class="grid">
-  <!-- Monthly -->
-  <div class="price-card">
-    <div class="plan">Månadsplan</div>
-    <div class="price">49 kr <span class="muted" style="font-size:14px">/ månad</span></div>
-    <div class="features">
-      ✔ Full tillgång till anticheat<br>
-      ✔ Alla uppdateringar<br>
-      ✔ Dashboard & loggar<br>
-      ✔ Discord support
-    </div>
-    <button class="btn btn-primary" data-buy="monthly">Köp</button>
+<div class="wrap">
+  <div class="hero">
+    <h1>GhostGuard AntiCheat</h1>
+    <p>Avancerat skydd för din FiveM-server.</p>
   </div>
 
-  <!-- 3 Months (Featured) -->
-  <div class="price-card featured">
-    <div class="badge">Mest populär</div>
-    <div class="plan">3 månader</div>
-    <div class="price">119 kr</div>
-    <div class="muted" style="font-size:14px">≈ 39 kr / månad</div>
-    <div class="features">
-      ✔ Full tillgång till anticheat<br>
-      ✔ Alla uppdateringar<br>
-      ✔ Dashboard & loggar<br>
-      ✔ Prioriterad support
+  <div class="grid">
+    <div class="card">
+      <h3>Månadsplan</h3>
+      <div class="price">49 kr / månad</div>
+      <div class="features">
+        ✓ Full tillgång<br>
+        ✓ Alla uppdateringar<br>
+        ✓ Dashboard<br>
+        ✓ Discord support
+      </div>
+      <button class="btn btn-primary" data-buy="monthly">Köp</button>
     </div>
-    <button class="btn btn-primary" data-buy="3months">Köp</button>
-  </div>
 
-  <!-- Lifetime -->
-  <div class="price-card">
-    <div class="plan">Livstid</div>
-    <div class="price">89 kr</div>
-    <div class="features">
-      ✔ Engångsbetalning<br>
-      ✔ Livstidsuppdateringar<br>
-      ✔ Dashboard & loggar<br>
-      ✔ Prioriterad support
+    <div class="card featured">
+      <div class="badge">Mest populär</div>
+      <h3>3 månader</h3>
+      <div class="price">119 kr</div>
+      <div class="features">
+        ✓ Full tillgång<br>
+        ✓ Alla uppdateringar<br>
+        ✓ Dashboard<br>
+        ✓ Prioriterad support
+      </div>
+      <button class="btn btn-primary" data-buy="3months">Köp</button>
     </div>
-    <button class="btn btn-primary" data-buy="lifetime">Köp</button>
+
+    <div class="card">
+      <h3>Livstid</h3>
+      <div class="price">89 kr</div>
+      <div class="features">
+        ✓ Engångsbetalning<br>
+        ✓ Livstidsuppdateringar<br>
+        ✓ Dashboard<br>
+        ✓ Prioriterad support
+      </div>
+      <button class="btn btn-primary" data-buy="lifetime">Köp</button>
+    </div>
   </div>
-</div>
 
   <div class="section-title">Kundrecensioner</div>
   <div class="reviews">
-    <div class="review"><div class="stars">★★★★★</div><b>“Bästa AC vi haft.”</b><div class="muted">Snabb setup och stabilt.</div></div>
-    <div class="review"><div class="stars">★★★★★</div><b>“Upptäcker allt!”</b><div class="muted">Riktigt bra alerts + logs.</div></div>
-    <div class="review"><div class="stars">★★★★★</div><b>“Stabil & snabb support.”</b><div class="muted">Allt via Discord tickets.</div></div>
+    <div class="review"><b>"Bästa AC vi haft."</b> Snabb setup och stabilt.</div>
+    <div class="review"><b>"Upptäcker allt!"</b> Riktigt bra logs.</div>
+    <div class="review"><b>"Stabil support."</b> Allt via Discord.</div>
   </div>
 
   <div class="footer">GhostGuard • Support & köp sker via Discord</div>
@@ -359,19 +275,10 @@ input:focus{
 <!-- LOGIN MODAL -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
-    <div class="modal-top">
-      <div style="font-weight:900; font-size:18px">Kund Login</div>
-      <div class="x" id="closeLogin">✕</div>
-    </div>
-
-    <label>Användarnamn</label>
-    <input id="user" placeholder="Username"/>
-
-    <label>Lösenord</label>
-    <input id="pass" type="password" placeholder="Password"/>
-
+    <h3>Kund Login</h3>
+    <input id="user" placeholder="Användarnamn">
+    <input id="pass" type="password" placeholder="Lösenord">
     <div class="err" id="err"></div>
-
     <div class="row">
       <button class="btn" id="cancelLogin">Avbryt</button>
       <button class="btn btn-primary" id="doLogin">Logga in</button>
@@ -382,13 +289,10 @@ input:focus{
 <!-- BUY MODAL -->
 <div class="modal" id="buyModal">
   <div class="modal-box">
-    <div class="modal-top">
-      <div style="font-weight:900; font-size:18px">Köp GhostGuard</div>
-      <div class="x" id="closeBuy">✕</div>
-    </div>
-    <p class="muted">Köp & support sker i Discord via ticket.</p>
+    <h3>Köp via Discord</h3>
+    <p style="color:var(--muted)">Skapa en ticket i Discord för köp.</p>
     <div class="row">
-      <button class="btn" id="cancelBuy">Avbryt</button>
+      <button class="btn" id="cancelBuy">Stäng</button>
       <button class="btn btn-primary" id="goDiscord">Öppna Discord</button>
     </div>
   </div>
@@ -398,147 +302,76 @@ input:focus{
 (() => {
   const API = "https://ghostgaurd-becakd.onrender.com";
 
-  // Safe helpers
-  const $ = (id) => document.getElementById(id);
+  const $ = id => document.getElementById(id);
   const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
-
-  // Elements (måste finnas i HTML)
-  const loginBtn = $("loginBtn");
-  const buyBtn = $("buyBtn");
 
   const loginModal = $("loginModal");
   const buyModal = $("buyModal");
-
-  const closeLoginBtn = $("closeLogin");
-  const cancelLoginBtn = $("cancelLogin");
-
-  const closeBuyBtn = $("closeBuy");
-  const cancelBuyBtn = $("cancelBuy");
-
-  const doLoginBtn = $("doLogin");
   const errEl = $("err");
 
-  // Debug: visa om något saknas
-  const missing = [];
-  [
-    ["loginBtn", loginBtn],
-    ["loginModal", loginModal],
-    ["closeLogin", closeLoginBtn],
-    ["cancelLogin", cancelLoginBtn],
-    ["doLogin", doLoginBtn],
-    ["err", errEl],
-  ].forEach(([name, el]) => { if (!el) missing.push(name); });
+  const openLogin = () => loginModal.classList.add("open");
+  const closeLogin = () => loginModal.classList.remove("open");
+  const openBuy = () => buyModal.classList.add("open");
+  const closeBuy = () => buyModal.classList.remove("open");
 
-  if (missing.length) {
-    console.error("Saknar element i HTML:", missing.join(", "));
-    // Om detta händer: din HTML saknar id:n eller har stavfel.
-  }
+  on($("loginBtn"), "click", openLogin);
+  on($("buyBtn"), "click", openBuy);
+  on($("cancelLogin"), "click", closeLogin);
+  on($("cancelBuy"), "click", closeBuy);
 
-  // Modal controls
-  const openLogin = () => {
-    if (!loginModal) return console.error("loginModal saknas");
-    loginModal.classList.add("open");
-    errEl && (errEl.textContent = "");
-  };
-
-  const closeLogin = () => loginModal && loginModal.classList.remove("open");
-
-  const openBuy = () => buyModal && buyModal.classList.add("open");
-  const closeBuy = () => buyModal && buyModal.classList.remove("open");
-
-  // Bind buttons
-  on(loginBtn, "click", (e) => {
-    e.preventDefault();
-    console.log("Login-knapp klickad -> öppnar modal");
-    openLogin();
-  });
-
-  on(closeLoginBtn, "click", closeLogin);
-  on(cancelLoginBtn, "click", closeLogin);
-
-  on(buyBtn, "click", (e) => {
-    e.preventDefault();
-    openBuy();
-  });
-
-  on(closeBuyBtn, "click", closeBuy);
-  on(cancelBuyBtn, "click", closeBuy);
-
-  // Köp-knappar (data-buy)
   document.querySelectorAll("[data-buy]").forEach(btn => {
-    on(btn, "click", (e) => {
-      e.preventDefault();
-      openBuy();
-    });
+    on(btn, "click", openBuy);
   });
 
-  // Discord
-  const goDiscord = $("goDiscord");
-  on(goDiscord, "click", () => window.open("https://discord.gg/dxwyCUNEZv", "_blank"));
+  on($("goDiscord"), "click", () => {
+    window.open("https://discord.gg/dxwyCUNEZv", "_blank");
+  });
 
-  // LOGIN
-  async function login() {
-    const username = ($("user")?.value || "").trim();
-    const password = ($("pass")?.value || "");
+  on(loginModal, "click", e => { if(e.target === loginModal) closeLogin(); });
+  on(buyModal, "click", e => { if(e.target === buyModal) closeBuy(); });
 
-    if (errEl) errEl.textContent = "";
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape"){ closeLogin(); closeBuy(); }
+  });
 
-    if (!username || !password) {
-      if (errEl) errEl.textContent = "Fyll i användarnamn och lösenord.";
+  async function login(){
+    const username = $("user").value.trim();
+    const password = $("pass").value;
+
+    errEl.textContent = "";
+
+    if(!username || !password){
+      errEl.textContent = "Fyll i alla fält.";
       return;
     }
 
-    try {
+    try{
       const res = await fetch(API + "/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ username, password })
       });
 
-      const data = await res.json().catch(() => ({}));
+      const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        if (errEl) errEl.textContent = data.error || "Fel login uppgifter.";
+      if(!res.ok || !data.success){
+        errEl.textContent = data.error || "Fel login uppgifter.";
         return;
       }
 
-      // Spara session
-      localStorage.setItem("gg_license_key", data.license_key || "");
       localStorage.setItem("gg_token", data.token || "");
+      localStorage.setItem("gg_license_key", data.license_key || "");
 
-      // vidare
       window.location.href = "dashboard.html";
-    } catch (e) {
-      console.error("Login error:", e);
-      if (errEl) errEl.textContent = "Kunde inte kontakta backend.";
+
+    }catch(err){
+      errEl.textContent = "Kunde inte kontakta backend.";
     }
   }
 
-  on(doLoginBtn, "click", login);
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { closeLogin(); closeBuy(); }
-    if (e.key === "Enter" && loginModal && loginModal.classList.contains("open")) login();
-  });
-
-  // (valfritt) Discord counter animation
-  const discordCount = $("discordCount");
-  if (discordCount) {
-    let base = Number(discordCount.textContent) || 128;
-    setInterval(() => {
-      base += Math.random() > 0.7 ? 1 : 0;
-      discordCount.textContent = base;
-    }, 3500);
-  }
+  on($("doLogin"), "click", login);
 })();
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
