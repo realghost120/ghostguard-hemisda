@@ -852,19 +852,30 @@ app.post("/admin/create-license", async (req, res) => {
   try {
     if (!requireAdmin(req, res)) return;
 
-    const days = Number(req.body?.days_valid || 0);
+    const { days_valid, lifetime } = req.body || {};
+
     let expires_at = null;
 
-    if (days > 0) {
+    // Om INTE lifetime och dagar är angivet
+    if (!lifetime && Number(days_valid) > 0) {
       const d = new Date();
-      d.setDate(d.getDate() + days);
+      d.setDate(d.getDate() + Number(days_valid));
       expires_at = d.toISOString();
     }
 
     const license_key = generateLicenseKey();
-    await supabase.from("licenses").insert([{ license_key, status: "ACTIVE", expires_at, hwid: null }]);
+
+    await supabase.from("licenses").insert([
+      {
+        license_key,
+        status: "ACTIVE",
+        expires_at,
+        hwid: null
+      }
+    ]);
 
     return res.json({ success: true, license_key });
+
   } catch (err) {
     console.error("admin/create-license error:", err);
     return res.status(500).json({ success: false });
