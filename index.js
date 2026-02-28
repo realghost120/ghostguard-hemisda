@@ -947,6 +947,33 @@ app.post("/admin/create-customer", async (req, res) => {
 });
 
 
+/* ================= Spras kund för admin ================= */
+
+app.get("/admin/customers", async (req, res) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+
+    const { data, error } = await supabase
+      .from("customers")
+      .select("id, username, license_key, created_at")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("admin/customers error:", error);
+      return res.status(500).json({ success: false, error: "DB_ERROR" });
+    }
+
+    return res.json({
+      success: true,
+      data: data || []
+    });
+
+  } catch (err) {
+    console.error("admin/customers crash:", err);
+    return res.status(500).json({ success: false });
+  }
+});
+
 
 /* ================= DETECTION SETTINGS ================= */
 
