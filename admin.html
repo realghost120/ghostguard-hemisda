@@ -10,210 +10,503 @@
 <title>GhostGuard Admin</title>
 
 <style>
-:root{
-  --bg-dark: #060c18;
-  --bg-card: #101a2e;
-  --bg-light: #0a1222;
-  --card-dark: #101a2e;
-  --card-light: #0d1628;
-  --blue: #3b82f6;
-  --blue-glow: rgba(59,130,246,.4);
-  --blue-hover: rgba(59,130,246,.15);
-  --blue-active: rgba(59,130,246,.25);
-  --red: #ef4444;
-  --yellow: #f59e0b;
-  --green: #22c55e;
-  --border: rgba(255,255,255,.06);
-  --text: #e6f0ff;
-  --text-muted: rgba(230,240,255,.6);
+ :root{
+  --bg-main:#0f172a;
+  --bg-surface:#111827;
+  --bg-soft:#1f2937;
+
+  --primary:#2563eb;
+  --primary-hover:#1d4ed8;
+
+  --success:#16a34a;
+  --danger:#dc2626;
+  --orange:#ff9f1c;
+
+  --border:#1f2937;
+  --border-light:#2d3748;
+
+  --text:#e5e7eb;
+  --text-muted:#9ca3af;
 }
-*{box-sizing:border-box}
+
+/* Reset */
+*{
+  box-sizing:border-box;
+}
+
 body{
- margin:0;
- font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
- color:var(--text);
- background:radial-gradient(900px 500px at 50% 0%,rgba(59,130,246,.20),transparent 60%),
-            linear-gradient(180deg,var(--bg-dark),var(--bg-light));
- min-height:100vh;
- animation:fadeIn .35s ease;
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg-main);
+  color:var(--text);
 }
-@keyframes fadeIn {
- from { opacity: 0; transform: translateY(10px); }
- to { opacity: 1; transform: translateY(0); }
-}
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
-}
-@keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+
+/* Header */
 header{
- display:flex;justify-content:space-between;align-items:center;
- padding:18px 28px;
- border-bottom:1px solid rgba(255,255,255,.06);
- background:rgba(5,7,13,.55);
- backdrop-filter:blur(10px);
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  background:var(--bg-surface);
+  border-bottom:1px solid var(--border-light);
 }
-.brand{font-weight:900;font-size:18px}
-.wrap{max-width:1100px;margin:0 auto;padding:26px 18px 60px}
+
+.brand{
+  font-weight:600;
+  font-size:14px;
+}
+
+/* Layout */
+.layout{
+  display:flex;
+  min-height:calc(100vh - 60px);
+}
+
+/* Sidebar */
+.sidebar{
+  width:220px;
+  background:var(--bg-surface);
+  border-right:1px solid var(--border-light);
+  padding:20px 14px;
+  display:flex;
+  flex-direction:column;
+}
+
+.logo{
+  font-weight:700;
+  font-size:14px;
+  margin-bottom:20px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+
+/* Navigation */
+.nav-btn{
+  background:none;
+  border:none;
+  color:var(--text-muted);
+  padding:10px;
+  text-align:left;
+  font-size:13px;
+  cursor:pointer;
+  border-radius:6px;
+  margin-bottom:6px;
+  transition:background .15s ease, color .15s ease;
+}
+
+.nav-btn:hover{
+  background:var(--bg-soft);
+  color:#fff;
+}
+
+.nav-btn.active{
+  background:var(--primary);
+  color:#fff;
+}
+
+/* Content */
+.content{
+  flex:1;
+  padding:28px;
+}
+
+/* Views */
+.view{
+  display:none;
+}
+
+.view.active{
+  display:block;
+}
+
+/* Cards */
 .card{
- background:linear-gradient(180deg,var(--card-dark),var(--card-light));
- border:1px solid var(--border);
- border-radius:16px;
- padding:16px;
- box-shadow:0 22px 70px rgba(0,0,0,.35);
- margin-bottom:14px;
- transition:.2s;
+  background:var(--bg-surface);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:20px;
+  margin-bottom:20px;
 }
-.card:hover{transform:translateY(-2px);border-color:var(--blue-glow)}
-.title{font-weight:900;font-size:18px;margin-bottom:10px}
-label{display:block;margin-top:10px;font-size:12px;color:var(--text-muted);font-weight:800}
-input{
- width:100%;
- margin-top:6px;
- padding:11px 12px;
- border-radius:10px;
- background:rgba(0,0,0,.25);
- color:var(--text);
- border:1px solid var(--border);
- outline:none;
+
+.title{
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:16px;
 }
-input:focus{border-color:var(--blue-glow);box-shadow:0 0 0 3px rgba(59,130,246,.2)}
-.row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+
+/* Forms */
+label{
+  display:block;
+  font-size:12px;
+  font-weight:600;
+  color:var(--text-muted);
+  margin-bottom:6px;
+}
+
+input,
+select{
+  width:100%;
+  padding:9px 10px;
+  border-radius:6px;
+  border:1px solid var(--border-light);
+  background:var(--bg-soft);
+  color:var(--text);
+  font-size:13px;
+  outline:none;
+}
+
+input:focus,
+select:focus{
+  border-color:var(--primary);
+}
+
+/* Grid */
+.row{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+/* Buttons */
 .btn{
- border:none;cursor:pointer;font-weight:900;
- padding:10px 14px;border-radius:10px;
- color:var(--text);
- background:rgba(255,255,255,.05);
- border:1px solid var(--border);
- transition:.18s;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 14px;
+  font-size:13px;
+  font-weight:600;
+  border-radius:6px;
+  border:1px solid var(--border-light);
+  background:var(--bg-soft);
+  color:var(--text);
+  cursor:pointer;
+  transition:background .15s ease;
 }
-.btn:hover{transform:translateY(-1px);border-color:var(--blue-glow)}
-.btn-primary,.btn-blue{background:var(--blue);border-color:transparent;color:#fff}
-.btn-success,.btn-green{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.45);color:#b8f3cc}
-.btn-danger,.btn-red{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.45);color:#ffc1c1}
-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:10px}
-th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
-th{color:rgba(232,240,255,.8);font-size:12px;background:rgba(59,130,246,.08)}
-tbody tr:hover td{background:rgba(59,130,246,.08)}
-.pill{display:inline-flex;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.10);
- background:rgba(0,0,0,.22);font-weight:900;font-size:12px}
-.good{color:var(--green)}
-.bad{color:var(--red)}
-.mono{font-family:monospace}
-.msg{margin-top:10px;color:var(--text-muted);min-height:18px;white-space:pre-wrap}
-.small{font-size:12px;color:var(--text-muted)}
-.skeleton {
-  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-dark) 50%, var(--bg-card) 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
+
+.btn:hover{
+  background:#2a3446;
 }
+
+.btn-primary,
+.btn-blue{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:#fff;
+}
+
+.btn-primary:hover,
+.btn-blue:hover{
+  background:var(--primary-hover);
+}
+
+.btn-success,
+.btn-green{
+  background:var(--success);
+  border-color:var(--success);
+  color:#fff;
+}
+
+.btn-danger,
+.btn-red{
+  background:var(--danger);
+  border-color:var(--danger);
+  color:#fff;
+}
+
+.btn-orange{
+  background:var(--orange);
+  border-color:var(--orange);
+  color:#fff;
+}
+
+.btn-orange:hover{
+  opacity:.9;
+}
+
+.btn-danger-outline,
+.btn-red-outline{
+  background:transparent;
+  border:1px solid var(--danger);
+  color:var(--danger);
+}
+
+.btn-danger-outline:hover,
+.btn-red-outline:hover{
+  background:var(--danger);
+  color:#fff;
+}
+
+/* Actions group */
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+/* Table */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  font-size:13px;
+}
+
+th{
+  text-align:left;
+  padding:10px;
+  font-size:12px;
+  font-weight:600;
+  color:var(--text-muted);
+  border-bottom:1px solid var(--border-light);
+}
+
+td{
+  padding:12px 10px;
+  border-bottom:1px solid var(--border);
+}
+
+tbody tr:hover{
+  background:rgba(255,255,255,0.02);
+}
+
+/* Status pill */
+.pill{
+  display:inline-block;
+  padding:4px 10px;
+  font-size:11px;
+  font-weight:600;
+  border-radius:20px;
+  background:var(--bg-soft);
+  border:1px solid var(--border-light);
+}
+
+.pill.good{
+  color:var(--success);
+}
+
+.pill.bad{
+  color:var(--danger);
+}
+
+/* Utility */
+.mono{
+  font-family:monospace;
+  font-size:12px;
+}
+
+.msg{
+  margin-top:12px;
+  font-size:12px;
+  color:var(--text-muted);
+  min-height:18px;
+}
+
+.small{
+  font-size:12px;
+  color:var(--text-muted);
+}
+
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand"><i class="fas fa-ghost"></i> GhostGuard • Admin Panel</div>
-  <button class="btn" id="refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
+  <div class="brand">
+    <i class="fas fa-ghost"></i> GhostGuard • Admin Panel
+  </div>
+  <button class="btn" id="refresh">
+    <i class="fas fa-sync-alt"></i> Refresh
+  </button>
 </header>
 
-<div class="wrap">
+<div class="layout">
 
-  <div class="card">
-    <div class="title"><i class="fas fa-lock"></i> Admin Secret</div>
-    <input id="secret" type="password" placeholder="ADMIN_SECRET"/>
-    <button class="btn btn-blue" id="saveSecret"><i class="fas fa-save"></i> Spara</button>
-    <div class="small">Skickas som: <span class="mono">Authorization: Bearer &lt;secret&gt;</span></div>
-    <div class="msg" id="secretMsg"></div>
-  </div>
-
-  <div class="card">
-    <div class="title"><i class="fas fa-plus-circle"></i> Skapa ny licens</div>
-    <div class="row">
-      <div>
-        <label>Dagar giltig</label>
-        <input id="days" type="number" value="30"/>
-      </div>
-      <div>
-        <label>&nbsp;</label>
-        <button class="btn btn-green" id="createLicense"><i class="fas fa-key"></i> Skapa</button>
-      </div>
-      <div>
-        <label>Resultat</label>
-        <input id="newLicense" readonly/>
-      </div>
-    </div>
-    <div class="msg" id="licMsg"></div>
-  </div>
-
-  <div class="card">
-    <div class="title"><i class="fas fa-user"></i> Skapa kund</div>
-
-    <div class="row">
-      <div>
-        <label>Username</label>
-        <input id="cu" placeholder="kund1"/>
-      </div>
-
-      <div>
-        <label>Password</label>
-        <input id="cp" type="password" placeholder="lösenord"/>
-      </div>
-
-      <div>
-        <label>License Key</label>
-        <input id="ck" placeholder="GG-XXXX-XXXX"/>
-      </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fas fa-ghost"></i> GhostGuard
     </div>
 
-    <div style="margin-top:10px;">
-      <button class="btn btn-blue" id="createCustomer"><i class="fas fa-user-plus"></i> Skapa kund</button>
+    <button class="nav-btn active" data-view="dashboard">
+      <i class="fas fa-home"></i> Dashboard
+    </button>
+
+    <button class="nav-btn" data-view="licenses">
+      <i class="fas fa-key"></i> Licenser
+    </button>
+
+    <button class="nav-btn" data-view="customers">
+      <i class="fas fa-user"></i> Kunder
+    </button>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- DASHBOARD VIEW -->
+    <div class="view active" id="dashboard">
+
+      <div class="card">
+        <div class="title">
+          <i class="fas fa-lock"></i> Admin Secret
+        </div>
+        <input id="secret" type="password" placeholder="ADMIN_SECRET"/>
+        <button class="btn btn-blue" id="saveSecret">
+          <i class="fas fa-save"></i> Spara
+        </button>
+        <div class="small">
+          Skickas som:
+          <span class="mono">Authorization: Bearer &lt;secret&gt;</span>
+        </div>
+        <div class="msg" id="secretMsg"></div>
+      </div>
+
+      <div class="card">
+        <div class="title">
+          <i class="fas fa-plus-circle"></i> Skapa ny licens
+        </div>
+        <div class="row">
+          <div>
+            <label>Dagar giltig</label>
+            <select id="licenseDuration">
+  <option value="30">1 Månad</option>
+  <option value="90">3 Månader</option>
+  <option value="lifetime">Livstid</option>
+</select>
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <button class="btn btn-green" id="createLicense">
+              <i class="fas fa-key"></i> Skapa
+            </button>
+          </div>
+          <div>
+            <label>Resultat</label>
+            <input id="newLicense" readonly/>
+          </div>
+        </div>
+        <div class="msg" id="licMsg"></div>
+      </div>
+
     </div>
 
-    <div class="msg" id="custMsg"></div>
+    <!-- LICENSE VIEW -->
+    <div class="view" id="licenses">
+      <div class="card">
+        <div class="title">
+          <i class="fas fa-clipboard-list"></i> Alla licenser
+        </div>
+        <table>
+          <thead>
+  <tr>
+    <th>Key</th>
+    <th>Status</th>
+    <th>Gjort</th>
+    <th>Slutar</th>
+    <th>Action</th>
+  </tr>
+</thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="msg" id="listMsg"></div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS VIEW -->
+    <div class="view" id="customers">
+      <div class="card">
+        <div class="title">
+          <i class="fas fa-user"></i> Skapa kund
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Username</label>
+            <input id="cu" placeholder="kund1"/>
+          </div>
+
+          <div>
+            <label>Password</label>
+            <input id="cp" type="password" placeholder="lösenord"/>
+          </div>
+
+          <div>
+            <label>License Key</label>
+            <input id="ck" placeholder="GG-XXXX-XXXX"/>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <button class="btn btn-blue" id="createCustomer">
+            <i class="fas fa-user-plus"></i> Skapa kund
+          </button>
+        </div>
+
+          <div class="card">
+  <div class="title">
+    <i class="fas fa-users"></i> Alla kunder
   </div>
 
-  <div class="card">
-    <div class="title"><i class="fas fa-clipboard-list"></i> Alla licenser</div>
-    <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Status</th>
-          <th>Expires</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <div class="msg" id="listMsg"></div>
-  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>License</th>
+        <th>Status</th>
+        <th>Skapad</th>
+      </tr>
+    </thead>
+    <tbody id="customerTable"></tbody>
+  </table>
+
+  <div class="msg" id="customerListMsg"></div>
+</div>
+        
+
+        <div class="msg" id="custMsg"></div>
+      </div>
+    </div>
+
+  </main>
 
 </div>
-
 <script>
-/** ========= CONFIG ========= */
 const API_BASE = "https://ghostgaurd-becakd.onrender.com";
 
-/** ========= STORAGE ========= */
-function getSecret(){ return localStorage.getItem("gg_admin_secret") || ""; }
-function setSecret(v){ localStorage.setItem("gg_admin_secret", v); }
+/* ================= STORAGE ================= */
+
+function getSecret(){
+  return localStorage.getItem("gg_admin_secret") || "";
+}
+
+function setSecret(v){
+  localStorage.setItem("gg_admin_secret", v);
+}
 
 document.getElementById("secret").value = getSecret();
 
 document.getElementById("saveSecret").onclick = () => {
-  setSecret(document.getElementById("secret").value.trim());
+  const val = document.getElementById("secret").value.trim();
+  if (!val){
+    alert("Secret får inte vara tomt");
+    return;
+  }
+  setSecret(val);
   document.getElementById("secretMsg").innerText = "Secret sparat";
 };
 
-/** ========= HELPERS ========= */
+/* ================= HELPERS ================= */
+
 function authHeaders(){
+  const secret = getSecret();
+  if (!secret){
+    alert("Admin secret saknas!");
+    throw new Error("NO_ADMIN_SECRET");
+  }
   return {
     "Content-Type": "application/json",
-    "Authorization": "Bearer " + getSecret()
+    "Authorization": "Bearer " + secret
   };
 }
 
@@ -222,141 +515,221 @@ function statusPill(s){
   return `<span class="pill ${ok ? "good" : "bad"}">${s || "-"}</span>`;
 }
 
-async function safeJson(res){
-  const text = await res.text();
-  try { return { json: JSON.parse(text), raw: text }; }
-  catch { return { json: null, raw: text }; }
+function formatDate(dateStr){
+  if (!dateStr) return "Livstid";
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("sv-SE", {
+    year:"numeric",
+    month:"short",
+    day:"numeric"
+  });
 }
 
-function showMsg(id, msg){ document.getElementById(id).innerText = msg || ""; }
+async function safeJson(res){
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch { return null; }
+}
 
-/** ========= API CALLS ========= */
+/* ================= LICENSES ================= */
+
 async function loadLicenses(){
-  showMsg("listMsg", "");
+  const res = await fetch(API_BASE + "/admin/licenses", {
+    headers: authHeaders()
+  });
 
-  const res = await fetch(API_BASE + "/admin/licenses", { headers: authHeaders() });
-  const { json, raw } = await safeJson(res);
-
-  if (!res.ok){
-    showMsg("listMsg", `Fel (${res.status}): ${json?.error || raw || "okänt"}`);
-    return;
-  }
-
-  if (!json || json.success !== true){
-    showMsg("listMsg", "Fel: kunde inte läsa licenser.");
-    return;
-  }
+  const json = await safeJson(res);
+  if (!res.ok || !json?.success) return;
 
   const rows = (json.data || []).map(l => {
-    const key = l.license_key || "-";
-    const status = l.status || "-";
-    const expires = l.expires_at || "-";
-    const nextStatus = (status === "ACTIVE") ? "DISABLED" : "ACTIVE";
-    const btnClass = (status === "ACTIVE") ? "btn-red" : "btn-green";
-    const btnText = (status === "ACTIVE") ? "Stäng av" : "Aktivera";
+
+    const isActive = l.status === "ACTIVE";
+    const next = isActive ? "DISABLED" : "ACTIVE";
 
     return `
       <tr>
-        <td class="mono">${key}</td>
-        <td>${statusPill(status)}</td>
-        <td class="mono">${expires}</td>
-        <td>
-          <button class="btn ${btnClass}" onclick="toggleLicense('${key}','${nextStatus}')">${btnText}</button>
+        <td class="mono">${l.license_key}</td>
+        <td>${statusPill(l.status)}</td>
+        <td>${formatDate(l.created_at)}</td>
+        <td>${formatDate(l.expires_at)}</td>
+        <td class="actions">
+          <button class="btn ${isActive ? 'btn-danger':'btn-success'}"
+            onclick="toggleLicense('${l.license_key}','${next}')">
+            ${isActive ? 'Stäng av':'Aktivera'}
+          </button>
+          <button class="btn btn-danger-outline"
+            onclick="deleteLicense('${l.license_key}')">
+            Ta bort
+          </button>
         </td>
       </tr>
     `;
   }).join("");
 
-  document.getElementById("tbody").innerHTML = rows || `
-    <tr><td colspan="4" class="small">Inga licenser hittades.</td></tr>
-  `;
+  document.getElementById("tbody").innerHTML = rows;
 }
 
-async function toggleLicense(license_key, status){
-  showMsg("listMsg", "");
-
-  const res = await fetch(API_BASE + "/admin/toggle-license", {
-    method: "POST",
-    headers: authHeaders(),
-    body: JSON.stringify({ license_key, status })
+async function toggleLicense(key,status){
+  await fetch(API_BASE + "/admin/toggle-license",{
+    method:"POST",
+    headers:authHeaders(),
+    body:JSON.stringify({license_key:key,status})
   });
-
-  const { json, raw } = await safeJson(res);
-
-  if (!res.ok){
-    showMsg("listMsg", `Toggle fel (${res.status}): ${json?.error || raw || "okänt"}`);
-    return;
-  }
-
-  await loadLicenses();
+  loadLicenses();
 }
 
-document.getElementById("createLicense").onclick = async () => {
-  showMsg("licMsg", "");
-  const days = Number(document.getElementById("days").value);
+async function deleteLicense(key){
+  if(!confirm("Ta bort licensen?")) return;
+  await fetch(API_BASE + "/admin/delete-license/"+key,{
+    method:"DELETE",
+    headers:authHeaders()
+  });
+  loadLicenses();
+}
 
-  const res = await fetch(API_BASE + "/admin/create-license", {
-    method: "POST",
-    headers: authHeaders(),
-    body: JSON.stringify({ days_valid: days })
+/* ================= CUSTOMERS ================= */
+
+async function loadCustomers(){
+  const res = await fetch(API_BASE + "/admin/customers",{
+    headers:authHeaders()
   });
 
-  const { json, raw } = await safeJson(res);
+  const json = await safeJson(res);
+  if (!res.ok || !json?.success) return;
 
-  if (!res.ok){
-    showMsg("licMsg", `Fel (${res.status}): ${json?.error || raw || "okänt"}`);
-    return;
-  }
+  const rows = (json.data || []).map(c=>{
 
-  if (json?.success){
-    document.getElementById("newLicense").value = json.license_key || "";
-    showMsg("licMsg", "Licens skapad");
-    await loadLicenses();
-  } else {
-    showMsg("licMsg", "Fel: " + (json?.error || raw || "okänt"));
-  }
-};
+    const isActive = c.active === true;
 
-document.getElementById("createCustomer").onclick = async () => {
-  showMsg("custMsg", "");
+    return `
+      <tr>
+        <td>${c.username}</td>
+        <td class="mono">${c.license_key}</td>
+        <td>${statusPill(isActive ? "ACTIVE" : "DISABLED")}</td>
+        <td>${formatDate(c.created_at)}</td>
+        <td class="actions">
+          <button class="btn btn-warning"
+            onclick="changePassword('${c.id}')">
+            Byt lösenord
+          </button>
+          <button class="btn btn-success"
+            onclick="generatePasswordForUser('${c.id}')">
+            Generera nytt
+          </button>
+          <button class="btn ${isActive?'btn-danger':'btn-success'}"
+            onclick="toggleCustomer('${c.id}',${isActive})">
+            ${isActive?'Pausa':'Aktivera'}
+          </button>
+          <button class="btn btn-danger-outline"
+            onclick="deleteCustomer('${c.id}')">
+            Ta bort
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join("");
 
-  const username = document.getElementById("cu").value.trim();
-  const password = document.getElementById("cp").value.trim();
-  const license_key = document.getElementById("ck").value.trim();
+  document.getElementById("customerTable").innerHTML = rows;
+}
 
-  if (!username || !password || !license_key){
-    showMsg("custMsg", "Fyll i alla fält.");
-    return;
-  }
+async function toggleCustomer(id,current){
+  await fetch(API_BASE + "/admin/toggle-customer",{
+    method:"POST",
+    headers:authHeaders(),
+    body:JSON.stringify({id,active:!current})
+  });
+  loadCustomers();
+}
 
-  const res = await fetch(API_BASE + "/admin/create-customer", {
-    method: "POST",
-    headers: authHeaders(),
-    body: JSON.stringify({ username, password, license_key })
+async function deleteCustomer(id){
+  if(!confirm("Ta bort konto?")) return;
+  await fetch(API_BASE + "/admin/delete-customer/"+id,{
+    method:"DELETE",
+    headers:authHeaders()
+  });
+  loadCustomers();
+}
+
+async function changePassword(id){
+  const pass = prompt("Nytt lösenord:");
+  if(!pass) return;
+
+  await fetch(API_BASE + "/admin/update-customer-password",{
+    method:"POST",
+    headers:authHeaders(),
+    body:JSON.stringify({id,new_password:pass})
   });
 
-  const { json, raw } = await safeJson(res);
+  alert("Lösenord uppdaterat");
+}
 
-  if (!res.ok){
-    showMsg("custMsg", `Fel (${res.status}): ${json?.error || raw || "okänt"}`);
-    return;
-  }
+function generateRandomPassword(){
+  return Math.random().toString(36).slice(-8);
+}
 
-  if (json?.success){
-    showMsg("custMsg", "Kund skapad");
-    document.getElementById("cu").value = "";
-    document.getElementById("cp").value = "";
-    document.getElementById("ck").value = "";
-  } else {
-    showMsg("custMsg", "Fel: " + (json?.error || raw || "okänt"));
-  }
+async function generatePasswordForUser(id){
+  const pass = generateRandomPassword();
+
+  await fetch(API_BASE + "/admin/update-customer-password",{
+    method:"POST",
+    headers:authHeaders(),
+    body:JSON.stringify({id,new_password:pass})
+  });
+
+  alert("Nytt lösenord: "+pass);
+}
+
+/* ================= CREATE CUSTOMER ================= */
+
+document.getElementById("createCustomer").onclick = async ()=>{
+  const u = cu.value.trim();
+  const p = cp.value.trim();
+  const k = ck.value.trim();
+
+  if(!u||!p||!k){ alert("Fyll i alla fält"); return; }
+
+  await fetch(API_BASE + "/admin/create-customer",{
+    method:"POST",
+    headers:authHeaders(),
+    body:JSON.stringify({username:u,password:p,license_key:k})
+  });
+
+  loadCustomers();
 };
 
-document.getElementById("refresh").onclick = loadLicenses;
+/* ================= NAVIGATION ================= */
+
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".nav-btn")
+      .forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+
+    document.querySelectorAll(".view")
+      .forEach(v=>v.classList.remove("active"));
+
+    document.getElementById(btn.dataset.view)
+      .classList.add("active");
+
+    if(btn.dataset.view==="licenses") loadLicenses();
+    if(btn.dataset.view==="customers") loadCustomers();
+  });
+});
+
+/* ================= INIT ================= */
+
 loadLicenses();
+loadCustomers();
+
+/* Make functions global */
+window.toggleCustomer = toggleCustomer;
+window.deleteCustomer = deleteCustomer;
+window.changePassword = changePassword;
+window.generatePasswordForUser = generatePasswordForUser;
+window.toggleLicense = toggleLicense;
+window.deleteLicense = deleteLicense;
+
 </script>
->
 
 </body>
-</html>
-
+</html>   
