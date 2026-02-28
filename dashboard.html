@@ -6,457 +6,777 @@
 <title>GhostGuard Panel</title>
 
 <style>
-:root{
-  --bg:#060c18;
-  --card:#101a2e;
-  --blue:#3b82f6;
-  --blueGlow:rgba(59,130,246,.4);
-  --red:#ef4444;
-  --yellow:#f59e0b;
-  --green:#22c55e;
-  --border:rgba(255,255,255,.06);
-  --text:#e6f0ff;
-  --muted:rgba(230,240,255,.6);
+
+  :root{
+  --bg:#0f172a;
+  --sidebar:#111827;
+  --card:#1e293b;
+  --card-soft:#1b2435;
+  --primary:#2563eb;
+  --primary-soft:#1d4ed8;
+  --danger:#dc2626;
+  --warning:#d97706;
+  --success:#16a34a;
+  --border:#2a3446;
+  --text:#f1f5f9;
+  --muted:#94a3b8;
 }
 
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
-  font-family:Inter,system-ui;
-  background:radial-gradient(circle at 20% 0%, #0f1f3d, #060c18);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont;
+  background:var(--bg);
   color:var(--text);
   display:flex;
 }
 
 /* SIDEBAR */
+
 .sidebar{
   width:240px;
-  background:linear-gradient(180deg,#0b1426,#0a1222);
-  padding:30px 20px;
+  background:var(--sidebar);
+  padding:28px 20px;
   border-right:1px solid var(--border);
-}
-
-.logo{
-  font-size:22px;
-  font-weight:900;
-  margin-bottom:35px;
-}
-
-.nav{
-  padding:12px 14px;
-  border-radius:10px;
-  cursor:pointer;
-  margin-bottom:10px;
-  color:var(--muted);
-  transition:.2s;
-}
-
-.nav:hover{background:rgba(59,130,246,.15);color:white;}
-.nav.active{background:rgba(59,130,246,.25);color:white;}
-
-.content{
-  flex:1;
-  padding:40px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-  gap:25px;
-}
-
-.card{
-  background:linear-gradient(180deg,var(--card),#0d1628);
-  border-radius:16px;
-  padding:25px;
-  border:1px solid var(--border);
-}
-
-/* PLAYER CARD */
-.player-card{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:15px;
-  border-radius:12px;
-  background:rgba(59,130,246,.08);
-  margin-bottom:10px;
-  border:1px solid transparent;
-  transition:.2s;
-}
-
-.player-card:hover{
-  background:rgba(59,130,246,.18);
-  border-color:var(--blueGlow);
-}
-
-.player-info{
   display:flex;
   flex-direction:column;
 }
 
-.player-name{font-weight:800}
-.player-id{font-size:12px;color:var(--muted)}
-
-.player-actions{
+.logo{
   display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:30px;
+  letter-spacing:.5px;
+}
+
+.nav{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 14px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-bottom:6px;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:500;
+  transition:background .15s ease, color .15s ease;
+}
+
+.nav:hover{
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+}
+
+.nav.active{
+  background:rgba(37,99,235,.15);
+  color:var(--text);
+  font-weight:600;
+}
+
+/* CONTENT */
+
+.content{
+  flex:1;
+  padding:36px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+}
+
+/* CARDS */
+
+.card{
+  background:var(--card);
+  border-radius:10px;
+  padding:24px;
+  border:1px solid var(--border);
+}
+
+.card h3{
+  margin-top:0;
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:20px;
+  display:flex;
+  align-items:center;
   gap:8px;
 }
 
-.btn{
-  padding:6px 12px;
+/* DOWNLOAD BLOCK */
+
+.info-block{
+  background:var(--card-soft);
+  border:1px solid var(--border);
+  padding:16px;
   border-radius:8px;
+  margin-bottom:20px;
+  font-size:14px;
+  line-height:1.6;
+}
+
+.status-badge{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:20px;
   font-size:12px;
-  font-weight:700;
+  font-weight:600;
+  background:rgba(22,163,74,.15);
+  color:var(--success);
+  margin-left:6px;
+}
+
+.primary-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--primary);
+  color:white;
+  padding:10px 18px;
+  border-radius:6px;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:600;
+  transition:background .15s ease, transform .1s ease;
+  margin-bottom:24px;
+}
+
+.primary-link:hover{
+  background:var(--primary-soft);
+  transform:translateY(-1px);
+}
+
+.divider{
   border:none;
-  cursor:pointer;
+  border-top:1px solid var(--border);
+  margin:28px 0;
 }
 
-.btn-kick{background:var(--yellow);color:#000}
-.btn-ban{background:var(--red);color:white}
+/* INSTALLATION STEPS */
 
-.status-online{color:var(--green);font-weight:800}
-.status-offline{color:var(--red);font-weight:800}
-
-.log-card{
-  padding:12px 16px;
-  border-radius:12px;
-  margin-bottom:10px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.06);
-  transition:.2s;
+.install-steps{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:12px;
 }
 
-.log-card:hover{
-  background:rgba(59,130,246,.08);
-  border-color:rgba(59,130,246,.3);
+.install-steps > div{
+  background:var(--card-soft);
+  border:1px solid var(--border);
+  padding:16px;
+  border-radius:8px;
+  transition:background .15s ease, border .15s ease;
 }
 
-.log-header{
+.install-steps > div:hover{
+  background:#22304a;
+  border-color:#31415f;
+}
+
+.install-steps strong{
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:6px;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+
+.code-box{
+  margin-top:8px;
+  background:#0f172a;
+  border:1px solid var(--border);
+  padding:8px 10px;
+  border-radius:6px;
+  font-family:monospace;
+  font-size:12px;
+  color:#cbd5e1;
+  overflow-x:auto;
+}
+
+/* PLAYER CARD */
+
+.player-card{
   display:flex;
   justify-content:space-between;
+  align-items:center;
+  padding:14px;
+  border-radius:8px;
+  background:var(--card-soft);
+  margin-bottom:10px;
+  border:1px solid var(--border);
+  transition:background .15s ease;
+}
+
+.player-card:hover{
+  background:#233049;
+}
+
+/* BUTTONS */
+
+.btn{
+  padding:6px 12px;
+  border-radius:6px;
   font-size:12px;
-  margin-bottom:4px;
+  font-weight:600;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:background .15s ease;
 }
 
-.log-time{
-  color:rgba(230,240,255,.5);
+.btn-kick{
+  background:var(--warning);
+  color:white;
 }
 
-.log-type{
-  font-weight:700;
-  padding:2px 8px;
-  border-radius:20px;
-  font-size:11px;
+.btn-kick:hover{
+  background:#b45309;
 }
 
+.btn-ban{
+  background:var(--danger);
+  color:white;
+}
+
+.btn-ban:hover{
+  background:#b91c1c;
+}
+
+/* STATUS */
+
+.status-online{
+  color:var(--success);
+  font-weight:600;
+}
+
+.status-offline{
+  color:var(--danger);
+  font-weight:600;
+}
 
 /* MODAL */
+
 .modal-overlay{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.6);
+  background:rgba(0,0,0,.65);
   display:flex;
   align-items:center;
   justify-content:center;
   z-index:999;
-  backdrop-filter:blur(4px);
 }
 
 .modal{
-  width:400px;
-  background:linear-gradient(180deg,#0f1f3d,#0a162b);
-  border:1px solid rgba(59,130,246,.4);
-  border-radius:16px;
-  padding:25px;
-  box-shadow:0 0 40px rgba(59,130,246,.3);
+  width:420px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:24px;
 }
 
 .modal h3{
   margin-top:0;
-  margin-bottom:15px;
-}
-
-
-
-  
-.log-info{background:#1f2937;color:#93c5fd;}
-.log-join{background:#052e1f;color:#22c55e;}
-.log-leave{background:#2e1a05;color:#f59e0b;}
-.log-ban{background:#3b0a0a;color:#ef4444;}
-.log-detect{background:#1e1b4b;color:#a78bfa;}
-
-.log-message{
-  font-size:13px;
-  color:rgba(230,240,255,.85);
-}
-
-
-
-/* MODAL */
-.modal-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-  backdrop-filter:blur(4px);
-}
-
-.modal{
-  width:400px;
-  background:linear-gradient(180deg,#0f1f3d,#0a162b);
-  border:1px solid rgba(59,130,246,.4);
-  border-radius:16px;
-  padding:25px;
-  box-shadow:0 0 40px rgba(59,130,246,.3);
-}
-
-.modal h3{
-  margin-top:0;
-  margin-bottom:15px;
+  margin-bottom:16px;
+  font-size:16px;
+  font-weight:600;
 }
 
 .modal input{
   width:100%;
-  padding:10px;
+  padding:9px 10px;
   margin-bottom:12px;
-  border-radius:8px;
-  border:1px solid rgba(255,255,255,.1);
-  background:#0c1426;
-  color:white;
+  border-radius:6px;
+  border:1px solid var(--border);
+  background:#0f172a;
+  color:var(--text);
+  font-size:13px;
 }
 
 .modal-actions{
   display:flex;
   justify-content:flex-end;
-  gap:10px;
+  gap:8px;
 }
 
 .modal-btn{
-  padding:8px 14px;
-  border-radius:8px;
+  padding:7px 14px;
+  border-radius:6px;
   border:none;
   cursor:pointer;
-  font-weight:700;
+  font-weight:600;
+  font-size:13px;
 }
 
 .modal-cancel{
-  background:#1f2937;
+  background:#334155;
   color:white;
 }
 
 .modal-confirm{
-  background:#3b82f6;
+  background:var(--primary);
   color:white;
 }
 
-  
+.modal-confirm:hover{
+  background:var(--primary-soft);
+}
+
+#licenseKeyDisplay{
+  background:#0f172a;
+  border:1px solid var(--border);
+  padding:8px 10px;
+  border-radius:6px;
+  font-size:13px;
+  letter-spacing:1px;
+  color:var(--text);
+}
+
 </style>
 </head>
+<script src="https://unpkg.com/lucide@latest"></script>
 
 <body>
 
-  <div id="actionModal" style="display:none;"></div>
+<div id="actionModal" style="display:none;"></div>
 
-
-  
 <div class="sidebar">
-  <div class="logo">👻 GhostGuard</div>
-  <div class="nav active" onclick="showView('dashboard', this)">Dashboard</div>
-  <div class="nav" onclick="showView('players', this)">Players</div>
-  <div class="nav" onclick="showView('logs', this)">Server Logs</div>
-  <div class="nav" onclick="showView('bans', this)">Ban List</div>
-  <div class="nav" onclick="showView('download', this)">Download</div>
+
+  <div>
+    <div class="logo">
+      <i data-lucide="shield"></i>
+      <span>GhostGuard</span>
+    </div>
+
+    <div class="nav active" onclick="showView('dashboard', this)">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Dashboard</span>
+    </div>
+
+    <div class="nav" onclick="showView('players', this)">
+      <i data-lucide="users"></i>
+      <span>Players</span>
+    </div>
+
+    <div class="nav" onclick="showView('logs', this)">
+      <i data-lucide="file-text"></i>
+      <span>Server Logs</span>
+    </div>
+
+    <div class="nav" onclick="showView('bans', this)">
+      <i data-lucide="shield-alert"></i>
+      <span>Ban List</span>
+    </div>
+
+    <div class="nav" onclick="showView('download', this)">
+      <i data-lucide="download"></i>
+      <span>Download</span>
+    </div>
+  </div>
+
+  <div style="margin-top:auto;">
+    <div class="nav" onclick="openSupport(event)">
+      <i data-lucide="life-buoy"></i>
+      <span>Support</span>
+    </div>
+  </div>
+
 </div>
 
 <div class="content">
 
+  <!-- HEADER -->
+  <div class="page-header">
+    <h2>
+      <i data-lucide="layout-dashboard"></i>
+      Dashboard
+    </h2>
+    <div class="subtitle">GhostGuard Control Panel</div>
+  </div>
 
-  
-<div id="dashboardView">
-  <div class="grid">
-    <div class="card">
-      <h3>License</h3>
-      <p>Status: <span id="licenseStatus">Loading...</span></p>
-      <p>Expires: <span id="licenseExpire">-</span></p>
+  <!-- DASHBOARD VIEW -->
+  <div id="dashboardView">
+    <div class="grid">
+
+      <!-- LICENSE CARD -->
+      <div class="card">
+        <h3>
+          <i data-lucide="key-round"></i>
+          License Information
+        </h3>
+
+        <div class="license-section">
+          <div class="label">
+            <i data-lucide="key"></i>
+            License Key
+          </div>
+
+          <div class="license-row">
+            <div id="licenseKeyDisplay" class="license-box">
+              Loading...
+            </div>
+            <button class="btn modal-confirm" onclick="copyLicense()">
+              <i data-lucide="copy"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <i data-lucide="activity"></i>
+          <strong>Status:</strong>
+          <span id="licenseStatus">Loading...</span>
+        </div>
+
+        <div class="info-row">
+          <i data-lucide="package"></i>
+          <strong>Plan:</strong>
+          <span id="licensePlan">-</span>
+        </div>
+
+        <div class="info-row">
+          <i data-lucide="calendar"></i>
+          <strong>Expires:</strong>
+          <span id="licenseExpire">-</span>
+        </div>
+
+        <div class="info-row">
+          <i data-lucide="clock"></i>
+          <strong>Days Remaining:</strong>
+          <span id="licenseDays">-</span>
+        </div>
+      </div>
+
+      <!-- SERVER CARD -->
+      <div class="card">
+        <h3>
+          <i data-lucide="server"></i>
+          Server Status
+        </h3>
+
+        <div class="info-row">
+          <i data-lucide="power"></i>
+          <strong>Status:</strong>
+          <span id="serverStatus">Loading...</span>
+        </div>
+
+        <div class="info-row">
+          <i data-lucide="users"></i>
+          <strong>Online Players:</strong>
+          <span id="playerCountDash">0</span>
+        </div>
+
+        <div class="info-row">
+          <i data-lucide="link"></i>
+          <strong>License Bound:</strong>
+          <span id="boundServer">Active</span>
+        </div>
+      </div>
+
     </div>
+  </div>
 
+  <!-- PLAYERS -->
+  <div id="playersView" style="display:none;">
     <div class="card">
-      <h3>Server</h3>
-      <p>Status: <span id="serverStatus">Loading...</span></p>
-      <p>Players: <span id="playerCountDash">0</span></p>
+      <h3>
+        <i data-lucide="users"></i>
+        Online Players
+      </h3>
+      <div id="playerList"></div>
     </div>
   </div>
-</div>
 
-<div id="bansView" style="display:none;">
-  <div class="card">
-    <h3>Banned Players</h3>
-    <div id="banList"></div>
+  <!-- LOGS -->
+  <div id="logsView" style="display:none;">
+    <div class="card">
+      <h3>
+        <i data-lucide="scroll-text"></i>
+        Live Server Logs
+      </h3>
+      <div id="logList"></div>
+    </div>
   </div>
-</div>
-  
-<div id="playersView" style="display:none;">
-  <div class="card">
-    <h3>Online Players</h3>
-    <div id="playerList"></div>
+
+  <!-- BANS -->
+  <div id="bansView" style="display:none;">
+    <div class="card">
+      <h3>
+        <i data-lucide="shield-alert"></i>
+        Banned Players
+      </h3>
+      <div id="banList"></div>
+    </div>
   </div>
-</div>
 
-<div id="logsView" style="display:none;">
-  <div class="card">
-    <h3>Live Logs</h3>
-    <div id="logList"></div>
+  <!-- DOWNLOAD -->
+  <div id="downloadView" style="display:none;">
+    <div class="card">
+      <h3>
+        <i data-lucide="download"></i>
+        Download Center
+      </h3>
+
+      <div class="info-block">
+        <i data-lucide="tag"></i>
+        <strong>Current Version:</strong> v3.1.1<br>
+        <i data-lucide="check-circle"></i>
+        <strong>Status:</strong> <span class="status-online">Stable</span>
+      </div>
+
+      <a href="https://drive.google.com/file/d/1hoo6V48cpF2iZgMsqnkT3BmaDVdasEym/view"
+         target="_blank"
+         class="primary-link">
+         <i data-lucide="download"></i>
+         Download GhostGuard
+      </a>
+
+      <hr class="divider">
+
+      <h3>
+        <i data-lucide="book-open"></i>
+        Installation Guide
+      </h3>
+
+      <div class="install-steps">
+
+        <div>
+          <strong><i data-lucide="arrow-down"></i> Step 1 — Download</strong>
+          <div class="muted">
+            Download the latest GhostGuard package.
+          </div>
+        </div>
+
+        <div>
+          <strong><i data-lucide="folder"></i> Step 2 — Extract Files</strong>
+          <div class="muted">
+            Extract the downloaded .zip file.
+          </div>
+        </div>
+
+        <div>
+          <strong><i data-lucide="server"></i> Step 3 — Move to Server</strong>
+          <div class="muted">
+            Place folder inside:
+          </div>
+          <div class="code-box">resources/[ghostguard]/</div>
+        </div>
+
+        <div>
+          <strong><i data-lucide="settings"></i> Step 4 — Edit server.cfg</strong>
+          <div class="muted">
+            Add this line:
+          </div>
+          <div class="code-box">ensure GhostGuard-Anticheat</div>
+        </div>
+
+        <div>
+          <strong><i data-lucide="key"></i> Step 5 — Insert License</strong>
+          <div class="muted">
+            Edit <code>config.lua</code>:
+          </div>
+          <div class="code-box">
+            Config.LicenseKey = "GG-XXXX-XXXX"
+          </div>
+        </div>
+
+        <div>
+          <strong><i data-lucide="refresh-ccw"></i> Step 6 — Restart Server</strong>
+          <div class="muted">
+            Restart your FiveM server.
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
+
 </div>
 
-
-<div id="downloadView" style="display:none;">
-  <div class="card">
-    <h3>👻 GhostGuard Download Center</h3>
-
-    <p><b>Current Version:</b> v3.1.0</p>
-    <p><b>Status:</b> <span class="status-online">Stable</span></p>
-
-    <br>
-
-    <a href="https://drive.google.com/file/d/1hoo6V48cpF2iZgMsqnkT3BmaDVdasEym/view"
-       target="_blank"
-       style="
-         display:inline-block;
-         padding:12px 20px;
-         background:#3b82f6;
-         color:white;
-         border-radius:10px;
-         text-decoration:none;
-         font-weight:700;
-       ">
-       ⬇ Download GhostGuard
-    </a>
-
-    <hr style="margin:30px 0; opacity:.1">
-
-    <h4>📦 Installation Guide</h4>
-
-    <p>1️⃣ Download the zip file</p>
-    <p>2️⃣ Extract the folder</p>
-    <p>3️⃣ Move folder to:</p>
-    <pre>resources/[ghostguard]/</pre>
-
-    <p>4️⃣ Add to server.cfg:</p>
-    <pre>ensure ghostguard</pre>
-
-    <p>5️⃣ Open config.lua and set:</p>
-    <pre>
-Config.LicenseKey = "DIN_LICENSE_KEY"
-    </pre>
-
-    <p>6️⃣ Restart server</p>
-
-  </div>
-</div>
-
-  
-</div>
+</body>
 
 <script>
 const API="https://ghostgaurd-becakd.onrender.com";
 const licenseKey=localStorage.getItem("gg_license_key")||"";
 const token=localStorage.getItem("gg_token")||"";
 
-function showView(view, el){
-  document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
-  el.classList.add("active");
+/* =============================
+   BASIC CHECK
+============================= */
 
-  document.getElementById("dashboardView").style.display="none";
-  document.getElementById("playersView").style.display="none";
-  document.getElementById("logsView").style.display="none";
-  document.getElementById("bansView").style.display="none"; // ← DENNA SAKNADES
-  document.getElementById("downloadView").style.display="none";
+if(!licenseKey) console.warn("No license key found.");
+if(!token) console.warn("No auth token found.");
 
-  document.getElementById(view+"View").style.display="block";
+/* =============================
+   SAFE HTML
+============================= */
+
+function escapeHTML(str){
+  if(!str) return "";
+  return str.replace(/[&<>"']/g, m => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#039;'
+  })[m]);
 }
 
+/* =============================
+   VIEW SWITCH
+============================= */
+
+function showView(view, el){
+  document.querySelectorAll(".nav").forEach(n=>n.classList.remove("active"));
+  if(el) el.classList.add("active");
+
+  ["dashboard","players","logs","bans","download"].forEach(v=>{
+    const viewEl=document.getElementById(v+"View");
+    if(viewEl) viewEl.style.display="none";
+  });
+
+  const active=document.getElementById(view+"View");
+  if(active) active.style.display="block";
+
+  reRenderIcons();
+}
+
+/* =============================
+   LICENSE
+============================= */
 
 async function fetchLicense(){
   if(!token) return;
+
   try{
     const res=await fetch(API+"/customer/dashboard",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({token})
     });
+
     const data=await res.json();
-    if(data.success){
-      document.getElementById("licenseStatus").innerText=data.data.status;
-      document.getElementById("licenseExpire").innerText=
-        data.data.expires_at?new Date(data.data.expires_at).toLocaleString():"Lifetime";
+    if(!data.success) return;
+
+    const lic=data.data;
+
+    document.getElementById("licenseStatus").innerText=lic.status;
+    document.getElementById("licenseKeyDisplay").innerText=
+      lic.license_key || licenseKey;
+
+    if(!lic.expires_at){
+      document.getElementById("licenseExpire").innerText="Lifetime";
+      document.getElementById("licensePlan").innerText="Lifetime";
+      document.getElementById("licenseDays").innerText="∞";
+      return;
     }
-  }catch(e){console.log(e);}
+
+    const expireDate=new Date(lic.expires_at);
+    const now=new Date();
+    const diff=Math.ceil((expireDate-now)/(1000*60*60*24));
+
+    document.getElementById("licenseExpire").innerText=
+      expireDate.toLocaleDateString();
+
+    document.getElementById("licenseDays").innerText=
+      diff>0 ? diff+" days" : "Expired";
+
+  }catch(e){
+    console.error("License error:",e);
+  }
 }
 
+/* =============================
+   SERVER
+============================= */
+
 async function fetchServer(){
+  if(!licenseKey) return;
+
   try{
     const res=await fetch(API+"/api/server/status/"+licenseKey);
     const data=await res.json();
-    document.getElementById("serverStatus").innerText=data.online?"Online":"Offline";
-    document.getElementById("serverStatus").className=data.online?"status-online":"status-offline";
+
+    const statusEl=document.getElementById("serverStatus");
+    statusEl.innerText=data.online?"Online":"Offline";
+    statusEl.className=data.online?"status-online":"status-offline";
+
     document.getElementById("playerCountDash").innerText=data.players||0;
-  }catch(e){console.log(e);}
+
+  }catch(e){
+    console.error("Server error:",e);
+  }
 }
 
+/* =============================
+   PLAYERS
+============================= */
+
 async function fetchPlayers(){
+  if(!licenseKey) return;
+
   try{
     const res=await fetch(API+"/api/server/players/"+licenseKey);
     const data=await res.json();
     const players=data.players||[];
 
-    document.getElementById("playerList").innerHTML=players.map(p=>`
-      <div class="player-card">
-        <div class="player-info">
-          <span class="player-name">${p.name}</span>
-          <span class="player-id">ID: ${p.id}</span>
+    document.getElementById("playerList").innerHTML=
+      players.map(p=>`
+        <div class="player-card">
+          <div class="player-info">
+            <span class="player-name">${escapeHTML(p.name)}</span>
+            <span class="player-id">ID: ${p.id}</span>
+          </div>
+          <div class="player-actions">
+            <button class="btn btn-kick" onclick="openModal('kick', ${p.id})">Kick</button>
+            <button class="btn btn-ban" onclick="openModal('ban', ${p.id})">Ban</button>
+          </div>
         </div>
-        <div class="player-actions">
-      <button class="btn btn-kick" onclick="openModal('kick', ${p.id})">Kick</button>
-<button class="btn btn-ban" onclick="openModal('ban', ${p.id})">Ban</button>
-        </div>
-      </div>
-    `).join("");
-  }catch(e){console.log(e);}
+      `).join("");
+
+  }catch(e){
+    console.error("Players error:",e);
+  }
 }
 
+/* =============================
+   LOGS
+============================= */
+
 async function fetchLogs(){
+  if(!licenseKey) return;
+
   try{
     const res=await fetch(API+"/api/server/logs/"+licenseKey);
     const data=await res.json();
     const logs=(data.data||[]).slice(0,50);
 
-    document.getElementById("logList").innerHTML = logs.map(l=>{
-      
+    document.getElementById("logList").innerHTML=logs.map(l=>{
       let typeClass="log-info";
       let typeLabel="INFO";
-
       const msg=(l.message||"").toLowerCase();
 
       if(msg.includes("joined")){
-        typeClass="log-join";
-        typeLabel="JOIN";
-      }
-      else if(msg.includes("left")){
-        typeClass="log-leave";
-        typeLabel="LEAVE";
-      }
-      else if(msg.includes("ban")){
-        typeClass="log-ban";
-        typeLabel="BAN";
-      }
-      else if(msg.includes("explosion") || msg.includes("speed") || msg.includes("noclip")){
-        typeClass="log-detect";
-        typeLabel="DETECTION";
+        typeClass="log-join"; typeLabel="JOIN";
+      }else if(msg.includes("left")){
+        typeClass="log-leave"; typeLabel="LEAVE";
+      }else if(msg.includes("ban")){
+        typeClass="log-ban"; typeLabel="BAN";
+      }else if(msg.includes("explosion")||msg.includes("speed")||msg.includes("noclip")){
+        typeClass="log-detect"; typeLabel="DETECTION";
       }
 
       return `
@@ -465,204 +785,144 @@ async function fetchLogs(){
             <span class="log-time">${new Date(l.time).toLocaleTimeString()}</span>
             <span class="log-type ${typeClass}">${typeLabel}</span>
           </div>
-          <div class="log-message">${l.message}</div>
+          <div class="log-message">${escapeHTML(l.message)}</div>
         </div>
       `;
     }).join("");
 
   }catch(e){
-    console.log(e);
+    console.error("Logs error:",e);
   }
 }
 
+/* =============================
+   SEND ACTION
+============================= */
 
-async function send(type, payload){
+async function send(type,payload){
   try{
-    const res = await fetch(API + "/api/dashboard/action", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token,
-        type,
-        payload
-      })
+    const res=await fetch(API+"/api/dashboard/action",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({token,type,payload})
     });
 
-    const data = await res.json();
+    const data=await res.json();
     return data.success;
+
   }catch(e){
-    console.log("SEND ERROR:", e);
+    console.error("Send error:",e);
     return false;
   }
 }
 
-  
-/* ===== MODAL LOGIC (ADDED, DOES NOT REMOVE ANYTHING) ===== */
+/* =============================
+   MODAL
+============================= */
 
-function openModal(type, playerId){
-  const modal = document.getElementById("actionModal");
+function openModal(type,playerId){
+  const modal=document.getElementById("actionModal");
 
-  modal.innerHTML = `
+  modal.innerHTML=`
     <div class="modal-overlay">
       <div class="modal">
-        <h3>${type === "kick" ? "Kick Player" : "Ban Player"}</h3>
-
+        <h3>${type==="kick"?"Kick Player":"Ban Player"}</h3>
         <input id="reasonInput" placeholder="Reason..." />
-
-        ${type === "ban" ? `<input id="durationInput" placeholder="Duration (30m,2h,7d,P)" />` : ""}
-
+        ${type==="ban"
+          ? `<input id="durationInput" placeholder="Duration (30m,2h,7d,P)" />`
+          : ""}
         <div class="modal-actions">
           <button class="modal-btn modal-cancel" onclick="closeModal()">Cancel</button>
-          <button class="modal-btn modal-confirm" onclick="confirmAction('${type}', ${playerId})">
-            Confirm
-          </button>
+          <button class="modal-btn modal-confirm" id="confirmBtn">Confirm</button>
         </div>
       </div>
     </div>
   `;
 
-  modal.style.display = "block";
+  modal.style.display="block";
+  document.getElementById("confirmBtn").onclick=
+    ()=>confirmAction(type,playerId);
+
+  reRenderIcons();
 }
 
 function closeModal(){
-  document.getElementById("actionModal").style.display = "none";
+  document.getElementById("actionModal").style.display="none";
 }
 
-async function confirmAction(type, playerId){
-  const reason = document.getElementById("reasonInput").value;
+async function confirmAction(type,playerId){
+  const btn=document.getElementById("confirmBtn");
+  btn.disabled=true;
+  btn.innerText="Processing...";
+
+  const reason=document.getElementById("reasonInput").value.trim();
   if(!reason){
     alert("Reason required");
+    btn.disabled=false;
+    btn.innerText="Confirm";
     return;
   }
 
-  let payload = { player: playerId, reason };
+  let payload={player:playerId,reason};
 
-  if(type === "ban"){
-    const duration = document.getElementById("durationInput").value;
+  if(type==="ban"){
+    const duration=document.getElementById("durationInput").value.trim();
     if(!duration){
       alert("Duration required");
+      btn.disabled=false;
+      btn.innerText="Confirm";
       return;
     }
-    payload.duration = duration;
+    payload.duration=duration;
   }
 
-  // använder din befintliga send()
-  const ok = await send(type, payload);
-
-  if(ok){
-    closeModal();
-  }
-}
-
-
-async function fetchBans(){
-  try{
-    const res = await fetch(API + "/api/server/bans/" + licenseKey);
-    const data = await res.json();
-    const bans = data.data || [];
-
-    document.getElementById("banList").innerHTML = bans.map(b=>`
-  <div class="player-card">
-    <div class="player-info">
-      <span class="player-name">${b.player_id}</span>
-      <span class="player-id">Ban ID: ${b.ban_id}</span>
-    </div>
-
-    <div class="player-actions">
-
-      <button class="btn btn-kick"
-        onclick="showBanInfo('${b.ban_id}','${b.reason}','${b.duration}','${b.created_at}')">
-        Info
-      </button>
-
-      <button class="btn btn-ban"
-        onclick="unbanPlayer('${b.ban_id}')">
-        Unban
-      </button>
-
-    </div>
-  </div>
-`).join("");
-
-
-  }catch(e){console.log(e);}
-}
-
-async function unbanPlayer(banId){
-
-  if(!confirm("Är du säker att du vill unbanna denna spelare?")) return;
-
-  try{
-    const res = await fetch(API + "/api/server/unban/" + banId, {
-      method: "DELETE",
-      headers: {
-        "Authorization": "Bearer " + token
-      }
-    });
-
-    const data = await res.json();
-
-    if(data.success){
-      fetchBans();
-    }else{
-      alert("Unban failed");
-    }
-
-  }catch(e){
-    console.log(e);
+  const ok=await send(type,payload);
+  if(ok) closeModal();
+  else{
+    alert("Action failed");
+    btn.disabled=false;
+    btn.innerText="Confirm";
   }
 }
 
-  
+/* =============================
+   SUPPORT
+============================= */
 
-  function showBanInfo(id, reason, duration, date){
-  const modal = document.getElementById("actionModal");
-
-  modal.innerHTML = `
-    <div class="modal-overlay">
-      <div class="modal">
-        <h3>Ban Info</h3>
-        <p><b>Ban ID:</b> ${id}</p>
-        <p><b>Reason:</b> ${reason}</p>
-        <p><b>Duration:</b> ${duration}</p>
-        <p><b>Date:</b> ${new Date(date).toLocaleString()}</p>
-        <div class="modal-actions">
-          <button class="modal-btn modal-cancel" onclick="closeModal()">Close</button>
-        </div>
-      </div>
-    </div>
-  `;
-    
-  modal.style.display = "block";
+function openSupport(e){
+  e.stopPropagation();
+  window.open("https://discord.com/invite/e433wMpEeW", "_blank");
 }
 
+/* =============================
+   ICON RENDER FIX
+============================= */
 
+function reRenderIcons(){
+  if(window.lucide){
+    lucide.createIcons();
+  }
+}
 
+/* =============================
+   INIT
+============================= */
 
-  
-setInterval(fetchBans, 5000);
-setInterval(fetchServer,5000);
-setInterval(fetchPlayers,3000);
-setInterval(fetchLogs,3000);
+document.addEventListener("DOMContentLoaded",()=>{
+  reRenderIcons();
 
-fetchLicense();
-fetchServer();
-fetchPlayers();
-fetchLogs();
-fetchBans(); // ← lägg till denna
+  fetchLicense();
+  fetchServer();
+  fetchPlayers();
+  fetchLogs();
+  fetchBans();
 
-  
+  setInterval(fetchServer,5000);
+  setInterval(fetchPlayers,3000);
+  setInterval(fetchLogs,3000);
+  setInterval(fetchBans,5000);
+});
 </script>
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
 
