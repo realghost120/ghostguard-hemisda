@@ -3,7 +3,7 @@ import crypto from "crypto";
 import cors from "cors";
 import { createClient } from "@supabase/supabase-js";
 
-
+console.log("🔥 THIS IS THE REAL FILE 🔥");
 const app = express();
 
 /* ================= CONFIG ================= */
