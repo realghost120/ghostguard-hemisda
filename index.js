@@ -946,49 +946,44 @@ app.post("/admin/create-customer", async (req, res) => {
   }
 });
 
-
-/* ================= Spras kund för admin ================= */
-
+// kund sparars 
 app.get("/admin/customers", async (req, res) => {
   try {
     if (!requireAdmin(req, res)) return;
 
     const { data, error } = await supabase
       .from("customers")
-      .select("id, username, license_key, created_at")
+      .select(`
+        id,
+        username,
+        created_at,
+        license_key,
+        licenses (
+          status
+        )
+      `)
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("admin/customers error:", error);
-      return res.status(500).json({ success: false, error: "DB_ERROR" });
+      console.error(error);
+      return res.status(500).json({ success: false });
     }
 
-    return res.json({
-      success: true,
-      data: data || []
-    });
+    const mapped = (data || []).map(c => ({
+      id: c.id,
+      username: c.username,
+      license_key: c.license_key,
+      created_at: c.created_at,
+      status: c.licenses?.status || "UNKNOWN"
+    }));
+
+    return res.json({ success: true, data: mapped });
 
   } catch (err) {
-    console.error("admin/customers crash:", err);
+    console.error(err);
     return res.status(500).json({ success: false });
   }
 });
-
-
-/* ================= DETECTION SETTINGS ================= */
-
-// Ensure row exists for license
-async function ensureDetectionRow(license_key) {
-  const { data } = await supabase
-    .from("detection_settings")
-    .select("license_key")
-    .eq("license_key", license_key)
-    .single();
-
-  if (!data) {
-    await supabase.from("detection_settings").insert([{ license_key }]);
-  }
-}
 
 // GET detections (FiveM + Dashboard)
 app.get("/api/server/detections/:license", async (req, res) => {
