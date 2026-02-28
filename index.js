@@ -1024,24 +1024,32 @@ app.post("/admin/update-customer-password", async (req, res) => {
   }
 });
 
-app.post("/admin/toggle-customer", requireAdmin, async (req, res) => {
+app.post("/admin/toggle-customer", async (req, res) => {
+  try {
+    if (!requireAdmin(req, res)) return;
 
-  const { id, active } = req.body;
+    const { id, active } = req.body;
 
-  const { error } = await supabase
-    .from("customers")
-    .update({
-      status: active ? "ACTIVE" : "DISABLED"
-    })
-    .eq("id", id);
+    if (!id || typeof active !== "boolean") {
+      return res.status(400).json({ success: false });
+    }
 
-  if (error) {
-    console.log(error);
-    return res.status(500).json({ success:false });
+    const { error } = await supabase
+      .from("customers")
+      .update({ active }) // 🔥 VIKTIGT
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ success: false });
+    }
+
+    return res.json({ success: true });
+
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ success: false });
   }
-
-  res.json({ success:true });
-
 });
 
 app.delete("/admin/delete-customer/:id", async (req, res) => {
