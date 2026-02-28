@@ -911,6 +911,42 @@ app.post("/admin/toggle-license", async (req, res) => {
 });
 
 
+app.delete("/admin/delete-license/:license_key", async (req, res) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+
+    const { license_key } = req.params;
+
+    if (!license_key) {
+      return res.status(400).json({ success: false });
+    }
+
+    // 🔥 radera först kunder kopplade till licensen (valfritt men smart)
+    await supabase
+      .from("customers")
+      .delete()
+      .eq("license_key", license_key);
+
+    // 🔥 radera licensen
+    const { error } = await supabase
+      .from("licenses")
+      .delete()
+      .eq("license_key", license_key);
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ success: false });
+    }
+
+    return res.json({ success: true });
+
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ success: false });
+  }
+});
+
+
 app.post("/admin/create-customer", async (req, res) => {
   try {
     if (!requireAdmin(req, res)) return;
