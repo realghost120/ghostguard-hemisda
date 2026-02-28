@@ -1047,15 +1047,7 @@ app.get("/admin/customers", async (req, res) => {
 
     const { data, error } = await supabase
       .from("customers")
-      .select(`
-        id,
-        username,
-        created_at,
-        license_key,
-        licenses (
-          status
-        )
-      `)
+      .select("*")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -1063,15 +1055,7 @@ app.get("/admin/customers", async (req, res) => {
       return res.status(500).json({ success: false });
     }
 
-    const mapped = (data || []).map(c => ({
-      id: c.id,
-      username: c.username,
-      license_key: c.license_key,
-      created_at: c.created_at,
-      status: c.licenses?.status || "UNKNOWN"
-    }));
-
-    return res.json({ success: true, data: mapped });
+    return res.json({ success: true, data });
 
   } catch (err) {
     console.error(err);
