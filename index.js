@@ -640,11 +640,12 @@ app.post("/api/login", async (req, res) => {
     const hash = sha256(password);
 
     const { data: user, error } = await supabase
-      .from("customers")
-      .select("*")
-      .eq("username", username)
-      .eq("password", hash)
-      .single();
+  .from("customers")
+  .select("*")
+  .eq("username", username)
+  .eq("password", hash)
+  .eq("active", true) // 🔥 viktigt
+  .single();
 
     if (error || !user) return res.json({ success: false });
 
@@ -957,6 +958,88 @@ app.post("/admin/create-customer", async (req, res) => {
   }
 });
 
+
+app.post("/admin/update-customer-password", async (req, res) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+
+    const { id, new_password } = req.body || {};
+    if (!id || !new_password) {
+      return res.status(400).json({ success: false });
+    }
+
+    const password_hash = sha256(new_password);
+
+    const { error } = await supabase
+      .from("customers")
+      .update({ password: password_hash })
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ success: false });
+    }
+
+    return res.json({ success: true });
+
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ success: false });
+  }
+});
+
+app.post("/admin/toggle-customer", async (req, res) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+
+    const { id, active } = req.body || {};
+    if (!id || typeof active !== "boolean") {
+      return res.status(400).json({ success: false });
+    }
+
+    const { error } = await supabase
+      .from("customers")
+      .update({ active })
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ success: false });
+    }
+
+    return res.json({ success: true });
+
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ success: false });
+  }
+});
+
+app.delete("/admin/delete-customer/:id", async (req, res) => {
+  try {
+    if (!requireAdmin(req, res)) return;
+
+    const { id } = req.params;
+
+    const { error } = await supabase
+      .from("customers")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ success: false });
+    }
+
+    return res.json({ success: true });
+
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ success: false });
+  }
+});
+
+
 // kund sparars 
 app.get("/admin/customers", async (req, res) => {
   try {
@@ -1018,6 +1101,21 @@ app.get("/api/server/detections/:license", async (req, res) => {
     return res.status(500).json({ success: false });
   }
 });
+
+
+async function ensureDetectionRow(license_key) {
+  const { data } = await supabase
+    .from("detection_settings")
+    .select("license_key")
+    .eq("license_key", license_key)
+    .single();
+
+  if (!data) {
+    await supabase
+      .from("detection_settings")
+      .insert([{ license_key }]);
+  }
+}
 
 // UPDATE detection (Dashboard toggle)
 app.post("/api/dashboard/detections", async (req, res) => {
