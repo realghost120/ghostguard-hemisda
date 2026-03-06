@@ -276,13 +276,18 @@ app.post("/api/server/ban", async (req,res)=>{
 
 app.get("/api/server/bans/:license", async (req,res)=>{
   try{
+
     const { data } = await supabase
       .from("bans")
       .select("*")
       .eq("license_key", req.params.license)
       .order("created_at", {ascending:false});
 
-    res.json({success:true, data});
+    res.json({
+      success: true,
+      bans: data
+    });
+
   }catch(e){
     res.status(500).json({success:false});
   }
