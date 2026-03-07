@@ -396,10 +396,10 @@ app.delete("/api/server/unban/:banId", async (req, res) => {
       return res.status(403).json({ success: false, error: "FORBIDDEN" });
     }
 
-    await supabase
-      .from("bans")
-      .update({ expires_at: new Date().toISOString() })
-      .eq("ban_id", banId);
+   await supabase
+  .from("bans")
+  .delete()
+  .eq("ban_id", banId);
 
     // 3️⃣ SKICKA action till FiveM-servern
     pushAction(ban.license_key, {
