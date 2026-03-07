@@ -434,6 +434,37 @@ app.delete("/api/server/ban/:banId", async (req, res) => {
   }
 });
 
+// ban skaen  everidec
+
+app.post("/api/server/ban/evidence", async (req, res) => {
+  try {
+    const { ban_id, image_data } = req.body;
+
+    if (!ban_id || !image_data) {
+      return res.status(400).json({ success: false, error: "Missing data" });
+    }
+
+    const base64 = image_data.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(base64, "base64");
+
+    const fileName = `${ban_id}.jpg`;
+    const filePath = `./public/evidence/${fileName}`;
+
+    require("fs").writeFileSync(filePath, buffer);
+
+    await supabase
+      .from("bans")
+      .update({
+        evidence_url: `/evidence/${fileName}`
+      })
+      .eq("ban_id", ban_id);
+
+    res.json({ success: true, evidence_url: `/evidence/${fileName}` });
+  } catch (err) {
+    console.error("Evidence upload failed:", err);
+    res.status(500).json({ success: false, error: "Upload failed" });
+  }
+});
 
 
 
