@@ -242,27 +242,25 @@ app.post("/api/server/ban", async (req,res)=>{
     const finalExpiresAt = computeExpiresAt(finalDuration, expires_at);
     const finalIdentifiers = normalizeIdentifiers(identifiers);
 
-    const { error: insertError } = await supabase.from("ac_bans").insert([
-      license_key,
-      player_id: player,
-      reason: reason || "No reason",
-      duration: finalDuration,
+ const { error: insertError } = await supabase
+  .from("ac_bans")
+  .insert([
+    {
       ban_id: finalBanId,
-      created_at: finalCreatedAt,
-      expires_at: finalExpiresAt,
+      license: license_key,
+      player_name: player,
+      reason: reason || "No reason",
       banned_by: banned_by || "GhostGuard",
-      evidence_url: evidence_url || null,
-      identifiers: finalIdentifiers
-    }]);
-
-    if (insertError) {
-      console.error("ban insert error:", insertError);
-      const duplicate = String(insertError.code || "") === "23505";
-      return res.status(duplicate ? 409 : 500).json({
-        success: false,
-        error: duplicate ? "BAN_EXISTS" : "DB_ERROR"
-      });
+      created_at: new Date().toISOString()
     }
+  ]);
+    
+if (insertError) {
+  console.error("ban insert error:", insertError);
+  return res.status(500).json({ success:false });
+}
+
+   
 
     res.json({success:true, ban_id: finalBanId});
   }catch(e){
@@ -278,9 +276,9 @@ app.get("/api/server/bans/:license", async (req,res)=>{
   try{
 
     const { data } = await supabase
-      .from("bans")
+      .from("ac_bans")
       .select("*")
-      .eq("license_key", req.params.license)
+      .eq("license", req.params.license)
       .order("created_at", {ascending:false});
 
     res.json({
@@ -320,55 +318,6 @@ app.post("/api/server/ban/check", async (req, res) => {
   }
 });
 
-app.post("/api/server/ban/evidence", async (req, res) => {
-  try {
-    const { license_key, ban_id, image_data } = req.body || {};
-    if (!license_key || !ban_id || !image_data) {
-      return res.status(400).json({ success: false, error: "MISSING_FIELDS" });
-    }
-
-    const parsed = extractDataUriParts(image_data);
-    if (!parsed) {
-      return res.status(400).json({ success: false, error: "INVALID_IMAGE_DATA" });
-    }
-
-    const ext = parsed.mime.includes("png") ? "png" : "jpg";
-    const objectPath = `${license_key}/${ban_id}-${Date.now()}.${ext}`;
-    const binary = Buffer.from(parsed.base64, "base64");
-
-    const { error: uploadError } = await supabase.storage
-      .from(SUPABASE_EVIDENCE_BUCKET)
-      .upload(objectPath, binary, {
-        contentType: parsed.mime,
-        upsert: true,
-      });
-
-    if (uploadError) {
-      console.error("evidence upload error:", uploadError);
-      return res.status(500).json({ success: false, error: "UPLOAD_FAILED" });
-    }
-
-    const { data: urlData } = supabase.storage
-      .from(SUPABASE_EVIDENCE_BUCKET)
-      .getPublicUrl(objectPath);
-
-    const publicUrl = urlData?.publicUrl || null;
-    if (!publicUrl) {
-      return res.status(500).json({ success: false, error: "PUBLIC_URL_FAILED" });
-    }
-
-    await supabase
-      .from("bans")
-      .update({ evidence_url: publicUrl })
-      .eq("license_key", license_key)
-      .eq("ban_id", ban_id);
-
-    return res.json({ success: true, evidence_url: publicUrl });
-  } catch (e) {
-    console.error("ban/evidence error:", e);
-    return res.status(500).json({ success: false });
-  }
-});
 
 app.delete("/api/server/unban/:banId", async (req, res) => {
   try {
@@ -383,7 +332,7 @@ app.delete("/api/server/unban/:banId", async (req, res) => {
 
     // 1️⃣ Hämta ban så vi vet license_key
     const { data: ban } = await supabase
-      .from("bans")
+      .from("ac_bans")
       .select("*")
       .eq("ban_id", banId)
       .single();
@@ -392,17 +341,17 @@ app.delete("/api/server/unban/:banId", async (req, res) => {
       return res.json({ success: false });
     }
 
-    if (ban.license_key !== identity.license_key) {
+    if (ban.license !== identity.license_key) {
       return res.status(403).json({ success: false, error: "FORBIDDEN" });
     }
 
    await supabase
-  .from("bans")
+  .from("ac_bans")
   .delete()
   .eq("ban_id", banId);
 
     // 3️⃣ SKICKA action till FiveM-servern
-    pushAction(ban.license_key, {
+    pushAction(ban.license, {
       id: "ACT-" + Date.now(),
       type: "unban",
       payload: {
@@ -423,7 +372,7 @@ app.delete("/api/server/ban/:banId", async (req, res) => {
   try {
     const { banId } = req.params;
     await supabase
-      .from("bans")
+      .from("ac_bans")
       .update({ expires_at: new Date().toISOString() })
       .eq("ban_id", banId);
 
@@ -438,31 +387,47 @@ app.delete("/api/server/ban/:banId", async (req, res) => {
 
 app.post("/api/server/ban/evidence", async (req, res) => {
   try {
-    const { ban_id, image_data } = req.body;
+    const { license_key, ban_id, image_data } = req.body || {};
 
-    if (!ban_id || !image_data) {
-      return res.status(400).json({ success: false, error: "Missing data" });
+    if (!license_key || !ban_id || !image_data) {
+      return res.status(400).json({ success: false });
     }
 
-    const base64 = image_data.replace(/^data:image\/\w+;base64,/, "");
-    const buffer = Buffer.from(base64, "base64");
+    const parsed = extractDataUriParts(image_data);
+    if (!parsed) {
+      return res.status(400).json({ success: false });
+    }
 
-    const fileName = `${ban_id}.jpg`;
-    const filePath = `./public/evidence/${fileName}`;
+    const ext = parsed.mime.includes("png") ? "png" : "jpg";
+    const objectPath = `${license_key}/${ban_id}.${ext}`;
+    const binary = Buffer.from(parsed.base64, "base64");
 
-    require("fs").writeFileSync(filePath, buffer);
+    const { error } = await supabase.storage
+      .from(SUPABASE_EVIDENCE_BUCKET)
+      .upload(objectPath, binary, {
+        contentType: parsed.mime,
+        upsert: true
+      });
+
+    if (error) {
+      console.log(error);
+      return res.status(500).json({ success:false });
+    }
+
+    const { data } = supabase.storage
+      .from(SUPABASE_EVIDENCE_BUCKET)
+      .getPublicUrl(objectPath);
 
     await supabase
-      .from("bans")
-      .update({
-        evidence_url: `/evidence/${fileName}`
-      })
+      .from("ac_bans")
+      .update({ evidence_url: data.publicUrl })
       .eq("ban_id", ban_id);
 
-    res.json({ success: true, evidence_url: `/evidence/${fileName}` });
-  } catch (err) {
-    console.error("Evidence upload failed:", err);
-    res.status(500).json({ success: false, error: "Upload failed" });
+    res.json({ success:true });
+
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ success:false });
   }
 });
 
