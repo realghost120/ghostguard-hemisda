@@ -242,7 +242,7 @@ app.post("/api/server/ban", async (req,res)=>{
     const finalExpiresAt = computeExpiresAt(finalDuration, expires_at);
     const finalIdentifiers = normalizeIdentifiers(identifiers);
 
-    const { error: insertError } = await supabase.from("bans").insert([{
+    const { error: insertError } = await supabase.from("ac_bans").insert([
       license_key,
       player_id: player,
       reason: reason || "No reason",
